@@ -21,18 +21,18 @@ cp .env.example .env.local   # optional: add ANTHROPIC_API_KEY to enable "Ask th
 npm run dev
 ```
 
-| Script                 | What it does                                                                        |
-| ---------------------- | ----------------------------------------------------------------------------------- |
-| `npm run dev`          | Local dev server                                                                    |
-| `npm run build`        | Production build                                                                    |
-| `npm run typecheck`    | `tsc --noEmit`                                                                      |
-| `npm run lint`         | ESLint                                                                              |
-| `npm run format`       | Prettier                                                                            |
-| `npm run data`         | Run every Lab pipeline: extract, build, test, write Parquet                         |
-| `npm run data:permits` | City of Calgary building permits only                                               |
-| `npm run data:housing` | Calgary home assessments + value model training                                     |
-| `npm run data:flames`  | Calgary Flames play-by-play only                                                    |
-| `npm run data:db`      | Build a local `lab.duckdb` with every Lab table (open with `duckdb -ui lab.duckdb`) |
+| Script                 | What it does                                                                                                      |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `npm run dev`          | Local dev server                                                                                                  |
+| `npm run build`        | Production build                                                                                                  |
+| `npm run typecheck`    | `tsc --noEmit`                                                                                                    |
+| `npm run lint`         | ESLint                                                                                                            |
+| `npm run format`       | Prettier                                                                                                          |
+| `npm run data`         | Run every Lab pipeline: extract, build, test, write Parquet                                                       |
+| `npm run data:permits` | City of Calgary building permits only                                                                             |
+| `npm run data:housing` | Calgary home assessments + value model training                                                                   |
+| `npm run data:flames`  | Calgary Flames play-by-play only                                                                                  |
+| `npm run data:db`      | Run every pipeline into a local `lab.duckdb`, keeping bronze, silver and gold (open with `duckdb -ui lab.duckdb`) |
 
 ## Project layout
 

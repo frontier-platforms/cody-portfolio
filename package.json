@@ -13,7 +13,7 @@
     "typecheck": "tsc --noEmit",
     "format": "prettier --write .",
     "data:housing": "tsx scripts/run-pipeline.ts housing",
-    "data:db": "tsx scripts/build-db.ts"
+    "data:db": "tsx scripts/run-pipeline.ts all --db lab.duckdb"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.131.0",
