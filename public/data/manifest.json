@@ -699,6 +699,299 @@
           "sha256": "d0ab158f4071777932cad8702a54198b755e9f1f7c6182a151a238c220e36b5e"
         }
       ]
+    },
+    "housing": {
+      "pipeline": "housing",
+      "runAt": "2026-10-06T03:43:20.514Z",
+      "durationMs": 48673,
+      "trigger": "local",
+      "commit": null,
+      "extract": {
+        "requests": 6,
+        "rows": 490373,
+        "ms": 24126
+      },
+      "models": [
+        {
+          "name": "raw_assessments",
+          "layer": "bronze",
+          "rows": 490128,
+          "ms": 0
+        },
+        {
+          "name": "raw_use_codes",
+          "layer": "bronze",
+          "rows": 245,
+          "ms": 0
+        },
+        {
+          "name": "stg_homes",
+          "layer": "silver",
+          "rows": 487726,
+          "ms": 137.78245799999786,
+          "columns": [
+            {
+              "name": "roll_number",
+              "type": "BIGINT",
+              "nullPct": 0
+            },
+            {
+              "name": "roll_year",
+              "type": "INTEGER",
+              "nullPct": 0
+            },
+            {
+              "name": "community",
+              "type": "VARCHAR",
+              "nullPct": 0
+            },
+            {
+              "name": "use_code",
+              "type": "VARCHAR",
+              "nullPct": 0
+            },
+            {
+              "name": "use",
+              "type": "VARCHAR",
+              "nullPct": 0
+            },
+            {
+              "name": "property_group",
+              "type": "VARCHAR",
+              "nullPct": 0
+            },
+            {
+              "name": "zoning",
+              "type": "VARCHAR",
+              "nullPct": 0
+            },
+            {
+              "name": "year_built",
+              "type": "INTEGER",
+              "nullPct": 0.18
+            },
+            {
+              "name": "lot_sqft",
+              "type": "INTEGER",
+              "nullPct": 0.11
+            },
+            {
+              "name": "assessed_value",
+              "type": "INTEGER",
+              "nullPct": 0
+            },
+            {
+              "name": "mod_date",
+              "type": "DATE",
+              "nullPct": 0
+            }
+          ]
+        },
+        {
+          "name": "housing_homes",
+          "layer": "gold",
+          "rows": 487604,
+          "ms": 46.95670800000153,
+          "columns": [
+            {
+              "name": "roll_number",
+              "type": "BIGINT",
+              "nullPct": 0
+            },
+            {
+              "name": "roll_year",
+              "type": "INTEGER",
+              "nullPct": 0
+            },
+            {
+              "name": "community",
+              "type": "VARCHAR",
+              "nullPct": 0
+            },
+            {
+              "name": "use",
+              "type": "VARCHAR",
+              "nullPct": 0
+            },
+            {
+              "name": "property_group",
+              "type": "VARCHAR",
+              "nullPct": 0
+            },
+            {
+              "name": "zoning",
+              "type": "VARCHAR",
+              "nullPct": 0
+            },
+            {
+              "name": "year_built",
+              "type": "INTEGER",
+              "nullPct": 0.17
+            },
+            {
+              "name": "lot_sqft",
+              "type": "INTEGER",
+              "nullPct": 0.11
+            },
+            {
+              "name": "assessed_value",
+              "type": "INTEGER",
+              "nullPct": 0
+            },
+            {
+              "name": "mod_date",
+              "type": "DATE",
+              "nullPct": 0
+            }
+          ]
+        }
+      ],
+      "tests": [
+        {
+          "name": "roll_number is unique",
+          "model": "housing_homes",
+          "kind": "unique",
+          "severity": "error",
+          "status": "pass",
+          "failures": 0,
+          "ms": 4.569999999999709,
+          "sql": "SELECT count(*) AS failures FROM (SELECT roll_number FROM main.housing_homes GROUP BY 1 HAVING count(*) > 1)"
+        },
+        {
+          "name": "roll_number is never null",
+          "model": "housing_homes",
+          "kind": "not_null",
+          "severity": "error",
+          "status": "pass",
+          "failures": 0,
+          "ms": 0.35099999999874854,
+          "sql": "SELECT count(*) AS failures FROM main.housing_homes WHERE roll_number IS NULL"
+        },
+        {
+          "name": "Every use code has a City label",
+          "model": "housing_homes",
+          "kind": "not_null",
+          "severity": "error",
+          "status": "pass",
+          "failures": 0,
+          "ms": 0.15495799999916926,
+          "sql": "SELECT count(*) AS failures FROM main.housing_homes WHERE use IS NULL"
+        },
+        {
+          "name": "property_group is a known value",
+          "model": "housing_homes",
+          "kind": "accepted_values",
+          "severity": "error",
+          "status": "pass",
+          "failures": 0,
+          "ms": 1.361165999998775,
+          "sql": "SELECT count(*) AS failures FROM main.housing_homes WHERE property_group NOT IN ('Detached', 'Duplex', 'Townhouse', 'Condo apartment')"
+        },
+        {
+          "name": "One assessment roll year",
+          "model": "housing_homes",
+          "kind": "custom",
+          "severity": "error",
+          "status": "pass",
+          "failures": 0,
+          "ms": 0.9651250000024447,
+          "sql": "SELECT CASE WHEN count(DISTINCT roll_year) = 1 THEN 0 ELSE 1 END AS failures FROM main.housing_homes"
+        },
+        {
+          "name": "Assessed value is plausible ($50k to $20M)",
+          "model": "housing_homes",
+          "kind": "expression",
+          "severity": "warn",
+          "status": "warn",
+          "failures": 8,
+          "ms": 0.9315830000014103,
+          "sql": "SELECT count(*) AS failures FROM main.housing_homes WHERE NOT (assessed_value BETWEEN 50000 AND 20000000)"
+        },
+        {
+          "name": "Year built is plausible",
+          "model": "housing_homes",
+          "kind": "expression",
+          "severity": "warn",
+          "status": "pass",
+          "failures": 0,
+          "ms": 1.7509580000005371,
+          "sql": "SELECT count(*) AS failures FROM main.housing_homes WHERE NOT (year_built IS NULL OR year_built BETWEEN 1875 AND year(DATE '2026-10-06') + 1)"
+        },
+        {
+          "name": "Year built is present",
+          "model": "housing_homes",
+          "kind": "not_null",
+          "severity": "warn",
+          "status": "warn",
+          "failures": 826,
+          "ms": 0.32520799999838346,
+          "sql": "SELECT count(*) AS failures FROM main.housing_homes WHERE year_built IS NULL"
+        },
+        {
+          "name": "At least 400,000 homes",
+          "model": "housing_homes",
+          "kind": "row_count",
+          "severity": "error",
+          "status": "pass",
+          "failures": 0,
+          "ms": 0.5212500000016007,
+          "sql": "SELECT CASE WHEN count(*) >= 400000 THEN 0 ELSE 1 END AS failures FROM main.housing_homes"
+        }
+      ],
+      "outputs": [
+        {
+          "model": "housing_homes",
+          "file": "housing-homes.parquet",
+          "rows": 487604,
+          "bytes": 2549006,
+          "sha256": "3d15f504a35d7b69d36c817e92df3a6234446cf71000a3595d74bd39785352bb"
+        }
+      ],
+      "model": {
+        "file": "housing-model.json",
+        "bytes": 1029192,
+        "trainMs": 22824,
+        "rows": {
+          "train": 390368,
+          "test": 97228
+        },
+        "metrics": {
+          "model": {
+            "mae": 73379.93273873391,
+            "mdape": 0.07268887258188973,
+            "within10": 0.6281832393960588,
+            "r2": 0.8207656584728578
+          },
+          "baseline": {
+            "mae": 108765.43279713663,
+            "mdape": 0.09806295399515738,
+            "within10": 0.5071584317274859,
+            "r2": 0.5774981124527486
+          }
+        },
+        "importance": [
+          {
+            "feature": "use",
+            "share": 0.5786819082002954
+          },
+          {
+            "feature": "community",
+            "share": 0.1742203179165223
+          },
+          {
+            "feature": "year_built",
+            "share": 0.1102282233943678
+          },
+          {
+            "feature": "lot_sqft",
+            "share": 0.09274022639985416
+          },
+          {
+            "feature": "zoning",
+            "share": 0.04412932408896045
+          }
+        ]
+      }
     }
   }
 }

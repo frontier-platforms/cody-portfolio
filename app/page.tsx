@@ -136,10 +136,10 @@ export default async function Home() {
               body: "Every shot attempt since 2021-22, including this season. Where the Flames shoot from, and where the goals come from.",
             },
             {
-              href: "/lab/calgary#pipeline",
-              kicker: "Pipeline · tests · AI",
-              title: "Run the pipeline yourself",
-              body: "Each dataset ships with a tested pipeline you can run live, a data contract, telemetry, and an AI that writes the SQL.",
+              href: "/lab/housing",
+              kicker: "Machine learning",
+              title: "What’s a Calgary home worth?",
+              body: "A value model trained on Calgary’s 2026 home assessments, written from scratch. Get an explained estimate, or retrain it in your browser.",
             },
           ].map((card) => (
             <Link
@@ -156,6 +156,11 @@ export default async function Home() {
             </Link>
           ))}
         </div>
+        <p className="mt-6 text-sm">
+          <Link href="/lab" className="link">
+            See all three labs and how they’re built
+          </Link>
+        </p>
       </Section>
 
       <Section index="03" label="What I work with" className="mt-24">

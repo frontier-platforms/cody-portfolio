@@ -130,13 +130,16 @@ export function RankBars({
   color = "var(--accent)",
   formatValue = formatNumber,
   summary,
+  max: fixedMax,
 }: {
   data: Datum[];
   color?: string;
   formatValue?: (n: number) => string;
   summary: string;
+  /** Shared scale when several lists sit side by side. */
+  max?: number;
 }) {
-  const max = Math.max(...data.map((d) => d.value), 1);
+  const max = fixedMax ?? Math.max(...data.map((d) => d.value), 1);
   return (
     <ol className="space-y-2.5" aria-label={summary}>
       {data.map((d) => (
@@ -169,6 +172,7 @@ export function LineChart({
   yLabel,
   summary,
   yMax,
+  fitY = false,
   reference,
 }: {
   series: Series[];
@@ -177,32 +181,35 @@ export function LineChart({
   yLabel?: string;
   summary: string;
   yMax?: number;
+  /** Fit the y axis to the data instead of starting at zero. */
+  fitY?: boolean;
   reference?: { y: number; label: string };
 }) {
   const [ref, W] = useWidth<HTMLDivElement>();
   const pad = { t: 16, r: 12, b: 28, l: 40 };
   const all = series.flatMap((s) => s.points);
   const xMax = Math.max(...all.map((p) => p.x), 1);
-  const maxY = yMax ?? niceMax(Math.max(...all.map((p) => p.y), reference?.y ?? 0));
+  const ys = all.map((p) => p.y).filter((v) => Number.isFinite(v));
+  const minY = fitY ? Math.max(0, Math.floor(Math.min(...ys) * 20) / 20 - 0.05) : 0;
+  const maxY =
+    yMax ?? (fitY ? Math.ceil(Math.max(...ys) * 20) / 20 : niceMax(Math.max(...ys, reference?.y ?? 0)));
   const x = (v: number) => pad.l + ((W - pad.l - pad.r) * v) / xMax;
-  const y = (v: number) => pad.t + (height - pad.t - pad.b) * (1 - v / maxY);
+  const y = (v: number) => pad.t + (height - pad.t - pad.b) * (1 - (v - minY) / (maxY - minY));
 
   return (
     <div ref={ref}>
       <svg viewBox={`0 0 ${W} ${height}`} className="h-auto w-full" role="img" aria-label={summary}>
-        {[0, 0.25, 0.5, 0.75, 1].map((f) => (
-          <g key={f}>
-            <line x1={pad.l} x2={W - pad.r} y1={y(maxY * f)} y2={y(maxY * f)} stroke="var(--line)" />
-            <text
-              x={pad.l - 6}
-              y={y(maxY * f) + 4}
-              textAnchor="end"
-              className="fill-muted font-mono text-[10px]"
-            >
-              {formatNumber(maxY * f)}
-            </text>
-          </g>
-        ))}
+        {[0, 0.25, 0.5, 0.75, 1].map((f) => {
+          const v = minY + (maxY - minY) * f;
+          return (
+            <g key={f}>
+              <line x1={pad.l} x2={W - pad.r} y1={y(v)} y2={y(v)} stroke="var(--line)" />
+              <text x={pad.l - 6} y={y(v) + 4} textAnchor="end" className="fill-muted font-mono text-[10px]">
+                {fitY ? v.toFixed(2) : formatNumber(v)}
+              </text>
+            </g>
+          );
+        })}
         {reference && (
           <g>
             <line

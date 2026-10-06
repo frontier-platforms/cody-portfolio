@@ -6,7 +6,8 @@ import { useEffect } from "react";
 import { track } from "@/lib/analytics";
 
 const TABS = [
-  { href: "/lab/calgary", label: "Calgary permits", dataset: "permits" },
+  { href: "/lab/calgary", label: "Permits", dataset: "permits" },
+  { href: "/lab/housing", label: "Housing + ML", short: "Housing", dataset: "housing" },
   { href: "/lab/flames", label: "Flames", dataset: "flames" },
 ] as const;
 
@@ -20,15 +21,22 @@ export function LabTabs() {
   }, [active]);
 
   return (
-    <nav aria-label="Lab datasets" className="-mb-px flex gap-1">
+    <nav aria-label="Labs" className="-mb-px flex min-w-0 gap-0.5 overflow-x-auto sm:gap-1">
       {TABS.map((t) => (
         <Link
           key={t.href}
           href={t.href}
           aria-current={active?.href === t.href ? "page" : undefined}
-          className="border-b-2 border-transparent px-2 py-3 text-sm text-muted transition-colors hover:text-ink aria-[current=page]:border-accent aria-[current=page]:font-medium aria-[current=page]:text-ink sm:px-3"
+          className="shrink-0 whitespace-nowrap border-b-2 border-transparent px-2 py-3 text-sm text-muted transition-colors hover:text-ink aria-[current=page]:border-accent aria-[current=page]:font-medium aria-[current=page]:text-ink sm:px-3"
         >
-          {t.label}
+          {"short" in t ? (
+            <>
+              <span className="sm:hidden">{t.short}</span>
+              <span className="hidden sm:inline">{t.label}</span>
+            </>
+          ) : (
+            t.label
+          )}
         </Link>
       ))}
     </nav>

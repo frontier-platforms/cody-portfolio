@@ -21,7 +21,7 @@ export const maxDuration = 30;
 const MODEL = "claude-opus-5";
 
 const Body = z.object({
-  dataset: z.enum(["permits", "flames"]),
+  dataset: z.enum(["permits", "housing", "flames"]),
   question: z.string().trim().min(3).max(300),
 });
 
@@ -54,6 +54,8 @@ const SYSTEM = `You turn questions about public datasets into a single DuckDB SQ
 Available tables:
 
 ${datasets.permits.schema}
+
+${datasets.housing.schema}
 
 ${datasets.flames.schema}
 

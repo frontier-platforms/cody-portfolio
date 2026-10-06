@@ -1,54 +1,49 @@
 import Link from "next/link";
 import { PipelineSection } from "@/components/pipeline/PipelineSection";
 import { Section } from "@/components/ui/Section";
+import { labFor } from "@/lib/lab/catalog";
 import { datasets, type DatasetKey } from "@/lib/lab/datasets";
 import { pipelines } from "@/lib/pipelines/index";
 import { manifest } from "@/lib/pipelines/manifest";
 import { AskDemo } from "./LabDemos";
 
-/** Shared shell for a Lab tab: dashboard, Ask the data, and the pipeline behind both. */
+type Extra = { id: string; label: string; intro: React.ReactNode; content: React.ReactNode };
+
+/**
+ * Shared shell for a Lab tab: dashboard, optional extra sections (the housing
+ * tab adds its model), Ask the data, and the pipeline behind all of it.
+ */
 export function LabPage({
   dataset,
   intro,
   dashboard,
+  extras = [],
 }: {
   dataset: DatasetKey;
-  intro: React.ReactNode;
+  intro?: React.ReactNode;
   dashboard: React.ReactNode;
+  extras?: Extra[];
 }) {
   const pipeline = pipelines[dataset];
-  return (
-    <>
-      <nav aria-label="On this page" className="mx-auto mt-8 max-w-6xl px-4 sm:px-6">
-        <ul className="flex flex-wrap gap-x-5 gap-y-2 font-mono text-sm">
-          <li>
-            <a href="#dashboard" className="link">
-              Dashboard
-            </a>
-          </li>
-          <li>
-            <a href="#ask" className="link">
-              Ask the data
-            </a>
-          </li>
-          <li>
-            <a href="#pipeline" className="link">
-              Pipeline
-            </a>
-          </li>
-        </ul>
-      </nav>
-
-      <Section index="01" label="Dashboard" id="dashboard" className="mt-10">
-        <div className="mb-6 max-w-2xl space-y-3 text-muted">
+  const lab = labFor(dataset);
+  const sections: Extra[] = [
+    {
+      id: "dashboard",
+      label: "Dashboard",
+      intro: (
+        <>
           {intro}
           <p className="text-xs">Source: {datasets[dataset].source}</p>
-        </div>
-        {dashboard}
-      </Section>
-
-      <Section index="02" label="Ask the data" id="ask" className="mt-24">
-        <div className="mb-6 max-w-2xl space-y-3 text-muted">
+        </>
+      ),
+      content: dashboard,
+    },
+    ...extras,
+    {
+      id: "ask",
+      label: "Ask the data",
+      intro: (
+        <>
           <p>
             Ask a question in plain English. Claude writes one SQL query, the site checks it, and your browser
             runs it. You get the answer, a chart and the SQL, and you can edit the SQL and run it yourself.
@@ -60,20 +55,60 @@ export function LabPage({
             </Link>
             .
           </p>
-        </div>
-        <AskDemo dataset={dataset} />
-      </Section>
+        </>
+      ),
+      content: <AskDemo dataset={dataset} />,
+    },
+    {
+      id: "pipeline",
+      label: "Pipeline",
+      intro: (
+        <p>
+          The data above comes from a tested, scheduled pipeline: raw (bronze), cleaned (silver) and
+          business-ready (gold) layers, the same pattern I used to rebuild StellarAlgo’s platform. The same
+          definitions run weekly on GitHub Actions and, when you press the button, in your browser.
+        </p>
+      ),
+      content: <PipelineSection pipeline={pipeline} run={manifest.pipelines[dataset]} />,
+    },
+  ];
 
-      <Section index="03" label="Pipeline" id="pipeline" className="mt-24">
-        <div className="mb-6 max-w-2xl space-y-3 text-muted">
-          <p>
-            The data above comes from a tested, scheduled pipeline: raw (bronze), cleaned (silver) and
-            business-ready (gold) layers, the same pattern I used to rebuild StellarAlgo’s platform. The same
-            definitions run weekly on GitHub Actions and, when you press the button, in your browser.
-          </p>
-        </div>
-        <PipelineSection pipeline={pipeline} run={manifest.pipelines[dataset]} />
-      </Section>
+  return (
+    <>
+      <header className="mx-auto max-w-6xl px-4 pt-10 sm:px-6 sm:pt-14">
+        <p className="label">
+          <span className="text-accent">Lab {lab.number}</span> · {lab.kicker}
+        </p>
+        <h1 className="mt-3 max-w-3xl text-balance text-4xl font-semibold tracking-tight sm:text-5xl">
+          {lab.title}
+        </h1>
+        <p className="mt-4 max-w-2xl text-pretty text-lg text-muted">{lab.lede}</p>
+      </header>
+
+      <nav aria-label="On this page" className="mx-auto mt-6 max-w-6xl px-4 sm:px-6">
+        <ul className="flex flex-wrap gap-x-5 gap-y-2 font-mono text-sm">
+          {sections.map((s) => (
+            <li key={s.id}>
+              <a href={`#${s.id}`} className="link">
+                {s.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
+      {sections.map((s, i) => (
+        <Section
+          key={s.id}
+          index={String(i + 1).padStart(2, "0")}
+          label={s.label}
+          id={s.id}
+          className={i === 0 ? "mt-10" : "mt-24"}
+        >
+          <div className="mb-6 max-w-2xl space-y-3 text-muted">{s.intro}</div>
+          {s.content}
+        </Section>
+      ))}
     </>
   );
 }

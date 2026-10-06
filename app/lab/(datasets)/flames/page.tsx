@@ -9,16 +9,5 @@ export const metadata: Metadata = {
 };
 
 export default function FlamesLab() {
-  return (
-    <LabPage
-      dataset="flames"
-      intro={
-        <p>
-          Flames hockey, shot by shot, from 2021-22 to tonight. Where they shoot from, where goals actually
-          come from, and how each season’s points race has played out.
-        </p>
-      }
-      dashboard={<FlamesDemo />}
-    />
-  );
+  return <LabPage dataset="flames" dashboard={<FlamesDemo />} />;
 }

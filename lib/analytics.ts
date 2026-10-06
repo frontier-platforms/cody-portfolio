@@ -14,7 +14,7 @@ type PropSpec = { type: "string"; values?: readonly string[] } | { type: "number
 
 type EventSpec = { description: string; props: Record<string, PropSpec> };
 
-const dataset = { type: "string", values: ["permits", "flames"] } as const;
+const dataset = { type: "string", values: ["permits", "housing", "flames"] } as const;
 
 export const trackingPlan = {
   lab_tab_viewed: {
@@ -56,6 +56,21 @@ export const trackingPlan = {
       outcome: { type: "string", values: ["success", "failed"] },
       rows_in: { type: "number" },
       tests_failed: { type: "number" },
+      duration_ms: { type: "number" },
+    },
+  },
+  model_estimated: {
+    description: "The value model produces an estimate. Inputs other than property type are not tracked.",
+    props: { property_group: { type: "string" }, model: { type: "string", values: ["production", "yours"] } },
+  },
+  model_trained: {
+    description: "Someone trains their own value model in the browser.",
+    props: {
+      rows: { type: "number" },
+      trees: { type: "number" },
+      depth: { type: "number" },
+      learning_rate: { type: "number" },
+      median_error_pct: { type: "number" },
       duration_ms: { type: "number" },
     },
   },

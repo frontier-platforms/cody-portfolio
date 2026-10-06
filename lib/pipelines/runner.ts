@@ -81,8 +81,17 @@ export async function runModels(
   return results;
 }
 
-/** Compiles a declarative test to SQL returning one row: `failures`. */
+/**
+ * Compiles a declarative test to SQL returning one row: `failures`.
+ * `{{ today }}` becomes a DATE literal for the run date. Tests never call
+ * current_date: in DuckDB-WASM without ICU it isn't a plain DATE, and a
+ * fixed date makes results reproducible.
+ */
 export function compileTest(test: Test, schema: string, today: string): string {
+  return compile(test, schema, today).replaceAll("{{ today }}", `DATE '${today}'`);
+}
+
+function compile(test: Test, schema: string, today: string): string {
   const t = `${schema}.${test.model}`;
   switch (test.kind) {
     case "not_null":

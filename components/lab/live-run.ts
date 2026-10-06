@@ -3,6 +3,7 @@
 import { track } from "@/lib/analytics";
 import { extractFlames, seasonIds } from "@/lib/pipelines/flames";
 import { pipelines } from "@/lib/pipelines/index";
+import { extractHousing } from "@/lib/pipelines/housing";
 import { extractPermits } from "@/lib/pipelines/permits";
 import { bronzeSql, runModels, runTests, type RunEvent } from "@/lib/pipelines/runner";
 import type { Pipeline, TestResult } from "@/lib/pipelines/types";
@@ -74,6 +75,28 @@ async function extract(pipeline: Pipeline, emit: (e: LiveEvent) => void) {
       );
     }
     return { tables: { raw_permits: result.rows } as Record<string, unknown[]>, requests: result.requests };
+  }
+
+  if (pipeline.id === "housing") {
+    await ensureTables(["housing_homes"]);
+    const { rows } = await runQuery(
+      "SELECT strftime(max(mod_date), '%Y-%m-%dT00:00:00') AS watermark FROM housing_homes",
+      "pipeline: watermark",
+    );
+    const watermark = String(rows[0]?.watermark);
+    log(`Watermark from snapshot: max(mod_date) = ${watermark.slice(0, 10)}`);
+    log(
+      "Socrata's :updated_at changes on every row nightly here, so the City's mod_date is the watermark.",
+      "muted",
+    );
+    log(`GET data.calgary.ca … WHERE mod_date > '${watermark.slice(0, 10)}'`, "muted");
+    const result = await extractHousing({
+      modifiedSince: watermark,
+      pageSize: 10_000,
+      maxRows: MAX_INCREMENTAL_ROWS,
+      onPage: ({ rows, ms }) => log(`  page: ${rows.toLocaleString()} rows in ${ms} ms`, "muted"),
+    });
+    return result;
   }
 
   await ensureTables(["flames_games"]);
@@ -179,7 +202,7 @@ export async function runLive(id: Pipeline["id"], emit: (e: LiveEvent) => void):
     emit({ kind: "node", node: "tests", status: failed ? "failed" : "done" });
 
     // Flames re-reads the whole current schedule, so replaced games aren't changes.
-    const changed = inserted + (id === "permits" ? updated : 0);
+    const changed = inserted + (id === "flames" ? 0 : updated);
     if (changed > 0) dataVersion.bump();
     const ms = performance.now() - started;
     const secs = (ms / 1000).toFixed(1);

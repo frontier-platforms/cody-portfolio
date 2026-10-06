@@ -11,12 +11,32 @@ const PermitsDashboard = dynamic(() => import("./PermitsDashboard").then((m) => 
 const FlamesDashboard = dynamic(() => import("./FlamesDashboard").then((m) => m.FlamesDashboard), {
   ssr: false,
 });
+const HousingDashboard = dynamic(() => import("./HousingDashboard").then((m) => m.HousingDashboard), {
+  ssr: false,
+});
+const ValueModel = dynamic(() => import("../ml/ValueModel").then((m) => m.ValueModel), { ssr: false });
 const AskData = dynamic(() => import("./AskData").then((m) => m.AskData), { ssr: false });
 
 export function PermitsDemo() {
   return (
     <LazyMount minHeight={900} label="Calgary permits">
       <PermitsDashboard />
+    </LazyMount>
+  );
+}
+
+export function HousingDemo() {
+  return (
+    <LazyMount minHeight={900} label="Calgary housing">
+      <HousingDashboard />
+    </LazyMount>
+  );
+}
+
+export function ValueModelDemo() {
+  return (
+    <LazyMount minHeight={700} label="value model">
+      <ValueModel />
     </LazyMount>
   );
 }

@@ -3,21 +3,28 @@
  *
  *   extract (full) → bronze → silver → gold → tests → Parquet + manifest
  *
- * Usage: tsx scripts/run-pipeline.ts [permits|flames|all]
+ * Usage: tsx scripts/run-pipeline.ts [permits|housing|flames|all] [--db <file>]
  *
  * A failing error-level test exits non-zero before any file is written, so a
  * bad extract never replaces the last good snapshot. GitHub Actions runs this
  * weekly (.github/workflows/refresh-data.yml).
+ *
+ * --db <file> is for exploring locally (npm run data:db). It runs the same
+ * steps into a DuckDB file, one schema per pipeline, keeping every layer
+ * (bronze, silver, gold) plus test results and lineage. It reuses the last
+ * extract when one is cached and publishes nothing.
  */
 import { createHash } from "node:crypto";
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { access, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { DuckDBInstance } from "@duckdb/node-api";
 import { extractFlames, seasonIds } from "../lib/pipelines/flames";
 import { pipelines } from "../lib/pipelines/index";
+import { extractHousing } from "../lib/pipelines/housing";
 import { extractPermits } from "../lib/pipelines/permits";
+import { trainHousingModel, type HomeRow } from "../lib/ml/housing";
 import { bronzeSql, runModels, runTests, type Engine } from "../lib/pipelines/runner";
-import type { Manifest, ManifestEntry, Pipeline } from "../lib/pipelines/types";
+import type { Manifest, ManifestEntry, Pipeline, TestResult } from "../lib/pipelines/types";
 
 const DATA_DIR = path.resolve("public/data");
 const CACHE_DIR = path.resolve(".cache/data");
@@ -26,8 +33,8 @@ const NHL_API = "https://api-web.nhle.com/v1";
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
-async function nodeEngine(): Promise<Engine & { close(): void }> {
-  const instance = await DuckDBInstance.create(":memory:");
+async function nodeEngine(file = ":memory:"): Promise<Engine & { close(): void }> {
+  const instance = await DuckDBInstance.create(file);
   const con = await instance.connect();
   return {
     exec: async (sql) => void (await con.run(sql)),
@@ -74,6 +81,11 @@ async function extract(pipeline: Pipeline): Promise<{ tables: Record<string, unk
     });
     return { tables: { raw_permits: rows } as Record<string, unknown[]>, requests };
   }
+  if (pipeline.id === "housing") {
+    return extractHousing({
+      onPage: ({ rows, ms }) => console.log(`  extract  page of ${rows} rows in ${ms} ms`),
+    });
+  }
   return extractFlames({
     seasons: seasonIds(),
     fetchJson: nhlJson,
@@ -87,27 +99,51 @@ async function sha256(file: string) {
     .digest("hex");
 }
 
-async function run(pipeline: Pipeline): Promise<ManifestEntry> {
-  console.log(`\n▶ ${pipeline.id}`);
+const bronzeFile = (pipeline: Pipeline, source: string) =>
+  path.join(CACHE_DIR, `${pipeline.id}-${source}.json`);
+
+/** The last extract, if every raw file for this pipeline is cached. */
+async function cachedExtract(pipeline: Pipeline) {
+  try {
+    await Promise.all(pipeline.sources.map((s) => access(bronzeFile(pipeline, s.name))));
+  } catch {
+    return null;
+  }
+  const tables: Record<string, unknown[]> = {};
+  for (const s of pipeline.sources)
+    tables[s.name] = JSON.parse(await readFile(bronzeFile(pipeline, s.name), "utf8"));
+  return { tables, requests: 0 };
+}
+
+type RunOptions = { engine?: Engine & { close(): void }; schema?: string; explore?: boolean };
+
+async function run(
+  pipeline: Pipeline,
+  { engine: shared, schema = "main", explore = false }: RunOptions = {},
+) {
+  console.log(`\n▶ ${pipeline.id}${explore ? ` → schema ${schema}` : ""}`);
   const started = Date.now();
-  const engine = await nodeEngine();
+  const engine = shared ?? (await nodeEngine());
+  if (schema !== "main") await engine.exec(`CREATE SCHEMA IF NOT EXISTS ${schema}`);
 
   const extractStarted = Date.now();
-  const { tables, requests } = await extract(pipeline);
+  const cached = explore ? await cachedExtract(pipeline) : null;
+  if (cached) console.log("  extract  reusing the last extract from .cache/data");
+  const { tables, requests } = cached ?? (await extract(pipeline));
   const extractMs = Date.now() - extractStarted;
   let extracted = 0;
 
   for (const source of pipeline.sources) {
     const rows = tables[source.name] ?? [];
     extracted += rows.length;
-    const file = path.join(CACHE_DIR, `${pipeline.id}-${source.name}.json`);
-    await writeFile(file, JSON.stringify(rows));
-    await engine.exec(bronzeSql(source, file, "main"));
+    const file = bronzeFile(pipeline, source.name);
+    if (!cached) await writeFile(file, JSON.stringify(rows));
+    await engine.exec(bronzeSql(source, file, schema));
     console.log(`  bronze   ${source.name}: ${rows.length.toLocaleString()} rows`);
   }
 
   const models = await runModels(engine, pipeline, {
-    schema: "main",
+    schema,
     stats: true,
     onEvent: (e) =>
       e.type === "model" &&
@@ -119,7 +155,7 @@ async function run(pipeline: Pipeline): Promise<ManifestEntry> {
 
   const today = new Date().toISOString().slice(0, 10);
   const tests = await runTests(engine, pipeline, {
-    schema: "main",
+    schema,
     today,
     onEvent: (e) => {
       if (e.type !== "test") return;
@@ -127,6 +163,11 @@ async function run(pipeline: Pipeline): Promise<ManifestEntry> {
       console.log(`  test   ${mark} ${e.result.name}${e.result.failures ? ` (${e.result.failures})` : ""}`);
     },
   });
+
+  if (explore) {
+    await describe(engine, pipeline, schema, tests);
+    return null;
+  }
 
   const failed = tests.filter((t) => t.status === "fail");
   if (failed.length) {
@@ -143,9 +184,11 @@ async function run(pipeline: Pipeline): Promise<ManifestEntry> {
     outputs.push({ model: model.name, file: model.served!.file, rows, bytes, sha256: await sha256(file) });
     console.log(`  serve    ${model.served!.file}: ${(bytes / 1e6).toFixed(2)} MB`);
   }
+
+  const trained = pipeline.model ? await trainModel(engine, pipeline) : undefined;
   engine.close();
 
-  return {
+  const entry: ManifestEntry = {
     pipeline: pipeline.id,
     runAt: new Date().toISOString(),
     durationMs: Date.now() - started,
@@ -163,16 +206,116 @@ async function run(pipeline: Pipeline): Promise<ManifestEntry> {
     ],
     tests,
     outputs,
+    model: trained,
+  };
+  return entry;
+}
+
+const quote = (s: string) => `'${s.replaceAll("'", "''")}'`;
+
+/** Explore mode: comment every table and store this run's test results next to the data. */
+async function describe(engine: Engine, pipeline: Pipeline, schema: string, tests: TestResult[]) {
+  const layer = (name: string) =>
+    pipeline.sources.some((s) => s.name === name)
+      ? "bronze"
+      : pipeline.models.find((m) => m.name === name)!.layer;
+  for (const t of [...pipeline.sources, ...pipeline.models]) {
+    await engine.exec(
+      `COMMENT ON TABLE ${schema}.${t.name} IS ${quote(`${layer(t.name)}: ${t.description}`)}`,
+    );
+  }
+  await engine.exec(
+    `CREATE OR REPLACE TABLE ${schema}._tests AS SELECT * FROM (VALUES ${tests
+      .map(
+        (t) =>
+          `(${quote(t.name)}, ${quote(t.model)}, ${quote(t.kind)}, ${quote(t.severity)}, ${quote(t.status)}, ${t.failures}, ${quote(t.sql.replaceAll("main.", `${schema}.`))})`,
+      )
+      .join(", ")}) AS t(test, model, kind, severity, status, failures, sql)`,
+  );
+  await engine.exec(
+    `COMMENT ON TABLE ${schema}._tests IS 'Data quality tests from this run, with the SQL that checks each one'`,
+  );
+}
+
+/** Explore mode: one table describing how every model is built, across all pipelines. */
+async function writeLineage(engine: Engine) {
+  const rows = Object.values(pipelines).flatMap((p) => [
+    ...p.sources.map((s) => `(${quote(p.id)}, ${quote(s.name)}, 'bronze', NULL, ${quote(s.description)})`),
+    ...p.models.flatMap((m) =>
+      m.dependsOn.map(
+        (d) => `(${quote(p.id)}, ${quote(m.name)}, ${quote(m.layer)}, ${quote(d)}, ${quote(m.description)})`,
+      ),
+    ),
+  ]);
+  await engine.exec(
+    `CREATE OR REPLACE TABLE main._lineage AS SELECT * FROM (VALUES ${rows.join(", ")}) AS t(pipeline, model, layer, depends_on, description)`,
+  );
+  await engine.exec(
+    `COMMENT ON TABLE main._lineage IS 'Every table in every pipeline, its layer and what it is built from'`,
+  );
+}
+
+/** Trains the value model on the gold table, after tests pass, and writes it next to the data. */
+async function trainModel(engine: Engine, pipeline: Pipeline): Promise<ManifestEntry["model"]> {
+  const spec = pipeline.model!;
+  const rows = (await engine.query(
+    `SELECT roll_number AS key, community, use, zoning, year_built, lot_sqft, assessed_value
+     FROM main.${spec.trainedOn}
+     WHERE assessed_value BETWEEN 50000 AND 20000000`,
+  )) as (HomeRow & { key: number })[];
+  const uses = [...new Set(rows.map((r) => r.use))].sort().map((label) => ({ code: label, label }));
+  console.log(`  train    ${spec.name}: ${rows.length.toLocaleString()} homes`);
+
+  const model = await trainHousingModel(
+    rows,
+    uses,
+    { trees: 400, depth: 6, learningRate: 0.15 },
+    (i, tr, va) => {
+      if ((i + 1) % 50 === 0)
+        console.log(`  train    tree ${i + 1}: rmse train ${tr.toFixed(4)}, holdout ${va?.toFixed(4)}`);
+    },
+  );
+
+  const file = path.join(DATA_DIR, spec.file);
+  await writeFile(file, JSON.stringify(model));
+  const bytes = (await readFile(file)).byteLength;
+  const m = model.metrics;
+  console.log(
+    `  model    holdout median error ${(m.model.mdape * 100).toFixed(1)}% (baseline ${(m.baseline.mdape * 100).toFixed(1)}%), ` +
+      `within 10%: ${(m.model.within10 * 100).toFixed(1)}%, R² ${m.model.r2.toFixed(3)}, ${(bytes / 1e3).toFixed(0)} KB in ${(model.trainMs / 1000).toFixed(1)} s`,
+  );
+  return {
+    file: spec.file,
+    bytes,
+    trainMs: model.trainMs,
+    rows: model.rows,
+    metrics: model.metrics,
+    importance: model.importance,
   };
 }
 
 async function main() {
-  const which = process.argv[2] ?? "all";
+  const args = process.argv.slice(2);
+  const dbIndex = args.indexOf("--db");
+  const dbFile = dbIndex >= 0 ? args[dbIndex + 1] : null;
+  if (dbIndex >= 0 && !dbFile) throw new Error("--db needs a file name, e.g. --db lab.duckdb");
+  const which = args.find((a, i) => !a.startsWith("--") && i !== dbIndex + 1) ?? "all";
   const selected = which === "all" ? Object.values(pipelines) : [pipelines[which as Pipeline["id"]]];
   if (selected.some((p) => !p)) throw new Error(`Unknown pipeline "${which}". Use permits, flames or all.`);
 
   await mkdir(DATA_DIR, { recursive: true });
   await mkdir(CACHE_DIR, { recursive: true });
+
+  if (dbFile) {
+    await rm(dbFile, { force: true });
+    await rm(`${dbFile}.wal`, { force: true });
+    const engine = await nodeEngine(dbFile);
+    for (const pipeline of selected) await run(pipeline, { engine, schema: pipeline.id, explore: true });
+    await writeLineage(engine);
+    engine.close();
+    console.log(`\n✓ ${dbFile}: every layer of every pipeline. Open it with: duckdb -ui ${dbFile}`);
+    return;
+  }
 
   let manifest: Manifest = { version: 1, pipelines: {} };
   try {
@@ -182,7 +325,7 @@ async function main() {
   }
 
   for (const pipeline of selected) {
-    manifest.pipelines[pipeline.id] = await run(pipeline);
+    manifest.pipelines[pipeline.id] = (await run(pipeline))!;
     await writeFile(MANIFEST, `${JSON.stringify(manifest, null, 2)}\n`);
   }
 }
