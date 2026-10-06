@@ -3,9 +3,6 @@ import createMDX from "@next/mdx";
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   pageExtensions: ["ts", "tsx", "mdx"],
-  async redirects() {
-    return [{ source: "/lab", destination: "/lab/calgary", permanent: false }];
-  },
   async headers() {
     return [
       {

@@ -263,7 +263,7 @@ export default function ColophonPage() {
           ))}
           <p className="text-sm text-muted">
             Want to see it running?{" "}
-            <Link href="/lab/calgary" className="link">
+            <Link href="/lab" className="link">
               Open the Lab
             </Link>
             .

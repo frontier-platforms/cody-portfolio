@@ -56,7 +56,7 @@ const projects = [
       "TypeScript",
     ],
     links: [
-      { href: "/lab/calgary", label: "Open the Lab" },
+      { href: "/lab", label: "Open the Lab" },
       { href: "/colophon", label: "How it’s built" },
     ],
   },

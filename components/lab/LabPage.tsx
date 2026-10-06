@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { PipelineSection } from "@/components/pipeline/PipelineSection";
 import { Section } from "@/components/ui/Section";
+import { labFor } from "@/lib/lab/catalog";
 import { datasets, type DatasetKey } from "@/lib/lab/datasets";
 import { pipelines } from "@/lib/pipelines/index";
 import { manifest } from "@/lib/pipelines/manifest";
@@ -19,11 +20,12 @@ export function LabPage({
   extras = [],
 }: {
   dataset: DatasetKey;
-  intro: React.ReactNode;
+  intro?: React.ReactNode;
   dashboard: React.ReactNode;
   extras?: Extra[];
 }) {
   const pipeline = pipelines[dataset];
+  const lab = labFor(dataset);
   const sections: Extra[] = [
     {
       id: "dashboard",
@@ -73,7 +75,17 @@ export function LabPage({
 
   return (
     <>
-      <nav aria-label="On this page" className="mx-auto mt-8 max-w-6xl px-4 sm:px-6">
+      <header className="mx-auto max-w-6xl px-4 pt-10 sm:px-6 sm:pt-14">
+        <p className="label">
+          <span className="text-accent">Lab {lab.number}</span> · {lab.kicker}
+        </p>
+        <h1 className="mt-3 max-w-3xl text-balance text-4xl font-semibold tracking-tight sm:text-5xl">
+          {lab.title}
+        </h1>
+        <p className="mt-4 max-w-2xl text-pretty text-lg text-muted">{lab.lede}</p>
+      </header>
+
+      <nav aria-label="On this page" className="mx-auto mt-6 max-w-6xl px-4 sm:px-6">
         <ul className="flex flex-wrap gap-x-5 gap-y-2 font-mono text-sm">
           {sections.map((s) => (
             <li key={s.id}>

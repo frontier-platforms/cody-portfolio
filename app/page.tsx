@@ -156,6 +156,11 @@ export default async function Home() {
             </Link>
           ))}
         </div>
+        <p className="mt-6 text-sm">
+          <Link href="/lab" className="link">
+            See all three labs and how they’re built
+          </Link>
+        </p>
       </Section>
 
       <Section index="03" label="What I work with" className="mt-24">
