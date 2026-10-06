@@ -43,3 +43,7 @@ next-env.d.ts
 # data build cache
 /.cache
 !.env.example
+
+# local exploration database (npm run data:db)
+/lab.duckdb
+/lab.duckdb.wal

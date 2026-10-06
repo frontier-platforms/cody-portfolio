@@ -12,7 +12,8 @@
     "data": "tsx scripts/run-pipeline.ts all",
     "typecheck": "tsc --noEmit",
     "format": "prettier --write .",
-    "data:housing": "tsx scripts/run-pipeline.ts housing"
+    "data:housing": "tsx scripts/run-pipeline.ts housing",
+    "data:db": "tsx scripts/build-db.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.131.0",
