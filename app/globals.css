@@ -1,0 +1,196 @@
+@import "tailwindcss";
+
+/* Theme is driven by data-theme on <html>; the inline script in layout.tsx sets
+   it before paint from localStorage or the system preference. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+:root {
+  --paper: #faf8f4;
+  --surface: #ffffff;
+  --ink: #1a1814;
+  --muted: #6b655c;
+  --line: #e4dfd5;
+  --accent: #c2410c;
+  --accent-ink: #9a3412;
+  --accent-soft: #fbe9df;
+  --flames: #c8102e;
+  --flames-gold: #b98500;
+  --chart-base: #b8b1a5;
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  --paper: #141311;
+  --surface: #1c1a17;
+  --ink: #ede9e3;
+  --muted: #a39c91;
+  --line: #2d2a26;
+  --accent: #fb8c4a;
+  --accent-ink: #fdba8c;
+  --accent-soft: #2e1e14;
+  --flames: #f0485f;
+  --flames-gold: #f2c14e;
+  --chart-base: #5b554d;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-soft: var(--accent-soft);
+  --color-flames: var(--flames);
+  --color-flames-gold: var(--flames-gold);
+  --color-chart-base: var(--chart-base);
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+}
+
+html {
+  background: var(--paper);
+  scroll-padding-top: 5rem;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-feature-settings: "ss01", "cv11";
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--accent-soft);
+  color: var(--ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
+
+@layer components {
+  /* Small mono label used for section markers and metadata. */
+  .label {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .num {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+  }
+
+  .link {
+    color: var(--ink);
+    text-decoration: underline;
+    text-decoration-color: var(--accent);
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 3px;
+    transition: color 120ms;
+  }
+  .link:hover {
+    color: var(--accent-ink);
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1rem;
+    border: 1px solid var(--ink);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    transition:
+      background 120ms,
+      color 120ms;
+  }
+  .btn:hover {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .btn-primary {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .btn-primary:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  /* Long-form text inside case studies and MDX pages. */
+  .prose-cc {
+    font-size: 1.0625rem;
+    line-height: 1.7;
+  }
+  .prose-cc > * + * {
+    margin-top: 1.1em;
+  }
+  .prose-cc h2 {
+    margin-top: 2.75rem;
+    font-size: 1.375rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .prose-cc h3 {
+    margin-top: 2rem;
+    font-weight: 600;
+  }
+  .prose-cc a {
+    text-decoration: underline;
+    text-decoration-color: var(--accent);
+    text-underline-offset: 3px;
+  }
+  .prose-cc ul,
+  ul.prose-cc {
+    list-style: none;
+    padding-left: 0;
+  }
+  .prose-cc ul > li,
+  ul.prose-cc > li {
+    position: relative;
+    padding-left: 1.25rem;
+  }
+  .prose-cc ul > li + li,
+  ul.prose-cc > li + li {
+    margin-top: 0.4em;
+  }
+  .prose-cc ul > li::before,
+  ul.prose-cc > li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.75em;
+    width: 0.5rem;
+    height: 1px;
+    background: var(--accent);
+  }
+  .prose-cc strong {
+    font-weight: 600;
+  }
+  .prose-cc code {
+    font-family: var(--font-mono);
+    font-size: 0.875em;
+    background: var(--accent-soft);
+    padding: 0.1em 0.3em;
+  }
+}

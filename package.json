@@ -1,0 +1,44 @@
+{
+  "name": "cody-portfolio",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "data:permits": "tsx scripts/run-pipeline.ts permits",
+    "data:flames": "tsx scripts/run-pipeline.ts flames",
+    "data": "tsx scripts/run-pipeline.ts all",
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write ."
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.131.0",
+    "@duckdb/duckdb-wasm": "^1.33.1-dev57.0",
+    "@mdx-js/loader": "^3.1.1",
+    "@mdx-js/react": "^3.1.1",
+    "@next/mdx": "^16.3.8",
+    "@types/mdx": "^2.0.14",
+    "@vercel/analytics": "^2.0.1",
+    "apache-arrow": "^21.2.0",
+    "next": "16.3.8",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "web-vitals": "^6.2.3",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@duckdb/node-api": "^1.5.6-r.1",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.3.8",
+    "prettier": "^3.9.9",
+    "tailwindcss": "^4",
+    "tsx": "^4.23.15",
+    "typescript": "^5"
+  }
+}

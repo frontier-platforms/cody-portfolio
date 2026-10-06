@@ -1,0 +1,62 @@
+export const meta = {
+  title: "PRIME and the AI layer at StellarAlgo",
+  company: "StellarAlgo",
+  role: "Director, Product",
+  period: "2025 to present",
+  summary:
+    "Led PRIME, a centralized analytics platform for professional sports and entertainment clients, from planning through launch. Cut data freshness from 7 days to under 12 hours, then started building AI on top of it.",
+  problem: "Our data is stale and nobody trusts the numbers",
+  status: "shipped",
+  stack: ["Snowflake", "dbt", "Medallion architecture", "AWS Athena", "SQL", "LLMs"],
+  numbers: [
+    { before: "7 days", value: "<12 hrs", label: "Data freshness for clients" },
+    { value: "100+", label: "dbt models in production" },
+    { value: "4", label: "People in the product pod" },
+  ],
+  order: 1,
+};
+
+## Overview
+
+StellarAlgo is a Calgary software company that helps professional sports and entertainment organizations unify their fan data and grow ticket, sponsorship and partnership revenue. Its value depends on clients trusting the data enough to act on it.
+
+PRIME is the centralized analytics platform those clients use. I led it from planning through launch. Once the data was fresh and modelled consistently, it became possible to put AI on top without the AI repeating bad numbers.
+
+## Problem
+
+A key process ran manually once a week, so client data could be up to **7 days** old. For a sports team, a week is a homestand. Ownership of the data was also spread across teams, without clear service levels or a clear path when something broke.
+
+## My role
+
+- **Director, Product Innovation & Analytics** (Jan 2025 to Jan 2026), then **Director, Product** (Jan 2026 to present).
+- Led PRIME from planning through launch, coordinating Product, Data Engineering and Customer Success, with a product pod of four.
+- Now own the product roadmap and annual budget for all analytics products.
+
+## Solution
+
+- **Automation.** Turned the manual weekly process into an automated daily one. Data freshness went from 7 days to under 12 hours, and the team got its time back for higher-value work.
+- **Snowflake and dbt, in a medallion architecture.** Raw data lands untouched, gets cleaned and conformed once, then gets shaped into business-ready models. More than 100 dbt models are version controlled, tested and documented.
+- **A data contract.** A formal agreement across departments on ownership, service levels and accountability, so every team knows its responsibilities and escalation path.
+- **An AI layer on the modelled data:**
+  - An **internal Customer Success bot** that answers questions about client data, shipped and in use.
+  - **Stellar Insights**, a customer-facing natural-language analytics product. I ran discovery through stakeholder interviews across sports clients, turned the findings into recommendations for leadership, and took it to dev stage.
+- **What's next.** I'm now leading the migration of analytics workloads from AWS Athena to Snowflake, owning the planning, vendor negotiation, budget and delivery.
+
+<Media
+  alt="PRIME pipeline: bronze, silver and gold layers"
+  caption="Placeholder: lineage view or architecture diagram."
+/>
+
+## Outcome
+
+Clients went from week-old data to data less than 12 hours old. The platform became the foundation for StellarAlgo's first AI products instead of a reason to delay them.
+
+<Media
+  alt="Internal Customer Success bot answering a question"
+  caption="Placeholder: short screen recording of the CS bot."
+/>
+
+<Todo>
+  Any downstream outcome you can stand behind: support tickets, CS time saved, renewals, client feedback on
+  fresher data.
+</Todo>
