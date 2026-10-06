@@ -1,0 +1,5 @@
+.next
+node_modules
+public/data
+.cache
+next-env.d.ts

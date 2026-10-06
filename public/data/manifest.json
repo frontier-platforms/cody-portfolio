@@ -1,0 +1,704 @@
+{
+  "version": 1,
+  "pipelines": {
+    "permits": {
+      "pipeline": "permits",
+      "runAt": "2026-10-06T00:51:43.258Z",
+      "durationMs": 55827,
+      "trigger": "local",
+      "commit": null,
+      "extract": {
+        "requests": 3,
+        "rows": 235188,
+        "ms": 54945
+      },
+      "models": [
+        {
+          "name": "raw_permits",
+          "layer": "bronze",
+          "rows": 235188,
+          "ms": 0
+        },
+        {
+          "name": "stg_permits",
+          "layer": "silver",
+          "rows": 235188,
+          "ms": 81.16316700000607,
+          "columns": [
+            {
+              "name": "permit_id",
+              "type": "VARCHAR",
+              "nullPct": 0
+            },
+            {
+              "name": "applied_date",
+              "type": "DATE",
+              "nullPct": 0
+            },
+            {
+              "name": "issued_date",
+              "type": "DATE",
+              "nullPct": 6.04
+            },
+            {
+              "name": "completed_date",
+              "type": "DATE",
+              "nullPct": 8.47
+            },
+            {
+              "name": "status",
+              "type": "VARCHAR",
+              "nullPct": 0
+            },
+            {
+              "name": "permit_type",
+              "type": "VARCHAR",
+              "nullPct": 0
+            },
+            {
+              "name": "permit_class",
+              "type": "VARCHAR",
+              "nullPct": 0
+            },
+            {
+              "name": "class_group",
+              "type": "VARCHAR",
+              "nullPct": 0
+            },
+            {
+              "name": "work_group",
+              "type": "VARCHAR",
+              "nullPct": 0
+            },
+            {
+              "name": "housing_units",
+              "type": "INTEGER",
+              "nullPct": 0
+            },
+            {
+              "name": "est_cost",
+              "type": "DOUBLE",
+              "nullPct": 10.29
+            },
+            {
+              "name": "sqft",
+              "type": "DOUBLE",
+              "nullPct": 76.15
+            },
+            {
+              "name": "community",
+              "type": "VARCHAR",
+              "nullPct": 0
+            },
+            {
+              "name": "lat",
+              "type": "DOUBLE",
+              "nullPct": 0.07
+            },
+            {
+              "name": "lon",
+              "type": "DOUBLE",
+              "nullPct": 0.07
+            },
+            {
+              "name": "updated_at",
+              "type": "TIMESTAMP",
+              "nullPct": 0
+            }
+          ]
+        },
+        {
+          "name": "permits",
+          "layer": "gold",
+          "rows": 235188,
+          "ms": 36.58350000000064,
+          "columns": [
+            {
+              "name": "permit_id",
+              "type": "VARCHAR",
+              "nullPct": 0
+            },
+            {
+              "name": "applied_date",
+              "type": "DATE",
+              "nullPct": 0
+            },
+            {
+              "name": "issued_date",
+              "type": "DATE",
+              "nullPct": 6.04
+            },
+            {
+              "name": "completed_date",
+              "type": "DATE",
+              "nullPct": 8.47
+            },
+            {
+              "name": "status",
+              "type": "VARCHAR",
+              "nullPct": 0
+            },
+            {
+              "name": "permit_type",
+              "type": "VARCHAR",
+              "nullPct": 0
+            },
+            {
+              "name": "permit_class",
+              "type": "VARCHAR",
+              "nullPct": 0
+            },
+            {
+              "name": "class_group",
+              "type": "VARCHAR",
+              "nullPct": 0
+            },
+            {
+              "name": "work_group",
+              "type": "VARCHAR",
+              "nullPct": 0
+            },
+            {
+              "name": "housing_units",
+              "type": "INTEGER",
+              "nullPct": 0
+            },
+            {
+              "name": "est_cost",
+              "type": "DOUBLE",
+              "nullPct": 10.29
+            },
+            {
+              "name": "sqft",
+              "type": "DOUBLE",
+              "nullPct": 76.15
+            },
+            {
+              "name": "community",
+              "type": "VARCHAR",
+              "nullPct": 0
+            },
+            {
+              "name": "lat",
+              "type": "DOUBLE",
+              "nullPct": 0.07
+            },
+            {
+              "name": "lon",
+              "type": "DOUBLE",
+              "nullPct": 0.07
+            },
+            {
+              "name": "updated_at",
+              "type": "TIMESTAMP",
+              "nullPct": 0
+            }
+          ]
+        }
+      ],
+      "tests": [
+        {
+          "name": "permit_id is unique",
+          "model": "permits",
+          "kind": "unique",
+          "severity": "error",
+          "status": "pass",
+          "failures": 0,
+          "ms": 4.8003329999992275,
+          "sql": "SELECT count(*) AS failures FROM (SELECT permit_id FROM main.permits GROUP BY 1 HAVING count(*) > 1)"
+        },
+        {
+          "name": "permit_id is never null",
+          "model": "permits",
+          "kind": "not_null",
+          "severity": "error",
+          "status": "pass",
+          "failures": 0,
+          "ms": 0.3697919999976875,
+          "sql": "SELECT count(*) AS failures FROM main.permits WHERE permit_id IS NULL"
+        },
+        {
+          "name": "applied_date is never null",
+          "model": "permits",
+          "kind": "not_null",
+          "severity": "error",
+          "status": "pass",
+          "failures": 0,
+          "ms": 0.18562499999825377,
+          "sql": "SELECT count(*) AS failures FROM main.permits WHERE applied_date IS NULL"
+        },
+        {
+          "name": "permit_class is a known value",
+          "model": "permits",
+          "kind": "accepted_values",
+          "severity": "error",
+          "status": "pass",
+          "failures": 0,
+          "ms": 1.690333999998984,
+          "sql": "SELECT count(*) AS failures FROM main.permits WHERE permit_class NOT IN ('Residential', 'Non-Residential', 'Unspecified')"
+        },
+        {
+          "name": "work_group is a known value",
+          "model": "permits",
+          "kind": "accepted_values",
+          "severity": "error",
+          "status": "pass",
+          "failures": 0,
+          "ms": 2.7900420000005397,
+          "sql": "SELECT count(*) AS failures FROM main.permits WHERE work_group NOT IN ('New', 'Improvement', 'Demolition', 'Unspecified')"
+        },
+        {
+          "name": "housing_units is between 0 and 2,000",
+          "model": "permits",
+          "kind": "expression",
+          "severity": "error",
+          "status": "pass",
+          "failures": 0,
+          "ms": 0.19750000000203727,
+          "sql": "SELECT count(*) AS failures FROM main.permits WHERE NOT (housing_units BETWEEN 0 AND 2000)"
+        },
+        {
+          "name": "Coordinates fall inside Calgary",
+          "model": "permits",
+          "kind": "expression",
+          "severity": "error",
+          "status": "pass",
+          "failures": 0,
+          "ms": 1.4082090000010794,
+          "sql": "SELECT count(*) AS failures FROM main.permits WHERE NOT (lat IS NULL OR (lat BETWEEN 50.80 AND 51.25 AND lon BETWEEN -114.35 AND -113.80))"
+        },
+        {
+          "name": "Coordinates are present",
+          "model": "permits",
+          "kind": "not_null",
+          "severity": "warn",
+          "status": "warn",
+          "failures": 165,
+          "ms": 0.21837500000401633,
+          "sql": "SELECT count(*) AS failures FROM main.permits WHERE lat IS NULL"
+        },
+        {
+          "name": "Issued on or after applied",
+          "model": "permits",
+          "kind": "expression",
+          "severity": "warn",
+          "status": "warn",
+          "failures": 1,
+          "ms": 0.7732500000056461,
+          "sql": "SELECT count(*) AS failures FROM main.permits WHERE NOT (issued_date IS NULL OR issued_date >= applied_date)"
+        },
+        {
+          "name": "Completed on or after issued",
+          "model": "permits",
+          "kind": "expression",
+          "severity": "warn",
+          "status": "warn",
+          "failures": 28,
+          "ms": 1.022540999998455,
+          "sql": "SELECT count(*) AS failures FROM main.permits WHERE NOT (completed_date IS NULL OR issued_date IS NULL OR completed_date >= issued_date)"
+        },
+        {
+          "name": "At least 200,000 rows",
+          "model": "permits",
+          "kind": "row_count",
+          "severity": "error",
+          "status": "pass",
+          "failures": 0,
+          "ms": 0.4430839999986347,
+          "sql": "SELECT CASE WHEN count(*) >= 200000 THEN 0 ELSE 1 END AS failures FROM main.permits"
+        },
+        {
+          "name": "Source updated in the last 8 days",
+          "model": "permits",
+          "kind": "freshness",
+          "severity": "error",
+          "status": "pass",
+          "failures": 0,
+          "ms": 0.6096249999973224,
+          "sql": "SELECT CASE WHEN max(updated_at) >= DATE '2026-10-06' - INTERVAL 8 DAY THEN 0 ELSE 1 END AS failures FROM main.permits"
+        }
+      ],
+      "outputs": [
+        {
+          "model": "permits",
+          "file": "permits.parquet",
+          "rows": 235188,
+          "bytes": 3184045,
+          "sha256": "1ac9698adf78dce64caefc25e084ba6b118e032190209f4f307a542badeb472a"
+        }
+      ]
+    },
+    "flames": {
+      "pipeline": "flames",
+      "runAt": "2026-10-06T00:51:47.966Z",
+      "durationMs": 4707,
+      "trigger": "local",
+      "commit": null,
+      "extract": {
+        "requests": 419,
+        "rows": 67078,
+        "ms": 4484
+      },
+      "models": [
+        {
+          "name": "raw_games",
+          "layer": "bronze",
+          "rows": 550,
+          "ms": 0
+        },
+        {
+          "name": "raw_plays",
+          "layer": "bronze",
+          "rows": 50009,
+          "ms": 0
+        },
+        {
+          "name": "raw_roster",
+          "layer": "bronze",
+          "rows": 16519,
+          "ms": 0
+        },
+        {
+          "name": "stg_games",
+          "layer": "silver",
+          "rows": 413,
+          "ms": 9.926083000005747,
+          "columns": [
+            {
+              "name": "game_id",
+              "type": "BIGINT",
+              "nullPct": 0
+            },
+            {
+              "name": "season",
+              "type": "VARCHAR",
+              "nullPct": 0
+            },
+            {
+              "name": "game_date",
+              "type": "DATE",
+              "nullPct": 0
+            },
+            {
+              "name": "home",
+              "type": "BOOLEAN",
+              "nullPct": 0
+            },
+            {
+              "name": "opponent",
+              "type": "VARCHAR",
+              "nullPct": 0
+            },
+            {
+              "name": "goals_for",
+              "type": "INTEGER",
+              "nullPct": 0
+            },
+            {
+              "name": "goals_against",
+              "type": "INTEGER",
+              "nullPct": 0
+            },
+            {
+              "name": "decided_in",
+              "type": "VARCHAR",
+              "nullPct": 0
+            }
+          ]
+        },
+        {
+          "name": "stg_shots",
+          "layer": "silver",
+          "rows": 49793,
+          "ms": 30.72370800000499,
+          "columns": [
+            {
+              "name": "game_id",
+              "type": "BIGINT",
+              "nullPct": 0
+            },
+            {
+              "name": "period",
+              "type": "INTEGER",
+              "nullPct": 0
+            },
+            {
+              "name": "period_seconds",
+              "type": "INTEGER",
+              "nullPct": 0
+            },
+            {
+              "name": "team",
+              "type": "VARCHAR",
+              "nullPct": 0
+            },
+            {
+              "name": "event",
+              "type": "VARCHAR",
+              "nullPct": 0
+            },
+            {
+              "name": "is_goal",
+              "type": "BOOLEAN",
+              "nullPct": 0
+            },
+            {
+              "name": "shot_type",
+              "type": "VARCHAR",
+              "nullPct": 26.96
+            },
+            {
+              "name": "strength",
+              "type": "VARCHAR",
+              "nullPct": 0
+            },
+            {
+              "name": "x",
+              "type": "INTEGER",
+              "nullPct": 0
+            },
+            {
+              "name": "y",
+              "type": "INTEGER",
+              "nullPct": 0
+            },
+            {
+              "name": "shooter",
+              "type": "VARCHAR",
+              "nullPct": 0
+            }
+          ]
+        },
+        {
+          "name": "flames_games",
+          "layer": "gold",
+          "rows": 413,
+          "ms": 1.729165999997349,
+          "columns": [
+            {
+              "name": "game_id",
+              "type": "BIGINT",
+              "nullPct": 0
+            },
+            {
+              "name": "season",
+              "type": "VARCHAR",
+              "nullPct": 0
+            },
+            {
+              "name": "game_date",
+              "type": "DATE",
+              "nullPct": 0
+            },
+            {
+              "name": "home",
+              "type": "BOOLEAN",
+              "nullPct": 0
+            },
+            {
+              "name": "opponent",
+              "type": "VARCHAR",
+              "nullPct": 0
+            },
+            {
+              "name": "goals_for",
+              "type": "INTEGER",
+              "nullPct": 0
+            },
+            {
+              "name": "goals_against",
+              "type": "INTEGER",
+              "nullPct": 0
+            },
+            {
+              "name": "result",
+              "type": "VARCHAR",
+              "nullPct": 0
+            },
+            {
+              "name": "decided_in",
+              "type": "VARCHAR",
+              "nullPct": 0
+            },
+            {
+              "name": "points",
+              "type": "INTEGER",
+              "nullPct": 0
+            }
+          ]
+        },
+        {
+          "name": "flames_shots",
+          "layer": "gold",
+          "rows": 49793,
+          "ms": 16.02991699999984,
+          "columns": [
+            {
+              "name": "game_id",
+              "type": "BIGINT",
+              "nullPct": 0
+            },
+            {
+              "name": "period",
+              "type": "INTEGER",
+              "nullPct": 0
+            },
+            {
+              "name": "period_seconds",
+              "type": "INTEGER",
+              "nullPct": 0
+            },
+            {
+              "name": "team",
+              "type": "VARCHAR",
+              "nullPct": 0
+            },
+            {
+              "name": "event",
+              "type": "VARCHAR",
+              "nullPct": 0
+            },
+            {
+              "name": "is_goal",
+              "type": "BOOLEAN",
+              "nullPct": 0
+            },
+            {
+              "name": "shot_type",
+              "type": "VARCHAR",
+              "nullPct": 26.96
+            },
+            {
+              "name": "strength",
+              "type": "VARCHAR",
+              "nullPct": 0
+            },
+            {
+              "name": "x",
+              "type": "INTEGER",
+              "nullPct": 0
+            },
+            {
+              "name": "y",
+              "type": "INTEGER",
+              "nullPct": 0
+            },
+            {
+              "name": "shooter",
+              "type": "VARCHAR",
+              "nullPct": 0
+            }
+          ]
+        }
+      ],
+      "tests": [
+        {
+          "name": "game_id is unique",
+          "model": "flames_games",
+          "kind": "unique",
+          "severity": "error",
+          "status": "pass",
+          "failures": 0,
+          "ms": 0.41037499999947613,
+          "sql": "SELECT count(*) AS failures FROM (SELECT game_id FROM main.flames_games GROUP BY 1 HAVING count(*) > 1)"
+        },
+        {
+          "name": "result is W, L or OTL",
+          "model": "flames_games",
+          "kind": "accepted_values",
+          "severity": "error",
+          "status": "pass",
+          "failures": 0,
+          "ms": 0.15562500000669388,
+          "sql": "SELECT count(*) AS failures FROM main.flames_games WHERE result NOT IN ('W', 'L', 'OTL')"
+        },
+        {
+          "name": "Points match the result",
+          "model": "flames_games",
+          "kind": "expression",
+          "severity": "error",
+          "status": "pass",
+          "failures": 0,
+          "ms": 0.3878340000010212,
+          "sql": "SELECT count(*) AS failures FROM main.flames_games WHERE NOT (points = CASE result WHEN 'W' THEN 2 WHEN 'OTL' THEN 1 ELSE 0 END)"
+        },
+        {
+          "name": "At least 82 games",
+          "model": "flames_games",
+          "kind": "row_count",
+          "severity": "error",
+          "status": "pass",
+          "failures": 0,
+          "ms": 0.1496659999975236,
+          "sql": "SELECT CASE WHEN count(*) >= 82 THEN 0 ELSE 1 END AS failures FROM main.flames_games"
+        },
+        {
+          "name": "Every shot belongs to a known game",
+          "model": "flames_shots",
+          "kind": "relationship",
+          "severity": "error",
+          "status": "pass",
+          "failures": 0,
+          "ms": 2.011624999999185,
+          "sql": "SELECT count(*) AS failures FROM main.flames_shots c\nWHERE c.game_id IS NOT NULL\n  AND NOT EXISTS (SELECT 1 FROM main.flames_games p WHERE p.game_id = c.game_id)"
+        },
+        {
+          "name": "Coordinates are on the ice",
+          "model": "flames_shots",
+          "kind": "expression",
+          "severity": "error",
+          "status": "pass",
+          "failures": 0,
+          "ms": 0.14720899999520043,
+          "sql": "SELECT count(*) AS failures FROM main.flames_shots WHERE NOT (x BETWEEN -100 AND 100 AND y BETWEEN -43 AND 43)"
+        },
+        {
+          "name": "Shot-level goals reconcile to the final score",
+          "model": "flames_games",
+          "kind": "custom",
+          "severity": "error",
+          "status": "pass",
+          "failures": 0,
+          "ms": 1.5734169999996084,
+          "sql": "\nWITH shot_goals AS (\n  SELECT game_id,\n         count(*) FILTER (WHERE is_goal AND team = 'CGY') AS gf,\n         count(*) FILTER (WHERE is_goal AND team = 'OPP') AS ga\n  FROM main.flames_shots\n  GROUP BY 1\n)\nSELECT count(*) AS failures\nFROM main.flames_games g\nLEFT JOIN shot_goals s USING (game_id)\nWHERE g.goals_for - (g.decided_in = 'SO' AND g.result = 'W')::INTEGER <> COALESCE(s.gf, 0)\n   OR g.goals_against - (g.decided_in = 'SO' AND g.result <> 'W')::INTEGER <> COALESCE(s.ga, 0)"
+        },
+        {
+          "name": "Coordinate flip points shots at the attacking net",
+          "model": "flames_shots",
+          "kind": "custom",
+          "severity": "warn",
+          "status": "pass",
+          "failures": 0,
+          "ms": 0.6549579999991693,
+          "sql": "\nSELECT CASE WHEN avg((x > 0)::INTEGER) >= 0.95 THEN 0 ELSE 1 END AS failures\nFROM main.flames_shots\nWHERE event <> 'blocked-shot'"
+        },
+        {
+          "name": "Shooter name is present",
+          "model": "flames_shots",
+          "kind": "not_null",
+          "severity": "warn",
+          "status": "pass",
+          "failures": 0,
+          "ms": 0.12354100000084145,
+          "sql": "SELECT count(*) AS failures FROM main.flames_shots WHERE shooter IS NULL"
+        }
+      ],
+      "outputs": [
+        {
+          "model": "flames_games",
+          "file": "flames-games.parquet",
+          "rows": 413,
+          "bytes": 4744,
+          "sha256": "71698581bd08d9572635c4492e0d51805066cb60b255262e1da2bcbf4a5cf2c7"
+        },
+        {
+          "model": "flames_shots",
+          "file": "flames-shots.parquet",
+          "rows": 49793,
+          "bytes": 286586,
+          "sha256": "d0ab158f4071777932cad8702a54198b755e9f1f7c6182a151a238c220e36b5e"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,53 @@
+# Weekly production run of every Lab pipeline. Extracts from the source APIs,
+# builds bronze → silver → gold with DuckDB, runs the data tests, and commits
+# the new Parquet files and run manifest. Vercel redeploys on the commit.
+# An error-level test failure fails the job before anything is written.
+name: Refresh Lab data
+
+on:
+  schedule:
+    - cron: "0 10 * * 1" # Mondays 10:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refresh-data
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # Finished games never change, so keep their play-by-play between runs.
+      - uses: actions/cache@v4
+        with:
+          path: .cache/data/nhl-gamecenter-*
+          key: nhl-pbp-${{ github.run_id }}
+          restore-keys: nhl-pbp-
+
+      - name: Run pipelines
+        run: npm run data
+
+      - name: Commit refreshed data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/data
+          if git diff --cached --quiet; then
+            echo "No changes."
+            exit 0
+          fi
+          git commit -m "data: weekly refresh"
+          git push
