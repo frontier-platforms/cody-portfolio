@@ -10,7 +10,7 @@
     "data:permits": "tsx scripts/run-pipeline.ts permits",
     "data:flames": "tsx scripts/run-pipeline.ts flames",
     "data": "tsx scripts/run-pipeline.ts all",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "next typegen && tsc --noEmit",
     "format": "prettier --write .",
     "data:housing": "tsx scripts/run-pipeline.ts housing",
     "data:db": "tsx scripts/run-pipeline.ts all --db lab.duckdb"
