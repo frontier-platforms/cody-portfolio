@@ -53,13 +53,23 @@ const experience: Employer[] = [
   },
 ];
 
-const credentials = [
-  { name: "PMP", from: "Project Management Institute", year: "2023" },
-  { name: "Data Science & Machine Learning (Exceptional)", from: "MIT", year: "2023" },
-  { name: "dbt Fundamentals", from: "dbt Labs", year: "2024" },
-  { name: "Certified Cloud Practitioner", from: "AWS", year: "2025" },
-  { name: "Certified in Cybersecurity (CC)", from: "ISC2", year: "2026" },
+type Credential = { name: string; from: string; year: string };
+
+const education: Credential[] = [
   { name: "BBA, Marketing concentration, Dean’s Honour Roll", from: "Simon Fraser University", year: "" },
+  {
+    name: "Professional Certificate, Data Science & Machine Learning (Exceptional)",
+    from: "MIT",
+    year: "2023",
+  },
+];
+
+// Newest first.
+const certifications: Credential[] = [
+  { name: "Certified in Cybersecurity (CC)", from: "ISC2", year: "2026" },
+  { name: "Certified Cloud Practitioner", from: "AWS", year: "2025" },
+  { name: "dbt Fundamentals", from: "dbt Labs", year: "2024" },
+  { name: "PMP", from: "Project Management Institute", year: "2023" },
 ];
 
 export default function AboutPage() {
@@ -121,20 +131,8 @@ export default function AboutPage() {
             ))}
           </ol>
 
-          <h2 className="label mt-14 text-ink">Education and certifications</h2>
-          <ul className="mt-4 border-t border-line">
-            {credentials.map((c) => (
-              <li
-                key={c.name}
-                className="flex flex-col border-b border-line py-3 sm:flex-row sm:justify-between"
-              >
-                <span>
-                  {c.name} <span className="text-muted">· {c.from}</span>
-                </span>
-                {c.year && <span className="font-mono text-xs text-muted sm:pt-1">{c.year}</span>}
-              </li>
-            ))}
-          </ul>
+          <CredentialList title="Education" items={education} />
+          <CredentialList title="Certifications" items={certifications} />
         </div>
 
         <aside id="contact" className="h-fit border border-line bg-surface lg:sticky lg:top-24">
@@ -205,5 +203,23 @@ export default function AboutPage() {
         </aside>
       </div>
     </div>
+  );
+}
+
+function CredentialList({ title, items }: { title: string; items: Credential[] }) {
+  return (
+    <>
+      <h2 className="label mt-14 text-ink">{title}</h2>
+      <ul className="mt-4 border-t border-line">
+        {items.map((c) => (
+          <li key={c.name} className="flex flex-col border-b border-line py-3 sm:flex-row sm:justify-between">
+            <span>
+              {c.name} <span className="text-muted">· {c.from}</span>
+            </span>
+            {c.year && <span className="font-mono text-xs text-muted sm:pt-1">{c.year}</span>}
+          </li>
+        ))}
+      </ul>
+    </>
   );
 }
