@@ -30,6 +30,7 @@ npm run dev
 | `npm run format`       | Prettier                                                    |
 | `npm run data`         | Run every Lab pipeline: extract, build, test, write Parquet |
 | `npm run data:permits` | City of Calgary building permits only                       |
+| `npm run data:housing` | Calgary home assessments + value model training             |
 | `npm run data:flames`  | Calgary Flames play-by-play only                            |
 
 ## Project layout
@@ -84,7 +85,7 @@ The schema lives in [`lib/work.ts`](lib/work.ts); a bad field fails the build. A
 
 ## The Lab
 
-Two tabs, `/lab/calgary` and `/lab/flames`, each a small data product: dashboard, "Ask the data", and the pipeline behind both.
+Three tabs, `/lab/calgary`, `/lab/housing` and `/lab/flames`, each a small data product: dashboard, "Ask the data", and the pipeline behind both. Housing adds a machine-learning model.
 
 ### Pipelines
 
@@ -95,6 +96,10 @@ Each pipeline is defined once as data in [`lib/pipelines/`](lib/pipelines): raw 
 - **Production:** [`scripts/run-pipeline.ts`](scripts/run-pipeline.ts) drives DuckDB in Node: full extract → bronze → silver → gold → tests → Parquet + [`manifest.json`](public/data/manifest.json). An error-level test failure exits before any file is written.
 - **Scheduled:** [`.github/workflows/refresh-data.yml`](.github/workflows/refresh-data.yml) runs every Monday and commits the refreshed files, which triggers a Vercel deploy.
 - **Live, in the browser:** [`components/lab/live-run.ts`](components/lab/live-run.ts) drives DuckDB-WASM through the same runner. It reads a watermark from the loaded data, extracts only what changed (Calgary via the City's `:updated_at`; Flames via the [`/api/nhl`](app/api/nhl/route.ts) proxy, since the NHL API has no CORS), builds into a `live` schema, merges into the served tables on each model's `mergeKey`, re-runs the tests and refreshes the dashboards.
+
+### Home value model
+
+[`lib/ml/gbm.ts`](lib/ml/gbm.ts) is a dependency-free gradient-boosted tree regressor (histogram splits, row subsampling, L2 leaves, seeded RNG, path-based explanations). [`lib/ml/housing.ts`](lib/ml/housing.ts) adds out-of-fold target encoding, a hashed train/test split, metrics against a community-median baseline, and the model file format. The housing pipeline trains it after the tests pass and writes `public/data/housing-model.json`; the Lab loads it for explained estimates and can retrain it in the browser.
 
 ### Telemetry and analytics
 

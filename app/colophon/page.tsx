@@ -75,6 +75,44 @@ const sections = [
     ),
   },
   {
+    id: "ml",
+    title: "The home value model",
+    body: (
+      <>
+        <p>
+          The housing tab’s model is gradient-boosted regression trees written from scratch in TypeScript:
+          histogram splits, row subsampling, L2-regularized leaves and a seeded random generator so runs are
+          reproducible. No ML library, so the same code trains on 390,000 homes in the weekly pipeline and on
+          a sample in your browser.
+        </p>
+        <ul>
+          <li>
+            <strong>Honest evaluation.</strong> One home in five is held out, chosen by hashing its roll
+            number, so the test set is stable across runs. The model is compared against the obvious baseline
+            (the community median for that property type), not against nothing.
+          </li>
+          <li>
+            <strong>No leakage.</strong> Community, type and zoning are target-encoded out of fold, so a
+            home’s own value never feeds its features.
+          </li>
+          <li>
+            <strong>Explained.</strong> Every estimate is broken into per-feature effects by following the
+            home’s path through each tree, and comes with a range from the holdout error distribution.
+          </li>
+          <li>
+            <strong>Gated.</strong> The model retrains only after every error-level data test passes.
+          </li>
+        </ul>
+        <p>
+          <a href={`${REPO}/tree/main/lib/ml`} className="link">
+            Read the model code
+          </a>
+          .
+        </p>
+      </>
+    ),
+  },
+  {
     id: "duckdb",
     title: "Queries in your browser",
     body: (

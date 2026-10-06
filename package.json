@@ -11,7 +11,8 @@
     "data:flames": "tsx scripts/run-pipeline.ts flames",
     "data": "tsx scripts/run-pipeline.ts all",
     "typecheck": "tsc --noEmit",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "data:housing": "tsx scripts/run-pipeline.ts housing"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.131.0",

@@ -12,6 +12,7 @@ import { telemetry } from "@/lib/telemetry";
  */
 const TABLES = {
   permits: "/data/permits.parquet",
+  housing_homes: "/data/housing-homes.parquet",
   flames_games: "/data/flames-games.parquet",
   flames_shots: "/data/flames-shots.parquet",
 } as const;

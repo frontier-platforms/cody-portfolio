@@ -82,6 +82,21 @@ export function PipelineExplorer({ pipeline, run }: { pipeline: Pipeline; run: M
         },
       ],
     },
+    ...(pipeline.model
+      ? [
+          {
+            title: "Model",
+            nodes: [
+              {
+                id: "model",
+                label: pipeline.model.name,
+                kind: "ml",
+                description: `${pipeline.model.description} Retrained in the weekly run only; live runs refresh the data, not the model.`,
+              },
+            ],
+          },
+        ]
+      : []),
     {
       title: "Browser",
       nodes: [
@@ -202,6 +217,7 @@ export function PipelineExplorer({ pipeline, run }: { pipeline: Pipeline; run: M
             )}
           </div>
           <p className="mt-1 text-sm text-muted">{node.description}</p>
+          {node.id === "model" && run?.model && <ModelStats model={run.model} />}
           {node.sql && (
             <pre className="mt-3 max-h-72 overflow-auto bg-paper px-3 py-3 font-mono text-xs leading-relaxed">
               <code>{node.sql.trim()}</code>
@@ -335,5 +351,41 @@ function TestPill({ status }: { status?: TestResult["status"] }) {
     >
       {status ?? "…"}
     </span>
+  );
+}
+
+function ModelStats({ model }: { model: NonNullable<ManifestEntry["model"]> }) {
+  const pct = (v: number) => `${(v * 100).toFixed(1)}%`;
+  const rows = [
+    ["Median error", pct(model.metrics.model.mdape), pct(model.metrics.baseline.mdape)],
+    ["Within 10%", pct(model.metrics.model.within10), pct(model.metrics.baseline.within10)],
+    ["R²", model.metrics.model.r2.toFixed(3), model.metrics.baseline.r2.toFixed(3)],
+  ];
+  return (
+    <table className="mt-3 w-full text-left text-xs">
+      <thead className="text-muted">
+        <tr>
+          <th className="py-1 font-normal">Holdout ({model.rows.test.toLocaleString()} homes)</th>
+          <th className="py-1 text-right font-normal">Model</th>
+          <th className="py-1 text-right font-normal">Community median</th>
+        </tr>
+      </thead>
+      <tbody className="num">
+        {rows.map(([label, m, b]) => (
+          <tr key={label} className="border-t border-line">
+            <td className="py-1">{label}</td>
+            <td className="py-1 text-right">{m}</td>
+            <td className="py-1 text-right text-muted">{b}</td>
+          </tr>
+        ))}
+        <tr className="border-t border-line">
+          <td className="py-1">Trained on</td>
+          <td className="py-1 text-right" colSpan={2}>
+            {model.rows.train.toLocaleString()} homes in {(model.trainMs / 1000).toFixed(1)} s ·{" "}
+            {(model.bytes / 1e3).toFixed(0)} KB
+          </td>
+        </tr>
+      </tbody>
+    </table>
   );
 }

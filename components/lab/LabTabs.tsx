@@ -6,7 +6,8 @@ import { useEffect } from "react";
 import { track } from "@/lib/analytics";
 
 const TABS = [
-  { href: "/lab/calgary", label: "Calgary permits", dataset: "permits" },
+  { href: "/lab/calgary", label: "Permits", dataset: "permits" },
+  { href: "/lab/housing", label: "Housing + ML", dataset: "housing" },
   { href: "/lab/flames", label: "Flames", dataset: "flames" },
 ] as const;
 

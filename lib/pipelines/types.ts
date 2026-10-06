@@ -34,6 +34,7 @@ export type Model = {
 
 export type Severity = "error" | "warn";
 
+/** Tests target served (gold) tables so they can also run in the browser after a live merge. */
 type TestBase = { name: string; model: string; severity: Severity; description: string };
 
 export type Test = TestBase &
@@ -59,13 +60,15 @@ export type Contract = {
 };
 
 export type Pipeline = {
-  id: "permits" | "flames";
+  id: "permits" | "flames" | "housing";
   label: string;
   source: { name: string; url: string; docs: string; licence: string };
   sources: SourceTable[];
   models: Model[];
   tests: Test[];
   contract: Contract;
+  /** Optional ML model trained on a gold table after the tests pass. */
+  model?: { name: string; description: string; file: string; trainedOn: string };
 };
 
 export type ModelResult = {
@@ -97,6 +100,18 @@ export type ManifestEntry = {
   models: ModelResult[];
   tests: TestResult[];
   outputs: { model: string; file: string; rows: number; bytes: number; sha256: string }[];
+  /** Present when the pipeline trains a model. Metrics are on held-out rows. */
+  model?: {
+    file: string;
+    bytes: number;
+    trainMs: number;
+    rows: { train: number; test: number };
+    metrics: {
+      model: { mae: number; mdape: number; within10: number; r2: number };
+      baseline: { mae: number; mdape: number; within10: number; r2: number };
+    };
+    importance: { feature: string; share: number }[];
+  };
 };
 
 export type Manifest = { version: 1; pipelines: Partial<Record<Pipeline["id"], ManifestEntry>> };

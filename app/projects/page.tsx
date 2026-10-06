@@ -38,13 +38,23 @@ const projects = [
   {
     name: "The Lab",
     kicker: "Live data demos · This site",
-    body: "Two small data products on Calgary data: City building permits and Flames play-by-play. Each has a tested medallion pipeline you can run live, a dashboard, an AI that writes SQL, and telemetry on all of it.",
+    body: "Three small data products on Calgary data: building permits, home values and Flames play-by-play. Each has a tested medallion pipeline you can run live, a dashboard, an AI that writes SQL, and telemetry on all of it. Home values add a machine-learning model you can retrain in the browser.",
     points: [
       "One pipeline definition that runs on GitHub Actions weekly and in your browser on demand",
       "dbt-style tests and a data contract that block bad refreshes",
+      "Gradient-boosted value model, written from scratch, with explained estimates and a model card",
       "Query telemetry, Core Web Vitals and a typed analytics tracking plan",
     ],
-    stack: ["DuckDB", "DuckDB-WASM", "Parquet", "SQL", "GitHub Actions", "Claude API", "TypeScript"],
+    stack: [
+      "DuckDB",
+      "DuckDB-WASM",
+      "Parquet",
+      "SQL",
+      "GitHub Actions",
+      "Machine learning",
+      "Claude API",
+      "TypeScript",
+    ],
     links: [
       { href: "/lab/calgary", label: "Open the Lab" },
       { href: "/colophon", label: "How it’s built" },

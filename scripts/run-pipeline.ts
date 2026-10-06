@@ -3,7 +3,7 @@
  *
  *   extract (full) → bronze → silver → gold → tests → Parquet + manifest
  *
- * Usage: tsx scripts/run-pipeline.ts [permits|flames|all]
+ * Usage: tsx scripts/run-pipeline.ts [permits|housing|flames|all]
  *
  * A failing error-level test exits non-zero before any file is written, so a
  * bad extract never replaces the last good snapshot. GitHub Actions runs this
@@ -15,7 +15,9 @@ import path from "node:path";
 import { DuckDBInstance } from "@duckdb/node-api";
 import { extractFlames, seasonIds } from "../lib/pipelines/flames";
 import { pipelines } from "../lib/pipelines/index";
+import { extractHousing } from "../lib/pipelines/housing";
 import { extractPermits } from "../lib/pipelines/permits";
+import { trainHousingModel, type HomeRow } from "../lib/ml/housing";
 import { bronzeSql, runModels, runTests, type Engine } from "../lib/pipelines/runner";
 import type { Manifest, ManifestEntry, Pipeline } from "../lib/pipelines/types";
 
@@ -73,6 +75,11 @@ async function extract(pipeline: Pipeline): Promise<{ tables: Record<string, unk
       onPage: ({ rows, ms }) => console.log(`  extract  page of ${rows} rows in ${ms} ms`),
     });
     return { tables: { raw_permits: rows } as Record<string, unknown[]>, requests };
+  }
+  if (pipeline.id === "housing") {
+    return extractHousing({
+      onPage: ({ rows, ms }) => console.log(`  extract  page of ${rows} rows in ${ms} ms`),
+    });
   }
   return extractFlames({
     seasons: seasonIds(),
@@ -143,6 +150,8 @@ async function run(pipeline: Pipeline): Promise<ManifestEntry> {
     outputs.push({ model: model.name, file: model.served!.file, rows, bytes, sha256: await sha256(file) });
     console.log(`  serve    ${model.served!.file}: ${(bytes / 1e6).toFixed(2)} MB`);
   }
+
+  const trained = pipeline.model ? await trainModel(engine, pipeline) : undefined;
   engine.close();
 
   return {
@@ -163,6 +172,46 @@ async function run(pipeline: Pipeline): Promise<ManifestEntry> {
     ],
     tests,
     outputs,
+    model: trained,
+  };
+}
+
+/** Trains the value model on the gold table, after tests pass, and writes it next to the data. */
+async function trainModel(engine: Engine, pipeline: Pipeline): Promise<ManifestEntry["model"]> {
+  const spec = pipeline.model!;
+  const rows = (await engine.query(
+    `SELECT roll_number AS key, community, use, zoning, year_built, lot_sqft, assessed_value
+     FROM main.${spec.trainedOn}
+     WHERE assessed_value BETWEEN 50000 AND 20000000`,
+  )) as (HomeRow & { key: number })[];
+  const uses = [...new Set(rows.map((r) => r.use))].sort().map((label) => ({ code: label, label }));
+  console.log(`  train    ${spec.name}: ${rows.length.toLocaleString()} homes`);
+
+  const model = await trainHousingModel(
+    rows,
+    uses,
+    { trees: 400, depth: 6, learningRate: 0.15 },
+    (i, tr, va) => {
+      if ((i + 1) % 50 === 0)
+        console.log(`  train    tree ${i + 1}: rmse train ${tr.toFixed(4)}, holdout ${va?.toFixed(4)}`);
+    },
+  );
+
+  const file = path.join(DATA_DIR, spec.file);
+  await writeFile(file, JSON.stringify(model));
+  const bytes = (await readFile(file)).byteLength;
+  const m = model.metrics;
+  console.log(
+    `  model    holdout median error ${(m.model.mdape * 100).toFixed(1)}% (baseline ${(m.baseline.mdape * 100).toFixed(1)}%), ` +
+      `within 10%: ${(m.model.within10 * 100).toFixed(1)}%, R² ${m.model.r2.toFixed(3)}, ${(bytes / 1e3).toFixed(0)} KB in ${(model.trainMs / 1000).toFixed(1)} s`,
+  );
+  return {
+    file: spec.file,
+    bytes,
+    trainMs: model.trainMs,
+    rows: model.rows,
+    metrics: model.metrics,
+    importance: model.importance,
   };
 }
 

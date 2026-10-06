@@ -29,6 +29,28 @@ export const datasets = {
       "Total estimated construction value of new commercial permits by year",
     ],
   },
+  housing: {
+    label: "Calgary home assessments",
+    source:
+      "City of Calgary Open Data, Current Year Property Assessments (4bsw-nn7w) joined to the City's property use codes (5843-8tyj). 2026 roll.",
+    schema: `TABLE housing_homes  -- one row per home in Calgary with its 2026 assessed value (the City's estimate of market value on July 1, 2025; not a sale price)
+  roll_number     BIGINT   -- City assessment roll number
+  roll_year       INTEGER  -- 2026
+  community       VARCHAR  -- Calgary community name in UPPER CASE, e.g. 'MOUNT PLEASANT', 'MAHOGANY'
+  use             VARCHAR  -- 'Detached', 'Detached with Backyard Suite', 'Duplex', 'Townhouse', 'Townhouse Complex', 'Low Rise Apartment Condo', 'High Rise Apartment Condo'
+  property_group  VARCHAR  -- 'Detached', 'Duplex', 'Townhouse' or 'Condo apartment'
+  zoning          VARCHAR  -- primary land use district, e.g. 'R-C1', 'R-CG', 'M-C1', 'DC'
+  year_built      INTEGER  -- NULL when unknown
+  lot_sqft        INTEGER  -- lot size in square feet; for condos, the whole building's lot
+  assessed_value  INTEGER  -- dollars
+  mod_date        DATE     -- when the City last modified the assessment`,
+    examples: [
+      "Which 10 communities have the highest median detached home value?",
+      "Median condo value by decade built",
+      "Share of homes worth over $1M by property type",
+      "How much more is a detached home with a backyard suite worth, by community?",
+    ],
+  },
   flames: {
     label: "Calgary Flames, 2021-22 to today",
     source: "NHL public API, schedules and play-by-play. Regular season only.",

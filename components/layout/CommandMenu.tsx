@@ -14,6 +14,8 @@ const baseItems: CommandItem[] = [
   { href: "/", label: "Home" },
   ...nav.map((n) => ({ href: n.href, label: n.label })),
   { href: "/lab/calgary", label: "Calgary building permits", hint: "Lab" },
+  { href: "/lab/housing", label: "Calgary housing values", hint: "Lab" },
+  { href: "/lab/housing#model", label: "Home value predictor", hint: "Lab · ML" },
   { href: "/lab/flames", label: "Flames shot map", hint: "Lab" },
   { href: "/lab/calgary#pipeline", label: "Run a pipeline live", hint: "Lab · data" },
   { href: "/lab/calgary#ask", label: "Ask the data", hint: "Lab · AI" },
