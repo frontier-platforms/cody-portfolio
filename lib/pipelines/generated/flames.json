@@ -1,0 +1,298 @@
+{
+  "id": "flames",
+  "label": "Calgary Flames play-by-play",
+  "source": {
+    "name": "NHL public API \u00b7 schedules and play-by-play",
+    "url": "https://api-web.nhle.com/v1",
+    "docs": "https://api-web.nhle.com/v1/club-schedule-season/CGY/now",
+    "licence": "Data \u00a9 NHL. Used here for non-commercial illustration."
+  },
+  "sources": [
+    {
+      "name": "raw_games",
+      "description": "Every game on the Flames schedule, including preseason and games not yet played.",
+      "columns": [
+        {
+          "name": "game_id",
+          "type": "BIGINT"
+        },
+        {
+          "name": "season",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "game_type",
+          "type": "INTEGER"
+        },
+        {
+          "name": "game_date",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "game_state",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "home_id",
+          "type": "INTEGER"
+        },
+        {
+          "name": "home_abbrev",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "home_score",
+          "type": "INTEGER"
+        },
+        {
+          "name": "away_id",
+          "type": "INTEGER"
+        },
+        {
+          "name": "away_abbrev",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "away_score",
+          "type": "INTEGER"
+        },
+        {
+          "name": "last_period_type",
+          "type": "VARCHAR"
+        }
+      ]
+    },
+    {
+      "name": "raw_plays",
+      "description": "Shot-attempt events from play-by-play, flattened to one row per event.",
+      "columns": [
+        {
+          "name": "game_id",
+          "type": "BIGINT"
+        },
+        {
+          "name": "home_team_id",
+          "type": "INTEGER"
+        },
+        {
+          "name": "event_type",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "period",
+          "type": "INTEGER"
+        },
+        {
+          "name": "period_type",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "time_in_period",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "situation_code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "home_defending_side",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "x",
+          "type": "INTEGER"
+        },
+        {
+          "name": "y",
+          "type": "INTEGER"
+        },
+        {
+          "name": "owner_team_id",
+          "type": "INTEGER"
+        },
+        {
+          "name": "shot_type",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "shooter_id",
+          "type": "BIGINT"
+        }
+      ]
+    },
+    {
+      "name": "raw_roster",
+      "description": "Players dressed for each game.",
+      "columns": [
+        {
+          "name": "game_id",
+          "type": "BIGINT"
+        },
+        {
+          "name": "player_id",
+          "type": "BIGINT"
+        },
+        {
+          "name": "first_name",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "last_name",
+          "type": "VARCHAR"
+        }
+      ]
+    }
+  ],
+  "models": [
+    {
+      "name": "stg_games",
+      "layer": "silver",
+      "description": "Finished regular-season games, re-expressed from the Flames' side of the ice.",
+      "sql": "-- Finished regular-season games, re-expressed from the Flames' side of the ice.\nselect\n    game_id,\n    substr(season, 1, 4) || '-' || substr(season, 7, 2)                    as season,\n    cast(game_date as date)                                                 as game_date,\n    home_id = 20                                                    as home,\n    case when home_id = 20 then away_abbrev else home_abbrev end    as opponent,\n    case when home_id = 20 then home_score else away_score end      as goals_for,\n    case when home_id = 20 then away_score else home_score end      as goals_against,\n    coalesce(last_period_type, 'REG')                                       as decided_in\nfrom {{ ref('raw_games') }}\nwhere game_type = 2\n  and game_state in ('OFF', 'FINAL')\nqualify row_number() over (partition by game_id) = 1",
+      "dependsOn": [
+        "raw_games"
+      ],
+      "contract": false,
+      "path": "dbt/models/flames/stg_games.sql"
+    },
+    {
+      "name": "stg_shots",
+      "layer": "silver",
+      "description": "Shot attempts with strength derived from the situation code and coordinates flipped so every shooter attacks the right-hand net.",
+      "sql": "with attempts as (\n    select\n        p.*,\n        p.owner_team_id = p.home_team_id                        as shooter_is_home,\n        try_cast(substr(p.situation_code, 1, 1) as integer)     as away_goalie,\n        try_cast(substr(p.situation_code, 2, 1) as integer)     as away_skaters,\n        try_cast(substr(p.situation_code, 3, 1) as integer)     as home_skaters,\n        try_cast(substr(p.situation_code, 4, 1) as integer)     as home_goalie\n    from {{ ref('raw_plays') }} p\n    where p.event_type in ('goal', 'shot-on-goal', 'missed-shot', 'blocked-shot')\n      and p.period_type <> 'SO'\n      and p.x is not null and p.y is not null\n),\n\nsided as (\n    select\n        *,\n        -- A team attacks the net opposite the end it defends.\n        case when shooter_is_home = coalesce(home_defending_side = 'right', false) then -1 else 1 end as flip,\n        case when shooter_is_home then home_skaters else away_skaters end as own_skaters,\n        case when shooter_is_home then away_skaters else home_skaters end as opp_skaters,\n        case when shooter_is_home then away_goalie else home_goalie end  as opp_goalie\n    from attempts\n)\n\nselect\n    s.game_id,\n    s.period,\n    cast(split_part(s.time_in_period, ':', 1) as integer) * 60\n        + cast(split_part(s.time_in_period, ':', 2) as integer)            as period_seconds,\n    case when s.owner_team_id = 20 then 'CGY' else 'OPP' end        as team,\n    s.event_type                                                            as event,\n    s.event_type = 'goal'                                                   as is_goal,\n    s.shot_type,\n    case\n        when s.own_skaters is null or s.opp_goalie is null then 'other'\n        when s.opp_goalie = 0 then 'EN'\n        when s.own_skaters = s.opp_skaters and s.own_skaters = 5 then '5v5'\n        when s.own_skaters = s.opp_skaters then 'even'\n        when s.own_skaters > s.opp_skaters then 'PP'\n        else 'SH'\n    end                                                                     as strength,\n    s.x * s.flip                                                            as x,\n    s.y * s.flip                                                            as y,\n    r.first_name || ' ' || r.last_name                                      as shooter\nfrom sided s\nleft join {{ ref('raw_roster') }} r\n    on r.game_id = s.game_id and r.player_id = s.shooter_id",
+      "dependsOn": [
+        "raw_plays",
+        "raw_roster"
+      ],
+      "contract": false,
+      "path": "dbt/models/flames/stg_shots.sql"
+    },
+    {
+      "name": "flames_games",
+      "layer": "gold",
+      "description": "One row per game with result and standings points.",
+      "sql": "select\n    game_id, season, game_date, home, opponent, goals_for, goals_against,\n    case when goals_for > goals_against then 'W' when decided_in = 'REG' then 'L' else 'OTL' end as result,\n    decided_in,\n    case when goals_for > goals_against then 2 when decided_in = 'REG' then 0 else 1 end         as points\nfrom {{ ref('stg_games') }}\norder by game_date",
+      "dependsOn": [
+        "stg_games"
+      ],
+      "served": {
+        "file": "flames-games.parquet"
+      },
+      "mergeKey": "game_id",
+      "contract": true,
+      "path": "dbt/models/flames/flames_games.sql"
+    },
+    {
+      "name": "flames_shots",
+      "layer": "gold",
+      "description": "Every shot attempt in those games, for and against.",
+      "sql": "select s.*\nfrom {{ ref('stg_shots') }} s\nsemi join {{ ref('flames_games') }} g on g.game_id = s.game_id\norder by s.game_id, s.period, s.period_seconds",
+      "dependsOn": [
+        "stg_shots",
+        "flames_games"
+      ],
+      "served": {
+        "file": "flames-shots.parquet"
+      },
+      "mergeKey": "game_id",
+      "contract": true,
+      "path": "dbt/models/flames/flames_shots.sql"
+    }
+  ],
+  "tests": [
+    {
+      "name": "result is W, L or OTL",
+      "model": "flames_games",
+      "kind": "accepted_values",
+      "severity": "error",
+      "description": "No ties, no unknowns.",
+      "sql": "select count(*) as failures from (\nwith all_values as (\n\n    select\n        result as value_field,\n        count(*) as n_records\n\n    from {{ ref('flames_games') }}\n    group by result\n\n)\n\nselect *\nfrom all_values\nwhere value_field not in (\n    'W','L','OTL'\n)\n) dbt_test"
+    },
+    {
+      "name": "Coordinate flip points shots at the attacking net",
+      "model": "flames_shots",
+      "kind": "singular",
+      "severity": "warn",
+      "description": "At least 95% of unblocked attempts should land in the attacking half. If the API changes its side convention, this catches it.",
+      "sql": "select count(*) as failures from (\nselect avg((x > 0)::integer) as share_in_attacking_half\nfrom {{ ref('flames_shots') }}\nwhere event <> 'blocked-shot'\nhaving avg((x > 0)::integer) < 0.95\n) dbt_test"
+    },
+    {
+      "name": "Points match the result",
+      "model": "flames_games",
+      "kind": "expression_is_true",
+      "severity": "error",
+      "description": "Standings logic is applied consistently.",
+      "sql": "select count(*) as failures from (\nselect * from {{ ref('flames_games') }} where not (points = case result when 'W' then 2 when 'OTL' then 1 else 0 end)\n) dbt_test"
+    },
+    {
+      "name": "Coordinates are on the ice",
+      "model": "flames_shots",
+      "kind": "expression_is_true",
+      "severity": "error",
+      "description": "A rink is 200 by 85 feet.",
+      "sql": "select count(*) as failures from (\nselect * from {{ ref('flames_shots') }} where not (x between -100 and 100 and y between -43 and 43)\n) dbt_test"
+    },
+    {
+      "name": "Shot-level goals reconcile to the final score",
+      "model": "flames_shots",
+      "kind": "singular",
+      "severity": "error",
+      "description": "Counts goal events per game and compares them to the official score, allowing for the extra goal a shootout winner is credited.",
+      "sql": "select count(*) as failures from (\n-- Returns games whose shot-level goals don't match the official score.\nwith shot_goals as (\n    select game_id,\n           count(*) filter (where is_goal and team = 'CGY') as gf,\n           count(*) filter (where is_goal and team = 'OPP') as ga\n    from {{ ref('flames_shots') }}\n    group by 1\n)\n\nselect g.game_id\nfrom {{ ref('flames_games') }} g\nleft join shot_goals s using (game_id)\nwhere g.goals_for - (g.decided_in = 'SO' and g.result = 'W')::integer <> coalesce(s.gf, 0)\n   or g.goals_against - (g.decided_in = 'SO' and g.result <> 'W')::integer <> coalesce(s.ga, 0)\n) dbt_test"
+    },
+    {
+      "name": "Shooter name is present",
+      "model": "flames_shots",
+      "kind": "not_null",
+      "severity": "warn",
+      "description": "A few events arrive without a matching roster entry.",
+      "sql": "select count(*) as failures from (\nselect shooter\nfrom {{ ref('flames_shots') }}\nwhere shooter is null\n) dbt_test"
+    },
+    {
+      "name": "Every shot belongs to a known game",
+      "model": "flames_shots",
+      "kind": "relationships",
+      "severity": "error",
+      "description": "Referential integrity between the two served tables.",
+      "sql": "select count(*) as failures from (\nwith child as (\n    select game_id as from_field\n    from {{ ref('flames_shots') }}\n    where game_id is not null\n),\n\nparent as (\n    select game_id as to_field\n    from {{ ref('flames_games') }}\n)\n\nselect\n    from_field\n\nfrom child\nleft join parent\n    on child.from_field = parent.to_field\n\nwhere parent.to_field is null\n) dbt_test"
+    },
+    {
+      "name": "At least 82 games",
+      "model": "flames_games",
+      "kind": "row_count_at_least",
+      "severity": "error",
+      "description": "Guards against a partial extract replacing full seasons.",
+      "sql": "select count(*) as failures from (\nselect count(*) as row_count from {{ ref('flames_games') }} having count(*) < 82\n) dbt_test"
+    },
+    {
+      "name": "game_id is unique",
+      "model": "flames_games",
+      "kind": "unique",
+      "severity": "error",
+      "description": "One row per game.",
+      "sql": "select count(*) as failures from (\nselect\n    game_id as unique_field,\n    count(*) as n_records\n\nfrom {{ ref('flames_games') }}\nwhere game_id is not null\ngroup by game_id\nhaving count(*) > 1\n) dbt_test"
+    }
+  ],
+  "highlights": {
+    "sql": "with last as (\n    select season from {{ ref('flames_games') }} group by 1 having count(*) >= 82 order by season desc limit 1\n),\nseason_record as (\n    select season,\n           count(*) filter (where result = 'W') as w,\n           count(*) filter (where result = 'L') as l,\n           count(*) filter (where result = 'OTL') as otl,\n           sum(points) as pts\n    from {{ ref('flames_games') }}\n    where season = (select season from last)\n    group by 1\n),\ntop_scorer as (\n    select s.shooter, count(*) as goals\n    from {{ ref('flames_shots') }} s\n    join {{ ref('flames_games') }} g using (game_id)\n    where s.team = 'CGY' and s.is_goal and g.season = (select season from last)\n    group by 1 order by goals desc limit 1\n)\n\nselect 1 as sort, 'Last full season' as label, 'text' as format, null::double as value_number,\n       w || '-' || l || '-' || otl as value_text, season || ', ' || pts || ' points' as detail\nfrom season_record\n\nunion all\n\nselect 2, 'Top goal scorer', 'text', null, shooter, goals || ' goals in ' || (select season from last)\nfrom top_scorer\n\nunion all\n\nselect 3, 'Games reconciled to the official score', 'count', count(*)::double, null, 'every game, every season'\nfrom {{ ref('flames_games') }}"
+  },
+  "contract": {
+    "owner": "Cody Chandler",
+    "cadence": "Weekly, Mondays at 10:00 UTC, via Airflow on GitHub Actions",
+    "freshnessSlaDays": 8,
+    "primaryKeys": {
+      "flames_games": "game_id",
+      "flames_shots": "game_id"
+    },
+    "consumers": [
+      "Lab dashboards",
+      "Ask the data (Claude-generated SQL)"
+    ],
+    "guarantees": [
+      "Regular-season games only. Preseason and playoffs are excluded.",
+      "Shot coordinates are in feet, with the shooter always attacking x = 89.",
+      "Shot-level goals reconcile to the official final score for every game.",
+      "A failing error-level test blocks the refresh. The last good snapshot keeps serving."
+    ]
+  }
+}

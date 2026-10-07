@@ -1,0 +1,115 @@
+version: 2
+
+models:
+  - name: stg_permits
+    description: Typed, renamed and deduplicated. Zero coordinates become NULL. One row per permit, latest version wins.
+
+  - name: permits
+    description: Applications since 2015, ready for analysis. Served to the browser as Parquet.
+    config:
+      contract: { enforced: true }
+    columns:
+      - name: permit_id
+        data_type: varchar
+        data_tests:
+          - unique:
+              config: { meta: { label: "permit_id is unique", description: "The primary key holds." } }
+          - not_null:
+              config: { meta: { label: "permit_id is never null", description: "Every row is addressable." } }
+      - name: applied_date
+        data_type: date
+        data_tests:
+          - not_null:
+              config:
+                {
+                  meta:
+                    {
+                      label: "applied_date is never null",
+                      description: "Every permit has an application date.",
+                    },
+                }
+      - { name: issued_date, data_type: date }
+      - { name: completed_date, data_type: date }
+      - { name: status, data_type: varchar }
+      - { name: permit_type, data_type: varchar }
+      - name: permit_class
+        data_type: varchar
+        data_tests:
+          - accepted_values:
+              arguments: { values: ["Residential", "Non-Residential", "Unspecified"] }
+              config:
+                meta:
+                  label: permit_class is a known value
+                  description: Catches a new category upstream before it silently drops out of charts.
+      - { name: class_group, data_type: varchar }
+      - name: work_group
+        data_type: varchar
+        data_tests:
+          - accepted_values:
+              arguments: { values: ["New", "Improvement", "Demolition", "Unspecified"] }
+              config:
+                {
+                  meta:
+                    { label: "work_group is a known value", description: "Same guard for the work type." },
+                }
+      - { name: housing_units, data_type: integer }
+      - { name: est_cost, data_type: double }
+      - { name: sqft, data_type: double }
+      - { name: community, data_type: varchar }
+      - name: lat
+        data_type: double
+        data_tests:
+          - not_null:
+              config:
+                severity: warn
+                meta:
+                  label: Coordinates are present
+                  description: Some permits have no location. They stay in totals but can't be mapped.
+      - { name: lon, data_type: double }
+      - name: updated_at
+        data_type: timestamp
+        data_tests:
+          - recency:
+              arguments: { max_age_days: 8 }
+              config:
+                meta:
+                  label: Source updated in the last 8 days
+                  description: If the City stops publishing, the refresh fails instead of serving stale data quietly.
+    data_tests:
+      - expression_is_true:
+          arguments: { expression: "housing_units between 0 and 2000" }
+          config:
+            meta:
+              label: housing_units is between 0 and 2,000
+              description: A negative or huge unit count is a data entry error, not a building.
+      - expression_is_true:
+          arguments:
+            { expression: "lat is null or (lat between 50.80 and 51.25 and lon between -114.35 and -113.80)" }
+          config:
+            meta:
+              label: Coordinates fall inside Calgary
+              description: Swapped or mistyped coordinates would put permits in another city.
+      - expression_is_true:
+          arguments: { expression: "issued_date is null or issued_date >= applied_date" }
+          config:
+            severity: warn
+            meta:
+              label: Issued on or after applied
+              description: A permit can't be issued before it's applied for. Flagged, not dropped.
+      - expression_is_true:
+          arguments:
+            { expression: "completed_date is null or issued_date is null or completed_date >= issued_date" }
+          config:
+            severity: warn
+            meta:
+              label: Completed on or after issued
+              description: Upstream date entry issue. Flagged so time-to-complete metrics can exclude them.
+      - row_count_at_least:
+          arguments: { min_rows: 200000 }
+          config:
+            meta:
+              label: At least 200,000 rows
+              description: Guards against a partial extract replacing the full table.
+
+  - name: permits_highlights
+    description: Three headline findings for the lab header, recomputed every run.

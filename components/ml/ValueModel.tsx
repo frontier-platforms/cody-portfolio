@@ -5,14 +5,7 @@ import { LineChart } from "@/components/lab/charts";
 import { Segmented } from "@/components/lab/controls";
 import { runQuery } from "@/components/lab/db";
 import { track } from "@/lib/analytics";
-import {
-  estimate,
-  FEATURE_LABELS,
-  trainHousingModel,
-  type HomeInput,
-  type HomeRow,
-  type HousingModel,
-} from "@/lib/ml/housing";
+import { estimate, FEATURE_LABELS, type HomeInput, type HousingModel } from "@/lib/ml/housing";
 import { telemetry } from "@/lib/telemetry";
 
 const MODEL_URL = "/data/housing-model.json";
@@ -49,7 +42,7 @@ export function ValueModel() {
       .catch((e: Error) => setError(e.message));
   }, []);
 
-  if (error) return <p className="font-mono text-sm text-accent-ink">Couldn’t load the model: {error}</p>;
+  if (error) return <p className="font-mono text-sm text-accent">Couldn’t load the model: {error}</p>;
   if (!production) return <p className="label">Loading model…</p>;
 
   const model = active === "yours" && yours ? yours : production;
@@ -124,9 +117,9 @@ function Predictor({
   const maxEffect = Math.max(...result.effects.map((e) => Math.abs(Math.log(e.effect))), 0.05);
 
   return (
-    <section className="grid border border-line bg-surface lg:grid-cols-[22rem_1fr]">
+    <section className="grid border border-border bg-surface lg:grid-cols-[22rem_1fr] rounded-md">
       <form
-        className="space-y-4 border-b border-line p-5 lg:border-b-0 lg:border-r"
+        className="space-y-4 border-b border-border p-6 lg:border-b-0 lg:border-r"
         onSubmit={(e) => e.preventDefault()}
       >
         <h3 className="font-semibold">Describe a home</h3>
@@ -134,7 +127,7 @@ function Predictor({
           <select
             value={input.community}
             onChange={(e) => choose(e.target.value, input.use)}
-            className="w-full border border-line bg-paper px-2 py-2 text-sm"
+            className="w-full border border-border bg-bg px-2 py-2 text-sm rounded-md"
           >
             {communities.map((c) => (
               <option key={c} value={c}>
@@ -147,7 +140,7 @@ function Predictor({
           <select
             value={input.use}
             onChange={(e) => choose(input.community, e.target.value)}
-            className="w-full border border-line bg-paper px-2 py-2 text-sm"
+            className="w-full border border-border bg-bg px-2 py-2 text-sm rounded-md"
           >
             {usesHere.map((u) => (
               <option key={u}>{u}</option>
@@ -164,7 +157,7 @@ function Predictor({
               onChange={(e) =>
                 setInput({ ...input, year_built: e.target.value ? Number(e.target.value) : null })
               }
-              className="num w-full border border-line bg-paper px-2 py-2 text-sm"
+              className="num w-full border border-border bg-bg px-2 py-2 text-sm rounded-md"
             />
           </Field>
           <Field label="Lot size (sq ft)">
@@ -176,7 +169,7 @@ function Predictor({
               onChange={(e) =>
                 setInput({ ...input, lot_sqft: e.target.value ? Number(e.target.value) : null })
               }
-              className="num w-full border border-line bg-paper px-2 py-2 text-sm"
+              className="num w-full border border-border bg-bg px-2 py-2 text-sm rounded-md"
             />
           </Field>
         </div>
@@ -184,23 +177,23 @@ function Predictor({
           <select
             value={input.zoning ?? ""}
             onChange={(e) => setInput({ ...input, zoning: e.target.value || null })}
-            className="w-full border border-line bg-paper px-2 py-2 text-sm"
+            className="w-full border border-border bg-bg px-2 py-2 text-sm rounded-md"
           >
             {zonings.map((z) => (
               <option key={z}>{z}</option>
             ))}
           </select>
         </Field>
-        <p className="text-xs text-muted">
+        <p className="text-xs text-text-muted">
           Changing community or type fills in what’s typical there. For condos, lot size is the whole
           building’s lot.
         </p>
       </form>
 
-      <div className="p-5" aria-live="polite">
+      <div className="p-6" aria-live="polite">
         <p className="label">Estimated 2026 assessment{which === "yours" ? " · your model" : ""}</p>
-        <p className="num mt-2 text-4xl font-medium sm:text-5xl">{money(result.value)}</p>
-        <p className="mt-1 text-sm text-muted">
+        <p className="num mt-2 text-4xl font-regular sm:text-4xl">{money(result.value)}</p>
+        <p className="mt-1 text-sm text-text-muted">
           80% range {money(result.low)} to {money(result.high)}
           {typical && (
             <>
@@ -211,9 +204,9 @@ function Predictor({
           )}
         </p>
 
-        <h4 className="label mt-6 text-ink">Why this number</h4>
+        <h4 className="label mt-6 text-text">Why this number</h4>
         <ol className="mt-3 space-y-2 text-sm">
-          <li className="flex items-baseline justify-between gap-3 border-b border-line pb-2">
+          <li className="flex items-baseline justify-between gap-3 border-b border-border pb-2">
             <span>City-wide starting point</span>
             <span className="num">{money(result.start)}</span>
           </li>
@@ -228,10 +221,11 @@ function Predictor({
                   className="grid grid-cols-[1fr_5rem_3.25rem] items-center gap-3 sm:grid-cols-[1fr_12rem_4rem]"
                 >
                   <span className="min-w-0 leading-snug">
-                    {FEATURE_LABELS[e.feature]} <span className="text-muted">· {describe[e.feature]}</span>
+                    {FEATURE_LABELS[e.feature]}{" "}
+                    <span className="text-text-muted">· {describe[e.feature]}</span>
                   </span>
-                  <span className="relative h-2 bg-line" aria-hidden>
-                    <span className="absolute inset-y-0 left-1/2 w-px bg-muted" />
+                  <span className="relative h-2 bg-border" aria-hidden>
+                    <span className="absolute inset-y-0 left-1/2 w-px bg-text-muted" />
                     <span
                       className={`absolute inset-y-0 ${log >= 0 ? "left-1/2 bg-accent" : "right-1/2 bg-ink"}`}
                       style={{ width }}
@@ -244,12 +238,12 @@ function Predictor({
                 </li>
               );
             })}
-          <li className="flex items-baseline justify-between gap-3 border-t border-line pt-2 font-medium">
+          <li className="flex items-baseline justify-between gap-3 border-t border-border pt-2 font-semibold">
             <span>Estimate</span>
             <span className="num">{money(result.value)}</span>
           </li>
         </ol>
-        <p className="mt-3 text-xs text-muted">
+        <p className="mt-3 text-xs text-text-muted">
           Each effect is that input’s contribution, read off the path this home takes through every tree.
           Multiply the starting point by each effect to get the estimate.
         </p>
@@ -274,10 +268,58 @@ function prefill(model: HousingModel, community: string, use: string): HomeInput
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="block text-sm">
-      <span className="mb-1 block text-xs text-muted">{label}</span>
+      <span className="mb-1 block text-xs text-text-muted">{label}</span>
       {children}
     </label>
   );
+}
+
+const REPO = "https://github.com/frontier-platforms/cody-portfolio";
+
+const GLOSSARY: [string, string][] = [
+  ["Holdout", "Homes the model never saw while training. Every number in this table comes from them."],
+  ["Median error", "The typical miss. Half of the estimates land closer than this to the City’s assessment."],
+  ["Within 10% of assessment", "The share of homes where the estimate is within 10% of the City’s number."],
+  [
+    "Mean absolute error",
+    "The average miss in dollars. A few very expensive homes pull it up, so I lead with the median.",
+  ],
+  [
+    "R²",
+    "How much of the spread in home values the model explains. 1 is perfect; 0 is guessing the average.",
+  ],
+  [
+    "Community median",
+    "The bar to beat: the median value for that property type in that community. A model that can’t beat it isn’t worth running.",
+  ],
+];
+
+function buildSteps(model: HousingModel): [string, string][] {
+  const p = model.params;
+  return [
+    [
+      "Data",
+      `${(model.rows.train + model.rows.test).toLocaleString()} homes from the tested housing table. It retrains only after every error-level dbt test passes.`,
+    ],
+    ["Inputs", "Community, property type, zoning, year built and lot size. That’s all the public data has."],
+    [
+      "Encoding",
+      "Each category becomes the average value of its group, calculated on other homes. A home’s own value never leaks in.",
+    ],
+    [
+      "Holdout",
+      "One home in five is set aside by hashing its roll number. The same homes are held out every week.",
+    ],
+    [
+      "Training",
+      `XGBoost builds ${model.gbm.trees.length} small trees, each correcting the errors of the ones before. Depth ${p.depth}, learning rate ${p.learning_rate}, at least ${p.min_leaf} homes per leaf. It took ${(model.trainMs / 1000).toFixed(1)} s.`,
+    ],
+    ["Checking", "The holdout homes are scored and compared with the community median."],
+    [
+      "Serving",
+      "The trees are exported to JSON. Your browser walks them to make and explain each estimate. A test checks it matches XGBoost.",
+    ],
+  ];
 }
 
 function ModelCard({ model }: { model: HousingModel }) {
@@ -292,73 +334,88 @@ function ModelCard({ model }: { model: HousingModel }) {
   const improvement = 1 - m.mdape / b.mdape;
 
   return (
-    <section className="grid gap-px border border-line bg-line lg:grid-cols-2">
-      <div className="bg-surface p-5">
+    <section className="grid gap-px border border-border bg-border lg:grid-cols-2 rounded-md">
+      <div className="bg-surface p-6">
         <h3 className="font-semibold">Model card</h3>
-        <p className="mt-1 text-sm text-muted">
+        <p className="mt-1 text-sm text-text-muted">
           Scored on {model.rows.test.toLocaleString()} homes the model never saw. Typical error is{" "}
           {pct(improvement, 0)} lower than the obvious baseline: the median for that property type in that
           community.
         </p>
         <table className="mt-4 w-full text-left text-sm">
-          <thead className="text-xs text-muted">
+          <thead className="text-xs text-text-muted">
             <tr>
-              <th className="py-1.5 font-normal">Holdout</th>
-              <th className="py-1.5 text-right font-normal">This model</th>
-              <th className="py-1.5 text-right font-normal">Community median</th>
+              <th className="py-2 font-regular">Holdout</th>
+              <th className="py-2 text-right font-regular">This model</th>
+              <th className="py-2 text-right font-regular">Community median</th>
             </tr>
           </thead>
           <tbody className="num">
             {rows.map(([label, a, c]) => (
-              <tr key={label} className="border-t border-line">
-                <td className="py-1.5 font-sans">{label}</td>
-                <td className="py-1.5 text-right">{a}</td>
-                <td className="py-1.5 text-right text-muted">{c}</td>
+              <tr key={label} className="border-t border-border">
+                <td className="py-2 font-sans">{label}</td>
+                <td className="py-2 text-right">{a}</td>
+                <td className="py-2 text-right text-text-muted">{c}</td>
               </tr>
             ))}
           </tbody>
         </table>
 
-        <h4 className="label mt-6 text-ink">What drives it</h4>
+        <h4 className="label mt-6 text-text">What the numbers mean</h4>
+        <dl className="mt-3 space-y-3 text-sm">
+          {GLOSSARY.map(([term, meaning]) => (
+            <div key={term}>
+              <dt className="font-semibold">{term}</dt>
+              <dd className="text-text-muted">{meaning}</dd>
+            </div>
+          ))}
+        </dl>
+
+        <h4 className="label mt-6 text-text">What drives it</h4>
         <ul className="mt-3 space-y-2 text-sm">
           {model.importance.map((f) => (
             <li key={f.feature} className="grid grid-cols-[7rem_1fr_3rem] items-center gap-3">
               <span>{FEATURE_LABELS[f.feature]}</span>
-              <span className="h-1.5 bg-line" aria-hidden>
+              <span className="h-1.5 bg-border" aria-hidden>
                 <span className="block h-full bg-accent" style={{ width: `${f.share * 100}%` }} />
               </span>
-              <span className="num text-right text-xs text-muted">{pct(f.share, 0)}</span>
+              <span className="num text-right text-xs text-text-muted">{pct(f.share, 0)}</span>
             </li>
           ))}
         </ul>
-        <p className="mt-2 text-xs text-muted">Share of total split gain across all trees.</p>
+        <p className="mt-2 text-xs text-text-muted">
+          How much each input cut the error across all trees (total gain), as a share. Location does most of
+          the work.
+        </p>
       </div>
 
-      <div className="bg-surface p-5">
-        <h4 className="label text-ink">Learning curve</h4>
-        <p className="mt-1 text-sm text-muted">
-          Error (RMSE of log value) after each tree. Holdout tracking training closely means it isn’t
-          overfitting.
+      <div className="bg-surface p-6">
+        <h4 className="label text-text">Learning curve</h4>
+        <p className="mt-1 text-sm text-text-muted">
+          How far off the model is as trees are added, on a log scale (RMSE). Lower is better. The holdout
+          line staying close to the training line means it learned patterns, not individual homes.
         </p>
         <div className="mt-3">
           <Curve curve={model.learningCurve} />
         </div>
-        <h4 className="label mt-6 text-ink">How it’s built</h4>
-        <ul className="prose-cc mt-3 text-sm">
-          <li>
-            Gradient-boosted trees, {model.gbm.trees.length} trees, depth {model.params.depth}, learning rate{" "}
-            {model.params.learningRate}, written from scratch in TypeScript. No ML library.
-          </li>
-          <li>
-            Trained on {model.rows.train.toLocaleString()} homes in {(model.trainMs / 1000).toFixed(0)} s
-            during the weekly pipeline, after every data test passes.
-          </li>
-          <li>
-            Categories are target-encoded out of fold, so a home’s own value never leaks into its features.
-          </li>
-          <li>The same homes are held out every run (hashed on roll number), so versions are comparable.</li>
-        </ul>
-        <h4 className="label mt-6 text-ink">Limits</h4>
+        <h4 className="label mt-6 text-text">How it’s built</h4>
+        <ol className="mt-3 space-y-3 text-sm">
+          {buildSteps(model).map(([step, detail], i) => (
+            <li key={step} className="grid grid-cols-[1.5rem_1fr] gap-2">
+              <span className="num text-text-muted">{i + 1}</span>
+              <span>
+                <span className="font-semibold">{step}.</span>{" "}
+                <span className="text-text-muted">{detail}</span>
+              </span>
+            </li>
+          ))}
+        </ol>
+        <p className="mt-3 text-sm">
+          <a href={`${REPO}/blob/main/ml/housing_model.py`} className="link">
+            Read the model code
+          </a>
+        </p>
+        <h4 className="label mt-6 text-text">Limits</h4>
         <ul className="prose-cc mt-3 text-sm">
           <li>It predicts the City’s assessment, not what a home would sell for.</li>
           <li>
@@ -373,7 +430,7 @@ function ModelCard({ model }: { model: HousingModel }) {
 }
 
 function Curve({ curve, live }: { curve: HousingModel["learningCurve"]; live?: boolean }) {
-  if (curve.length < 2) return <div className="h-[200px] border border-dashed border-line" />;
+  if (curve.length < 2) return <div className="h-[200px] border border-dashed border-border rounded-md" />;
   return (
     <>
       <LineChart
@@ -382,13 +439,13 @@ function Curve({ curve, live }: { curve: HousingModel["learningCurve"]; live?: b
         series={[
           {
             name: "train",
-            color: "var(--chart-base)",
+            color: "var(--color-data-4)",
             width: 1.5,
             points: curve.map((c) => ({ x: c.tree, y: c.train })),
           },
           {
             name: "holdout",
-            color: "var(--accent)",
+            color: "var(--color-data-1)",
             width: 2,
             points: curve.map((c) => ({ x: c.tree, y: c.valid })),
           },
@@ -397,13 +454,13 @@ function Curve({ curve, live }: { curve: HousingModel["learningCurve"]; live?: b
         yLabel="RMSE (log)"
         summary={`Learning curve over ${curve.length} trees${live ? ", updating as it trains" : ""}.`}
       />
-      <p className="mt-1 flex gap-4 text-xs text-muted">
+      <p className="mt-1 flex gap-4 text-xs text-text-muted">
         <span>
           <span className="mr-1 inline-block h-0.5 w-3 bg-accent align-middle" />
           holdout {curve.at(-1)!.valid.toFixed(4)}
         </span>
         <span>
-          <span className="mr-1 inline-block h-0.5 w-3 bg-chart-base align-middle" />
+          <span className="mr-1 inline-block h-0.5 w-3 bg-data-4 align-middle" />
           train {curve.at(-1)!.train.toFixed(4)}
         </span>
       </p>
@@ -412,6 +469,36 @@ function Curve({ curve, live }: { curve: HousingModel["learningCurve"]; live?: b
 }
 
 const SIZES = [10_000, 25_000, 50_000, 100_000];
+
+type WorkerMessage =
+  | { type: "status"; text: string }
+  | { type: "progress"; tree: number; train: number; valid: number }
+  | { type: "done"; model: HousingModel }
+  | { type: "error"; message: string };
+
+let worker: Worker | null = null;
+
+/** Trains with ml/housing_model.py in a Web Worker running Pyodide (Python on WebAssembly). */
+function trainInPython(
+  columns: Record<string, unknown[]>,
+  params: Partial<HousingModel["params"]>,
+  onMessage: (m: Exclude<WorkerMessage, { type: "done" | "error" }>) => void,
+) {
+  worker ??= new Worker("/ml/train-worker.mjs", { type: "module" });
+  const w = worker;
+  return new Promise<HousingModel>((resolve, reject) => {
+    w.onmessage = (event: MessageEvent<WorkerMessage>) => {
+      const m = event.data;
+      if (m.type === "done") resolve(m.model);
+      else if (m.type === "error") reject(new Error(m.message));
+      else onMessage(m);
+    };
+    w.onerror = (e) => reject(new Error(e.message || "Worker failed"));
+    w.postMessage({ type: "train", columns, params });
+  });
+}
+
+const COLUMNS = ["key", "community", "use", "zoning", "year_built", "lot_sqft", "assessed_value"] as const;
 
 function TrainYourOwn({
   production,
@@ -444,26 +531,33 @@ function TrainYourOwn({
          ) USING SAMPLE reservoir(${rows} ROWS) REPEATABLE (42)`,
         "ml: training sample",
       );
-      const data = sample.rows as unknown as (HomeRow & { key: number })[];
+      const columns = Object.fromEntries(
+        COLUMNS.map((c) => [c, sample.rows.map((r) => (typeof r[c] === "bigint" ? Number(r[c]) : r[c]))]),
+      );
       const points: HousingModel["learningCurve"] = [];
-      const model = await trainHousingModel(
-        data,
-        production.uses,
-        { trees, depth, learningRate, minLeaf: 20, seed: 42 },
-        (i, train, valid) => {
-          points.push({ tree: i + 1, train, valid: valid ?? NaN });
-          if ((i + 1) % 5 === 0 || i + 1 === trees) {
-            setCurve([...points]);
-            setStatus(
-              `Training tree ${i + 1} of ${trees} · ${((performance.now() - started) / 1000).toFixed(1)} s`,
-            );
+      let trainingStarted = 0;
+      const trained = await trainInPython(
+        columns,
+        { trees, depth, learning_rate: learningRate, min_leaf: 20, seed: 42 },
+        (m) => {
+          if (m.type === "status") {
+            setStatus(m.text);
+            return;
           }
+          trainingStarted ||= performance.now();
+          points.push({ tree: m.tree, train: m.train, valid: m.valid });
+          setCurve([...points]);
+          setStatus(
+            `Training tree ${m.tree} of ${trees} in Python · ${((performance.now() - trainingStarted) / 1000).toFixed(1)} s`,
+          );
         },
       );
+      // Prefill data is a production concern; reuse it so the predictor keeps working.
+      const model: HousingModel = { ...trained, typical: production.typical, uses: production.uses };
       const ms = performance.now() - started;
       setResult(model);
       setStatus(
-        `Trained ${trees} trees on ${model.rows.train.toLocaleString()} homes in ${(ms / 1000).toFixed(1)} s, in your browser.`,
+        `Trained ${trees} trees on ${model.rows.train.toLocaleString()} homes in ${(model.trainMs / 1000).toFixed(1)} s with XGBoost, in your browser.`,
       );
       onTrained(model);
       track("model_trained", {
@@ -491,18 +585,18 @@ function TrainYourOwn({
     : [];
 
   return (
-    <section className="border border-line bg-surface">
-      <header className="border-b border-line px-5 py-4">
-        <h3 className="font-semibold">Train your own, in your browser</h3>
-        <p className="mt-1 text-sm text-muted">
-          Same code as the production model. Pick a sample size and settings, and watch the holdout error fall
-          tree by tree. Bigger and deeper isn’t always better.
+    <section className="border border-border bg-surface rounded-md">
+      <header className="border-b border-border px-6 py-4">
+        <h3 className="font-semibold">Train your own, in Python, in your browser</h3>
+        <p className="mt-1 text-sm text-text-muted">
+          This runs ml/housing_model.py, the file the weekly pipeline uses, with XGBoost on Pyodide. The first
+          run downloads Python and XGBoost, about 35 MB. Watch the holdout error fall as trees are added.
         </p>
       </header>
-      <div className="grid gap-6 p-5 lg:grid-cols-[20rem_1fr]">
+      <div className="grid gap-6 p-6 lg:grid-cols-[20rem_1fr]">
         <div className="space-y-4">
           <div>
-            <p className="mb-1 text-xs text-muted">Training sample</p>
+            <p className="mb-1 text-xs text-text-muted">Training sample</p>
             <Segmented
               label="Training sample"
               options={SIZES.map((s) => ({ value: String(s), label: `${s / 1000}K` }))}
@@ -527,10 +621,10 @@ function TrainYourOwn({
             disabled={running}
             className="btn btn-primary w-full justify-center disabled:opacity-60"
           >
-            {running ? "Training…" : "Train in my browser"}
+            {running ? "Training…" : "Train in Python"}
           </button>
           {status && (
-            <p className="num text-xs text-muted" aria-live="polite">
+            <p className="num text-xs text-text-muted" aria-live="polite">
               {status}
             </p>
           )}
@@ -539,26 +633,26 @@ function TrainYourOwn({
           <Curve curve={curve} live />
           {result && (
             <table className="mt-4 w-full text-left text-sm">
-              <thead className="text-xs text-muted">
+              <thead className="text-xs text-text-muted">
                 <tr>
-                  <th className="py-1.5 font-normal">Holdout</th>
-                  <th className="py-1.5 text-right font-normal">Your model</th>
-                  <th className="py-1.5 text-right font-normal">Production</th>
+                  <th className="py-2 font-regular">Holdout</th>
+                  <th className="py-2 text-right font-regular">Your model</th>
+                  <th className="py-2 text-right font-regular">Production</th>
                 </tr>
               </thead>
               <tbody className="num">
                 {compare.map(([label, a, c]) => (
-                  <tr key={label} className="border-t border-line">
-                    <td className="py-1.5 font-sans">{label}</td>
-                    <td className="py-1.5 text-right">{a}</td>
-                    <td className="py-1.5 text-right text-muted">{c}</td>
+                  <tr key={label} className="border-t border-border">
+                    <td className="py-2 font-sans">{label}</td>
+                    <td className="py-2 text-right">{a}</td>
+                    <td className="py-2 text-right text-text-muted">{c}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           )}
           {result && (
-            <p className="mt-2 text-xs text-muted">
+            <p className="mt-2 text-xs text-text-muted">
               Your model is now powering the estimate above. Switch back with the toggle under it.
             </p>
           )}
@@ -587,9 +681,9 @@ function Slider({
 }) {
   return (
     <label className="block text-sm">
-      <span className="mb-1 flex justify-between text-xs text-muted">
+      <span className="mb-1 flex justify-between text-xs text-text-muted">
         {label}
-        <span className="num text-ink">{format(value)}</span>
+        <span className="num text-text">{format(value)}</span>
       </span>
       <input
         type="range"
@@ -598,7 +692,7 @@ function Slider({
         step={step}
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
-        className="w-full accent-[var(--accent)]"
+        className="w-full accent-accent"
       />
     </label>
   );

@@ -1,16 +1,13 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
-import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { Header } from "@/components/layout/Header";
 import { Instrumentation } from "@/components/telemetry/Instrumentation";
 import { TelemetryPanel } from "@/components/telemetry/TelemetryPanel";
-import { getAllWork } from "@/lib/work";
+import { token } from "@/lib/brand-tokens";
 import { site } from "@/lib/site";
+import { getAllWork } from "@/lib/work";
 import "./globals.css";
-
-const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
-const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
@@ -22,31 +19,30 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#faf8f4" },
-    { media: "(prefers-color-scheme: dark)", color: "#141311" },
+    { media: "(prefers-color-scheme: light)", color: token("--color-bg") },
+    { media: "(prefers-color-scheme: dark)", color: token("--color-bg", "dark") },
   ],
 };
 
-// Runs before paint so the page never flashes the wrong theme.
-const themeScript = `(()=>{try{const t=localStorage.getItem("theme");const d=t?t==="dark":matchMedia("(prefers-color-scheme: dark)").matches;document.documentElement.dataset.theme=d?"dark":"light"}catch(e){}})()`;
+// Applies a saved theme choice before paint. With no choice saved, tokens.css
+// follows the system setting on its own.
+const themeScript = `(()=>{try{const t=localStorage.getItem("theme");if(t==="dark"||t==="light")document.documentElement.dataset.theme=t}catch(e){}})()`;
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {
   const work = await getAllWork();
   const commandItems = work.map((w) => ({ href: `/work/${w.slug}`, label: w.title, hint: w.company }));
 
   return (
-    <html
-      lang="en-CA"
-      className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      suppressHydrationWarning
-    >
+    <html lang="en-CA" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
       </head>
       <body className="flex min-h-dvh flex-col">
         <a
           href="#main"
-          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:bg-ink focus:px-3 focus:py-2 focus:text-paper"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-text focus:px-3 focus:py-2 focus:text-bg"
         >
           Skip to content
         </a>

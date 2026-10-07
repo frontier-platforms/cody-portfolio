@@ -48,7 +48,7 @@ type Datum = { label: string; value: number };
 export function BarChart({
   data,
   height = 220,
-  color = "var(--accent)",
+  color = "var(--color-data-1)",
   highlight,
   summary,
   formatValue = formatNumber,
@@ -62,7 +62,7 @@ export function BarChart({
 }) {
   const [hover, setHover] = useState<number | null>(null);
   const [ref, W] = useWidth<HTMLElement>();
-  const pad = { t: 16, r: 8, b: 24, l: 40 };
+  const pad = { t: 16, r: 8, b: 24, l: 52 };
   const max = niceMax(Math.max(...data.map((d) => d.value), 0));
   const bw = (W - pad.l - pad.r) / Math.max(data.length, 1);
   const y = (v: number) => pad.t + (height - pad.t - pad.b) * (1 - v / max);
@@ -74,12 +74,12 @@ export function BarChart({
       <svg viewBox={`0 0 ${W} ${height}`} className="h-auto w-full" role="img" aria-label={summary}>
         {[0, 0.5, 1].map((f) => (
           <g key={f}>
-            <line x1={pad.l} x2={W - pad.r} y1={y(max * f)} y2={y(max * f)} stroke="var(--line)" />
+            <line x1={pad.l} x2={W - pad.r} y1={y(max * f)} y2={y(max * f)} stroke="var(--color-border)" />
             <text
               x={pad.l - 6}
               y={y(max * f) + 4}
               textAnchor="end"
-              className="fill-muted font-mono text-[10px]"
+              className="fill-text-muted font-mono text-xs"
             >
               {formatValue(max * f)}
             </text>
@@ -92,7 +92,7 @@ export function BarChart({
               y={y(d.value)}
               width={bw * 0.76}
               height={Math.max(0, height - pad.b - y(d.value))}
-              fill={highlight && !highlight(d) ? "var(--chart-base)" : color}
+              fill={highlight && !highlight(d) ? "var(--color-data-4)" : color}
               opacity={hover == null || hover === i ? 1 : 0.45}
             />
             <rect
@@ -109,7 +109,7 @@ export function BarChart({
                 x={pad.l + i * bw + bw / 2}
                 y={height - 6}
                 textAnchor="middle"
-                className="fill-muted font-mono text-[10px]"
+                className="fill-text-muted font-mono text-xs"
               >
                 {d.label}
               </text>
@@ -117,7 +117,7 @@ export function BarChart({
           </g>
         ))}
       </svg>
-      <figcaption aria-live="polite" className="num h-5 text-xs text-muted">
+      <figcaption aria-live="polite" className="num h-5 text-xs text-text-muted">
         {active ? `${active.label}: ${formatValue(active.value)}` : " "}
       </figcaption>
     </figure>
@@ -127,7 +127,7 @@ export function BarChart({
 /** Horizontal ranked bars, for top-N lists. Labels sit above each bar so long names fit on phones. */
 export function RankBars({
   data,
-  color = "var(--accent)",
+  color = "var(--color-data-1)",
   formatValue = formatNumber,
   summary,
   max: fixedMax,
@@ -141,14 +141,14 @@ export function RankBars({
 }) {
   const max = fixedMax ?? Math.max(...data.map((d) => d.value), 1);
   return (
-    <ol className="space-y-2.5" aria-label={summary}>
+    <ol className="space-y-3" aria-label={summary}>
       {data.map((d) => (
         <li key={d.label} className="text-sm">
           <div className="flex justify-between gap-3">
             <span className="truncate">{d.label}</span>
-            <span className="num text-muted">{formatValue(d.value)}</span>
+            <span className="num text-text-muted">{formatValue(d.value)}</span>
           </div>
-          <div className="mt-1 h-1.5 bg-line" aria-hidden>
+          <div className="mt-1 h-1.5 bg-border" aria-hidden>
             <div className="h-full" style={{ width: `${(d.value / max) * 100}%`, background: color }} />
           </div>
         </li>
@@ -186,7 +186,7 @@ export function LineChart({
   reference?: { y: number; label: string };
 }) {
   const [ref, W] = useWidth<HTMLDivElement>();
-  const pad = { t: 16, r: 12, b: 28, l: 40 };
+  const pad = { t: 16, r: 12, b: 28, l: 52 };
   const all = series.flatMap((s) => s.points);
   const xMax = Math.max(...all.map((p) => p.x), 1);
   const ys = all.map((p) => p.y).filter((v) => Number.isFinite(v));
@@ -203,8 +203,8 @@ export function LineChart({
           const v = minY + (maxY - minY) * f;
           return (
             <g key={f}>
-              <line x1={pad.l} x2={W - pad.r} y1={y(v)} y2={y(v)} stroke="var(--line)" />
-              <text x={pad.l - 6} y={y(v) + 4} textAnchor="end" className="fill-muted font-mono text-[10px]">
+              <line x1={pad.l} x2={W - pad.r} y1={y(v)} y2={y(v)} stroke="var(--color-border)" />
+              <text x={pad.l - 6} y={y(v) + 4} textAnchor="end" className="fill-text-muted font-mono text-xs">
                 {fitY ? v.toFixed(2) : formatNumber(v)}
               </text>
             </g>
@@ -217,10 +217,10 @@ export function LineChart({
               x2={W - pad.r}
               y1={y(reference.y)}
               y2={y(reference.y)}
-              stroke="var(--muted)"
+              stroke="var(--color-text-muted)"
               strokeDasharray="3 4"
             />
-            <text x={pad.l + 4} y={y(reference.y) - 5} className="fill-muted font-mono text-[10px]">
+            <text x={pad.l + 4} y={y(reference.y) - 5} className="fill-text-muted font-mono text-xs">
               {reference.label}
             </text>
           </g>
@@ -236,12 +236,12 @@ export function LineChart({
           />
         ))}
         {xLabel && (
-          <text x={W - pad.r} y={height - 6} textAnchor="end" className="fill-muted font-mono text-[10px]">
+          <text x={W - pad.r} y={height - 6} textAnchor="end" className="fill-text-muted font-mono text-xs">
             {xLabel}
           </text>
         )}
         {yLabel && (
-          <text x={pad.l} y={10} className="fill-muted font-mono text-[10px]">
+          <text x={pad.l} y={10} className="fill-text-muted font-mono text-xs">
             {yLabel}
           </text>
         )}

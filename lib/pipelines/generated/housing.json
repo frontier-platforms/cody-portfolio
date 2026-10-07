@@ -1,0 +1,200 @@
+{
+  "id": "housing",
+  "label": "Calgary home assessments",
+  "source": {
+    "name": "City of Calgary Open Data \u00b7 Current Year Property Assessments",
+    "url": "https://data.calgary.ca/resource/4bsw-nn7w.json",
+    "docs": "https://data.calgary.ca/Government/Current-Year-Property-Assessments-Parcel-/4bsw-nn7w",
+    "licence": "Open Government Licence \u2013 City of Calgary"
+  },
+  "sources": [
+    {
+      "name": "raw_assessments",
+      "description": "Residential parcels for home property uses, as the API returns them. Every field is text.",
+      "columns": [
+        {
+          "name": "roll_year",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "roll_number",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "assessed_value",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "comm_name",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "year_of_construction",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "land_use_designation",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "land_size_sf",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "sub_property_use",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "mod_date",
+          "type": "VARCHAR"
+        }
+      ]
+    },
+    {
+      "name": "raw_use_codes",
+      "description": "The City's lookup of sub-property use codes to labels, from a second dataset.",
+      "columns": [
+        {
+          "name": "code",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "description",
+          "type": "VARCHAR"
+        }
+      ]
+    }
+  ],
+  "models": [
+    {
+      "name": "stg_homes",
+      "layer": "silver",
+      "description": "Typed and labelled. Use codes joined to the City's own descriptions, zoning reduced to its primary district, and the 1800 placeholder for an unknown build year turned into NULL.",
+      "sql": "-- Homes only: no parking stalls, storage units, vacant land or whole rental buildings.\nselect\n    try_cast(a.roll_number as bigint)                               as roll_number,\n    try_cast(a.roll_year as integer)                                as roll_year,\n    a.comm_name                                                     as community,\n    a.sub_property_use                                              as use_code,\n    u.description                                                   as use,\n    case a.sub_property_use\n        when 'R110' then 'Detached' when 'R111' then 'Detached'\n        when 'R120' then 'Duplex'\n        when 'R401' then 'Townhouse' when 'R402' then 'Townhouse'\n        when 'R201' then 'Condo apartment' when 'R301' then 'Condo apartment'\n    end                                                             as property_group,\n    nullif(trim(split_part(a.land_use_designation, ',', 1)), '')    as zoning,\n    -- The City records 1800 when the build year is unknown.\n    nullif(try_cast(try_cast(a.year_of_construction as double) as integer), 1800) as year_built,\n    try_cast(try_cast(a.land_size_sf as double) as integer)         as lot_sqft,\n    try_cast(try_cast(a.assessed_value as double) as integer)       as assessed_value,\n    cast(try_cast(a.mod_date as timestamp) as date)                 as mod_date\nfrom {{ ref('raw_assessments') }} a\nleft join {{ ref('raw_use_codes') }} u on u.code = a.sub_property_use\nqualify row_number() over (partition by a.roll_number order by a.mod_date desc) = 1",
+      "dependsOn": [
+        "raw_assessments",
+        "raw_use_codes"
+      ],
+      "contract": false,
+      "path": "dbt/models/housing/stg_homes.sql"
+    },
+    {
+      "name": "housing_homes",
+      "layer": "gold",
+      "description": "One row per home with its 2026 assessed value. No addresses. Served as Parquet and used to train the value model.",
+      "sql": "select roll_number, roll_year, community, use, property_group, zoning, year_built, lot_sqft, assessed_value, mod_date\nfrom {{ ref('stg_homes') }}\nwhere assessed_value > 0\norder by community, roll_number",
+      "dependsOn": [
+        "stg_homes"
+      ],
+      "served": {
+        "file": "housing-homes.parquet"
+      },
+      "mergeKey": "roll_number",
+      "contract": true,
+      "path": "dbt/models/housing/housing_homes.sql"
+    }
+  ],
+  "tests": [
+    {
+      "name": "property_group is a known value",
+      "model": "housing_homes",
+      "kind": "accepted_values",
+      "severity": "error",
+      "description": "Only the home types the model and dashboard expect.",
+      "sql": "select count(*) as failures from (\nwith all_values as (\n\n    select\n        property_group as value_field,\n        count(*) as n_records\n\n    from {{ ref('housing_homes') }}\n    group by property_group\n\n)\n\nselect *\nfrom all_values\nwhere value_field not in (\n    'Detached','Duplex','Townhouse','Condo apartment'\n)\n) dbt_test"
+    },
+    {
+      "name": "One assessment roll year",
+      "model": "housing_homes",
+      "kind": "accepted_values",
+      "severity": "error",
+      "description": "Mixing two roll years would blend two years of values into one model.",
+      "sql": "select count(*) as failures from (\nwith all_values as (\n\n    select\n        roll_year as value_field,\n        count(*) as n_records\n\n    from {{ ref('housing_homes') }}\n    group by roll_year\n\n)\n\nselect *\nfrom all_values\nwhere value_field not in (\n    2026\n)\n) dbt_test"
+    },
+    {
+      "name": "Assessed value is plausible ($50k to $20M)",
+      "model": "housing_homes",
+      "kind": "expression_is_true",
+      "severity": "warn",
+      "description": "Outliers are kept but flagged. The model trains on log value, which limits their pull.",
+      "sql": "select count(*) as failures from (\nselect * from {{ ref('housing_homes') }} where not (assessed_value between 50000 and 20000000)\n) dbt_test"
+    },
+    {
+      "name": "Year built is plausible",
+      "model": "housing_homes",
+      "kind": "expression_is_true",
+      "severity": "warn",
+      "description": "Catches zeros and typos in construction year.",
+      "sql": "select count(*) as failures from (\nselect * from {{ ref('housing_homes') }} where not (year_built is null or year_built between 1875 and year({{ today }}) + 1)\n) dbt_test"
+    },
+    {
+      "name": "roll_number is never null",
+      "model": "housing_homes",
+      "kind": "not_null",
+      "severity": "error",
+      "description": "Every home is addressable for incremental merges.",
+      "sql": "select count(*) as failures from (\nselect roll_number\nfrom {{ ref('housing_homes') }}\nwhere roll_number is null\n) dbt_test"
+    },
+    {
+      "name": "Every use code has a City label",
+      "model": "housing_homes",
+      "kind": "not_null",
+      "severity": "error",
+      "description": "If the City adds a code, the join fails loudly instead of producing unlabelled homes.",
+      "sql": "select count(*) as failures from (\nselect use\nfrom {{ ref('housing_homes') }}\nwhere use is null\n) dbt_test"
+    },
+    {
+      "name": "Year built is present",
+      "model": "housing_homes",
+      "kind": "not_null",
+      "severity": "warn",
+      "description": "Missing years are kept. The model routes missing values down their own branch.",
+      "sql": "select count(*) as failures from (\nselect year_built\nfrom {{ ref('housing_homes') }}\nwhere year_built is null\n) dbt_test"
+    },
+    {
+      "name": "At least 400,000 homes",
+      "model": "housing_homes",
+      "kind": "row_count_at_least",
+      "severity": "error",
+      "description": "Guards against a partial extract replacing the table and retraining the model on it.",
+      "sql": "select count(*) as failures from (\nselect count(*) as row_count from {{ ref('housing_homes') }} having count(*) < 400000\n) dbt_test"
+    },
+    {
+      "name": "roll_number is unique",
+      "model": "housing_homes",
+      "kind": "unique",
+      "severity": "error",
+      "description": "One row per assessed property.",
+      "sql": "select count(*) as failures from (\nselect\n    roll_number as unique_field,\n    count(*) as n_records\n\nfrom {{ ref('housing_homes') }}\nwhere roll_number is not null\ngroup by roll_number\nhaving count(*) > 1\n) dbt_test"
+    }
+  ],
+  "highlights": {
+    "sql": "select 1 as sort, 'Median detached home' as label, 'money' as format,\n       median(assessed_value)::double as value_number, null::varchar as value_text, '2026 assessment' as detail\nfrom {{ ref('housing_homes') }} where property_group = 'Detached'\n\nunion all\n\nselect 2, 'Homes assessed at $1M or more', 'percent',\n       avg((assessed_value >= 1000000)::integer), null, 'of all homes'\nfrom {{ ref('housing_homes') }}\n\nunion all\n\nselect * from (\n    select 3, 'Highest-value community', 'text', null, community, 'by median detached value'\n    from {{ ref('housing_homes') }}\n    where property_group = 'Detached' and community not like 'RESIDUAL%'\n    group by community having count(*) >= 50\n    order by median(assessed_value) desc limit 1\n)"
+  },
+  "contract": {
+    "owner": "Cody Chandler",
+    "cadence": "Weekly, Mondays at 10:00 UTC, via Airflow on GitHub Actions",
+    "freshnessSlaDays": 8,
+    "primaryKeys": {
+      "housing_homes": "roll_number"
+    },
+    "consumers": [
+      "Lab dashboards",
+      "Value model",
+      "Ask the data (Claude-generated SQL)"
+    ],
+    "guarantees": [
+      "Values are the City's 2026 assessments (market value as of July 1, 2025), not sale prices.",
+      "Homes only: detached, duplex, townhouse and condo apartment units.",
+      "No addresses or owner details are served to the browser.",
+      "The model retrains only after every error-level test passes."
+    ]
+  },
+  "model": {
+    "name": "value_model",
+    "description": "XGBoost gradient-boosted trees on log assessed value, trained in Python after the tests pass. Features: community, property type, zoning, year built, lot size.",
+    "file": "housing-model.json",
+    "trainedOn": "housing_homes",
+    "path": "ml/housing_model.py"
+  }
+}

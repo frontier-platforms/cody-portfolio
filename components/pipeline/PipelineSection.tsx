@@ -1,50 +1,46 @@
-import type { ManifestEntry, Pipeline } from "@/lib/pipelines/types";
-import { FreshnessBadge } from "./FreshnessBadge";
+import type { ManifestEntry, Pipeline, RunSummary } from "@/lib/pipelines/types";
 import { PipelineExplorer } from "./PipelineExplorer";
+import { RunHistory, RunSummaryStrip } from "./RunStatus";
 
 const REPO = "https://github.com/frontier-platforms/cody-portfolio";
 
 /**
- * The pipeline behind a Lab tab: last production run (from manifest.json),
+ * The pipeline behind a Lab tab: the latest run (production, or a live run in this tab),
  * an interactive DAG with a live run, test results and the data contract.
  */
-export function PipelineSection({ pipeline, run }: { pipeline: Pipeline; run: ManifestEntry | undefined }) {
+export function PipelineSection({
+  pipeline,
+  run,
+  history,
+}: {
+  pipeline: Pipeline;
+  run: ManifestEntry | undefined;
+  history: RunSummary[];
+}) {
   const served = run?.outputs ?? [];
-  const passed = run?.tests.filter((t) => t.status === "pass").length ?? 0;
-  const warned = run?.tests.filter((t) => t.status === "warn").length ?? 0;
 
   return (
     <div className="space-y-6">
-      {run && (
-        <dl className="grid grid-cols-2 border-l border-t border-line lg:grid-cols-5">
-          <Cell label="Last production run">
-            <FreshnessBadge runAt={run.runAt} slaDays={pipeline.contract.freshnessSlaDays} />
-          </Cell>
-          <Cell label="Trigger">{run.trigger === "github-actions" ? "GitHub Actions" : "Local run"}</Cell>
-          <Cell label="Duration">{(run.durationMs / 1000).toFixed(1)} s</Cell>
-          <Cell label="Rows extracted">{run.extract.rows.toLocaleString()}</Cell>
-          <Cell label="Tests">
-            {passed} pass · {warned} warn
-          </Cell>
-        </dl>
-      )}
+      <RunSummaryStrip pipeline={pipeline} run={run} />
 
       <PipelineExplorer pipeline={pipeline} run={run} />
 
+      <RunHistory pipeline={pipeline.id} history={history} />
+
       <div className="grid gap-4 lg:grid-cols-2">
-        <section className="border border-line bg-surface p-5">
+        <section className="border border-border bg-surface p-6 rounded-md">
           <h3 className="font-semibold">Data contract</h3>
-          <p className="mt-1 text-sm text-muted">
-            What consumers of this data can rely on. Enforced by the tests above, not just written down.
+          <p className="mt-1 text-sm text-text-muted">
+            What consumers of this data can rely on. The tests above enforce every line of it.
           </p>
           <dl className="mt-4 grid grid-cols-[8rem_1fr] gap-x-4 gap-y-2 text-sm">
-            <dt className="text-muted">Owner</dt>
+            <dt className="text-text-muted">Owner</dt>
             <dd>{pipeline.contract.owner}</dd>
-            <dt className="text-muted">Refresh</dt>
+            <dt className="text-text-muted">Refresh</dt>
             <dd>{pipeline.contract.cadence}</dd>
-            <dt className="text-muted">Freshness SLA</dt>
+            <dt className="text-text-muted">Freshness SLA</dt>
             <dd>{pipeline.contract.freshnessSlaDays} days</dd>
-            <dt className="text-muted">Keys</dt>
+            <dt className="text-text-muted">Keys</dt>
             <dd className="font-mono text-xs leading-relaxed">
               {Object.entries(pipeline.contract.primaryKeys).map(([t, k]) => (
                 <span key={t} className="block">
@@ -52,14 +48,14 @@ export function PipelineSection({ pipeline, run }: { pipeline: Pipeline; run: Ma
                 </span>
               ))}
             </dd>
-            <dt className="text-muted">Consumers</dt>
+            <dt className="text-text-muted">Consumers</dt>
             <dd>{pipeline.contract.consumers.join(", ")}</dd>
-            <dt className="text-muted">Source</dt>
+            <dt className="text-text-muted">Source</dt>
             <dd>
               <a href={pipeline.source.docs} className="link">
                 {pipeline.source.name}
               </a>
-              <span className="block text-xs text-muted">{pipeline.source.licence}</span>
+              <span className="block text-xs text-text-muted">{pipeline.source.licence}</span>
             </dd>
           </dl>
           <ul className="prose-cc mt-4 text-sm">
@@ -69,57 +65,53 @@ export function PipelineSection({ pipeline, run }: { pipeline: Pipeline; run: Ma
           </ul>
         </section>
 
-        <section className="border border-line bg-surface p-5">
+        <section className="border border-border bg-surface p-6 rounded-md">
           <h3 className="font-semibold">Served files</h3>
-          <p className="mt-1 text-sm text-muted">
+          <p className="mt-1 text-sm text-text-muted">
             Gold models written as Parquet and committed, so a deploy never depends on a third-party API.
           </p>
-          <ul className="mt-4 divide-y divide-line border-y border-line text-sm">
+          <ul className="mt-4 divide-y divide-border border-y border-border text-sm">
             {served.map((o) => (
-              <li key={o.file} className="py-2.5">
+              <li key={o.file} className="py-3">
                 <div className="flex justify-between gap-3">
                   <a href={`/data/${o.file}`} className="link font-mono text-xs">
                     {o.file}
                   </a>
-                  <span className="num text-xs text-muted">
+                  <span className="num text-xs text-text-muted">
                     {o.rows.toLocaleString()} rows ·{" "}
                     {o.bytes >= 1e6 ? `${(o.bytes / 1e6).toFixed(2)} MB` : `${Math.round(o.bytes / 1e3)} KB`}
                   </span>
                 </div>
-                <p className="mt-1 truncate font-mono text-[0.7rem] text-muted" title={o.sha256}>
+                <p className="mt-1 truncate font-mono text-xs text-text-muted" title={o.sha256}>
                   sha256 {o.sha256.slice(0, 16)}…
                 </p>
               </li>
             ))}
           </ul>
-          <ul className="mt-4 space-y-1.5 text-sm">
+          <ul className="mt-4 space-y-2 text-sm">
             <li>
-              <a href={`${REPO}/blob/main/lib/pipelines/${pipeline.id}.ts`} className="link">
-                Pipeline definition: models, tests and contract ↗
+              <a href={`${REPO}/tree/main/dbt/models/${pipeline.id}`} className="link">
+                dbt models, tests and contract ↗
               </a>
             </li>
             <li>
-              <a href={`${REPO}/blob/main/lib/pipelines/runner.ts`} className="link">
-                The runner, shared by Node and the browser ↗
+              <a href="/dbt-docs/index.html" className="link">
+                dbt docs and lineage
+              </a>
+            </li>
+            <li>
+              <a href={`${REPO}/blob/main/airflow/dags/lab_refresh.py`} className="link">
+                The Airflow DAG ↗
               </a>
             </li>
             <li>
               <a href={`${REPO}/actions/workflows/refresh-data.yml`} className="link">
-                Scheduled runs on GitHub Actions ↗
+                Weekly runs on GitHub Actions ↗
               </a>
             </li>
           </ul>
         </section>
       </div>
-    </div>
-  );
-}
-
-function Cell({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <div className="border-b border-r border-line bg-surface p-4">
-      <dt className="text-xs text-muted">{label}</dt>
-      <dd className="num mt-1 text-sm">{children}</dd>
     </div>
   );
 }

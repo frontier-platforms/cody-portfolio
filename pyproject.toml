@@ -1,0 +1,30 @@
+[project]
+name = "cody-portfolio-data"
+version = "0.1.0"
+description = "Data platform behind the Lab: Python ingest, dbt models and tests, XGBoost value model, Airflow DAG."
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "duckdb",
+  "dbt-core",
+  "dbt-duckdb",
+  "requests",
+  "pandas",
+  "numpy",
+  "pyyaml>=6.0.3",
+  "xgboost==2.1.4",
+]
+
+[dependency-groups]
+dev = ["pytest", "ruff"]
+# Airflow is only needed to execute the DAG (CI does this weekly). It's large, so it's opt-in:
+#   uv sync --group airflow
+airflow = ["apache-airflow"]
+
+[tool.uv]
+package = false
+
+[tool.ruff]
+line-length = 110
+
+[tool.pytest.ini_options]
+testpaths = ["ml/tests", "ingest/tests"]

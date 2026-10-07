@@ -98,14 +98,14 @@ WHERE year(issued_date) = ${year}
           }}
         />
         <label className="flex items-center gap-2 text-sm">
-          <span className="text-muted">Year</span>
+          <span className="text-text-muted">Year</span>
           <select
             value={year}
             onChange={(e) => {
               setYear(Number(e.target.value));
               track("lab_filter_changed", { dataset: "permits", control: "year", value: e.target.value });
             }}
-            className="border border-line bg-surface px-2 py-1.5 font-mono text-sm"
+            className="border border-border bg-surface px-2 py-2 font-mono text-sm rounded-md"
           >
             {YEARS.map((y) => (
               <option key={y} value={y}>
@@ -116,7 +116,7 @@ WHERE year(issued_date) = ${year}
         </label>
       </div>
 
-      <dl className="grid grid-cols-2 border-l border-t border-line lg:grid-cols-4">
+      <dl className="grid grid-cols-2 border-l border-t border-border lg:grid-cols-4">
         <Stat
           label={`New housing units permitted, ${year}${partial ? " to date" : ""}`}
           value={formatNumber(num(yearRow, "units"))}
@@ -157,7 +157,7 @@ WHERE year(issued_date) = ${year}
           <BarChart
             data={days.rows.map((r) => ({ label: String(r.year), value: num(r, "median_days") }))}
             highlight={(d) => d.label === String(year)}
-            color="var(--ink)"
+            color="var(--color-data-3)"
             formatValue={(n) => `${Math.round(n)}d`}
             summary="Bar chart of median days between application and issue for new residential permits, by year."
           />
@@ -214,7 +214,7 @@ function DotMap({ rows }: { rows: Row[] }) {
     if (!ctx) return;
     ctx.scale(dpr, dpr);
     ctx.clearRect(0, 0, w, h);
-    const accent = getComputedStyle(canvas).getPropertyValue("--accent").trim() || "#c2410c";
+    const accent = getComputedStyle(canvas).getPropertyValue("--color-data-1").trim();
     ctx.fillStyle = accent;
     ctx.globalAlpha = 0.45;
     for (const r of rows) {

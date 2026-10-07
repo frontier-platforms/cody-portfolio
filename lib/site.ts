@@ -1,9 +1,9 @@
 /** Single source for names, links and navigation used across the site. */
 export const site = {
   name: "Cody Chandler",
-  title: "Cody Chandler · Data, product and growth",
+  title: "Cody Chandler · Technology and data leader",
   description:
-    "Calgary-based data and product leader. I build data platforms, analytics and AI features that sales, marketing and leadership use to make decisions.",
+    "Data and product leader in Calgary, with a background in sales, marketing and finance. I help teams grow revenue with better data and products.",
   location: "Calgary, Alberta",
   email: "codypchandler@gmail.com",
   linkedin: "https://www.linkedin.com/in/codypchandler/" as string | null,
@@ -20,9 +20,11 @@ export const site = {
       : "http://localhost:3000"),
 } as const;
 
+/** BRAND.md section 6 (v1.3): Work, Lab, About, Contact. */
 export const nav = [
+  { href: "/", label: "Home" },
   { href: "/work", label: "Work" },
-  { href: "/projects", label: "Projects" },
   { href: "/lab", label: "Lab" },
   { href: "/about", label: "About" },
+  { href: "/contact", label: "Contact" },
 ] as const;

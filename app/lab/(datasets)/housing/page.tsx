@@ -32,8 +32,8 @@ export default function HousingLab() {
                 it’s judged against the obvious baseline, not against nothing.
               </p>
               <p>
-                The gradient-boosting code is written from scratch, so the same code trains in the weekly
-                pipeline and in your browser.
+                It’s XGBoost, trained in Python. The same Python file trains in the weekly pipeline and,
+                through Pyodide, in your browser.
               </p>
             </>
           ),

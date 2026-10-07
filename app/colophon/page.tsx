@@ -35,19 +35,20 @@ const sections = [
     body: (
       <>
         <p>
-          Each Lab dataset is a small data product with a pipeline defined once, as data: raw sources, SQL
-          models in bronze, silver and gold layers, tests and a contract. Models reference each other with{" "}
-          <code>{"{{ ref('name') }}"}</code>, the same way dbt does.
+          Each Lab dataset is a small data product. Python pulls raw rows from the source API. A dbt project
+          on DuckDB builds bronze, silver and gold layers, with tests and enforced contracts on the gold
+          tables.
         </p>
         <p>
-          <strong>One definition, two runtimes.</strong> A small runner takes any engine that can execute SQL.
-          In production it drives DuckDB in Node; in the Lab it drives DuckDB compiled to WebAssembly in your
-          browser. The models, tests and results are identical.
+          <strong>One definition, two runtimes.</strong> Each publish exports the SQL dbt compiled for every
+          model and test. The Lab runs that same SQL in DuckDB compiled to WebAssembly in your browser. The
+          models, tests and results match.
         </p>
         <ul>
           <li>
-            <strong>Scheduled.</strong> GitHub Actions runs every pipeline weekly, then commits the new
-            Parquet files and a run manifest. Vercel redeploys on the commit.
+            <strong>Orchestrated.</strong> An Airflow DAG runs extract, load, dbt build, model training and
+            publish. GitHub Actions runs it weekly with <code>airflow dags test</code>, so there is no server
+            to host. Vercel redeploys on the commit.
           </li>
           <li>
             <strong>Tested.</strong> Uniqueness, nulls, accepted values, ranges, referential integrity,
@@ -55,19 +56,27 @@ const sections = [
             score for every game.
           </li>
           <li>
-            <strong>Contracted.</strong> An error-level failure stops the run before anything is written, so
+            <strong>Contracted.</strong> An error-level failure stops the DAG before anything is written, so
             the last good snapshot keeps serving. Warnings are real issues in the source data, shown rather
             than hidden.
           </li>
           <li>
             <strong>Incremental.</strong> Live permit runs use the City’s <code>:updated_at</code> field as a
-            watermark, so status changes on old permits are picked up, not just new applications. Changed rows
-            merge on the primary key.
+            watermark, so status changes on old permits are picked up along with new applications. Changed
+            rows merge on the primary key.
           </li>
         </ul>
         <p>
-          <a href={`${REPO}/tree/main/lib/pipelines`} className="link">
-            Read the pipeline code
+          <a href={`${REPO}/tree/main/dbt`} className="link">
+            Read the dbt project
+          </a>
+          ,{" "}
+          <a href={`${REPO}/blob/main/airflow/dags/lab_refresh.py`} className="link">
+            the Airflow DAG
+          </a>
+          , or{" "}
+          <a href="/dbt-docs/index.html" className="link">
+            browse the dbt docs and lineage
           </a>
           .
         </p>
@@ -80,10 +89,13 @@ const sections = [
     body: (
       <>
         <p>
-          The housing tab’s model is gradient-boosted regression trees written from scratch in TypeScript:
-          histogram splits, row subsampling, L2-regularized leaves and a seeded random generator so runs are
-          reproducible. No ML library, so the same code trains on 390,000 homes in the weekly pipeline and on
-          a sample in your browser.
+          The housing tab’s model is gradient-boosted trees in Python, using XGBoost. It trains on 390,000
+          homes in the weekly Airflow run. The same Python file trains on a sample in your browser through
+          Pyodide.
+        </p>
+        <p>
+          The trees are exported to JSON, and a small TypeScript scorer explains each estimate. Tests check
+          its predictions match XGBoost’s.
         </p>
         <ul>
           <li>
@@ -104,7 +116,7 @@ const sections = [
           </li>
         </ul>
         <p>
-          <a href={`${REPO}/tree/main/lib/ml`} className="link">
+          <a href={`${REPO}/blob/main/ml/housing_model.py`} className="link">
             Read the model code
           </a>
           .
@@ -133,10 +145,10 @@ const sections = [
       <>
         <p>
           The Telemetry panel (on the Lab tabs, or{" "}
-          <kbd className="border border-line px-1 font-mono text-xs">⌘K</kbd> → Open telemetry) shows what
-          this tab has done: Core Web Vitals measured with the web-vitals library, the DuckDB engine’s
-          start-up time, every table downloaded, every query with its latency and p50 and p95, each analytics
-          event, and every pipeline run.
+          <kbd className="border border-border px-1 font-mono text-xs rounded-md">⌘K</kbd> → Open telemetry)
+          shows what this tab has done: Core Web Vitals measured with the web-vitals library, the DuckDB
+          engine’s start-up time, every table downloaded, every query with its latency and p50 and p95, each
+          analytics event, and every pipeline run.
         </p>
         <p>It’s all in memory in your browser. Nothing in the panel is sent anywhere.</p>
       </>
@@ -209,14 +221,19 @@ const sections = [
     body: (
       <>
         <p>
-          The look borrows from a working notebook. Geist for text, Geist Mono for numbers and labels,
-          fixed-width digits so figures line up, one burnt-orange accent and thin rules instead of cards and
-          shadows. Flames red shows up only where it encodes Flames data.
+          A written brand guide in the repo sets every visual and writing rule. Fraunces for headings, Geist
+          for text and Geist Mono for numbers. One deep teal accent marks links, the main action and the key
+          metric. Charts use a separate four-color data palette.
         </p>
         <p>
-          Charts are hand-written SVG and canvas, not a charting library. They do exactly what this site needs
-          and keep the JavaScript small. Motion is limited to hover and focus states and turns off when your
-          system asks for reduced motion. Light and dark themes follow your system until you pick one.
+          Every color, size, space and radius comes from one tokens file. The styling layer can only produce
+          values from that file. A brand check in CI fails on hardcoded colors, off-scale sizes, em dashes,
+          banned phrases and case studies that skip the format.
+        </p>
+        <p>
+          Charts are hand-written SVG and canvas, not a charting library. Motion is limited to hover and
+          focus, and turns off when your system asks for reduced motion. Light and dark themes follow your
+          system until you pick one.
         </p>
       </>
     ),
@@ -225,12 +242,10 @@ const sections = [
 
 export default function ColophonPage() {
   return (
-    <div className="mx-auto max-w-6xl px-4 pt-12 sm:px-6 sm:pt-20">
+    <div className="mx-auto max-w-site px-4 pt-12 sm:px-6 sm:pt-16">
       <p className="label">Colophon</p>
-      <h1 className="mt-3 max-w-3xl text-balance text-4xl font-semibold tracking-tight sm:text-5xl">
-        How this site is built.
-      </h1>
-      <p className="mt-5 max-w-2xl text-lg text-muted">
+      <h1 className="mt-3 max-w-measure text-balance text-2xl sm:text-4xl">How this site is built.</h1>
+      <p className="mt-6 max-w-measure text-lg text-text-muted">
         The site is part of the portfolio. Here’s what’s under it, and why. The code is{" "}
         <a href={REPO} className="link">
           on GitHub
@@ -238,22 +253,22 @@ export default function ColophonPage() {
         .
       </p>
 
-      <div className="mt-12 grid gap-10 lg:grid-cols-[12rem_1fr]">
+      <div className="mt-12 grid gap-12 lg:grid-cols-[12rem_1fr]">
         <nav aria-label="On this page" className="hidden lg:block">
           <ul className="sticky top-24 space-y-2 text-sm">
             {sections.map((s) => (
               <li key={s.id}>
-                <a href={`#${s.id}`} className="text-muted hover:text-ink">
+                <a href={`#${s.id}`} className="text-text-muted hover:text-text">
                   {s.title}
                 </a>
               </li>
             ))}
           </ul>
         </nav>
-        <div className="min-w-0 max-w-2xl">
+        <div className="min-w-0 max-w-measure">
           {sections.map((s, i) => (
-            <section key={s.id} id={s.id} className="border-t border-line pb-10 pt-4">
-              <h2 className="label text-ink">
+            <section key={s.id} id={s.id} className="border-t border-border pb-12 pt-4">
+              <h2 className="label text-text">
                 <span className="text-accent">{String(i + 1).padStart(2, "0")} / </span>
                 {s.title}
               </h2>
@@ -261,7 +276,7 @@ export default function ColophonPage() {
               {s.id === "tracking" && <TrackingPlanTable />}
             </section>
           ))}
-          <p className="text-sm text-muted">
+          <p className="text-sm text-text-muted">
             Want to see it running?{" "}
             <Link href="/lab" className="link">
               Open the Lab
@@ -276,33 +291,33 @@ export default function ColophonPage() {
 
 function TrackingPlanTable() {
   return (
-    <div className="mt-6 overflow-x-auto border border-line">
+    <div className="mt-6 overflow-x-auto border border-border rounded-md">
       <table className="w-full text-left text-sm">
-        <thead className="bg-surface text-xs text-muted">
+        <thead className="bg-surface text-xs text-text-muted">
           <tr>
-            <th scope="col" className="px-3 py-2 font-normal">
+            <th scope="col" className="px-3 py-2 font-regular">
               Event
             </th>
-            <th scope="col" className="px-3 py-2 font-normal">
+            <th scope="col" className="px-3 py-2 font-regular">
               Properties
             </th>
           </tr>
         </thead>
         <tbody>
           {Object.entries(trackingPlan).map(([name, spec]) => (
-            <tr key={name} className="border-t border-line align-top">
-              <td className="px-3 py-2.5">
+            <tr key={name} className="border-t border-border align-top">
+              <td className="px-3 py-3">
                 <code className="font-mono text-xs">{name}</code>
-                <p className="mt-1 text-xs text-muted">{spec.description}</p>
+                <p className="mt-1 text-xs text-text-muted">{spec.description}</p>
               </td>
-              <td className="px-3 py-2.5 font-mono text-xs leading-relaxed">
+              <td className="px-3 py-3 font-mono text-xs leading-relaxed">
                 {Object.entries(spec.props).length === 0 ? (
-                  <span className="text-muted">none</span>
+                  <span className="text-text-muted">none</span>
                 ) : (
                   Object.entries(spec.props).map(([key, rule]) => (
                     <span key={key} className="block">
                       {key}:{" "}
-                      <span className="text-muted">
+                      <span className="text-text-muted">
                         {"values" in rule && rule.values ? rule.values.join(" | ") : rule.type}
                       </span>
                     </span>

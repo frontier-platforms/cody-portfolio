@@ -1,8 +1,9 @@
 import type { Model, ModelResult, Pipeline, SourceTable, Test, TestResult } from "./types";
 
 /**
- * The only thing the runner needs from a database. Implemented by
- * @duckdb/node-api in scripts/run-pipeline.ts and by DuckDB-WASM in the Lab.
+ * The only thing the runner needs from a database. Production builds run in
+ * dbt (via Airflow); this runner replays the dbt-compiled SQL in DuckDB-WASM
+ * for the Lab's live runs.
  */
 export interface Engine {
   exec(sql: string): Promise<void>;
@@ -82,39 +83,12 @@ export async function runModels(
 }
 
 /**
- * Compiles a declarative test to SQL returning one row: `failures`.
- * `{{ today }}` becomes a DATE literal for the run date. Tests never call
- * current_date: in DuckDB-WASM without ICU it isn't a plain DATE, and a
- * fixed date makes results reproducible.
+ * A test's dbt-compiled SQL for a given schema. `{{ today }}` becomes a DATE
+ * literal for the run date: DuckDB-WASM without ICU doesn't treat current_date
+ * as a plain DATE, and a fixed date keeps results reproducible.
  */
-export function compileTest(test: Test, schema: string, today: string): string {
-  return compile(test, schema, today).replaceAll("{{ today }}", `DATE '${today}'`);
-}
-
-function compile(test: Test, schema: string, today: string): string {
-  const t = `${schema}.${test.model}`;
-  switch (test.kind) {
-    case "not_null":
-      return `SELECT count(*) AS failures FROM ${t} WHERE ${test.column} IS NULL`;
-    case "unique":
-      return `SELECT count(*) AS failures FROM (SELECT ${test.column} FROM ${t} GROUP BY 1 HAVING count(*) > 1)`;
-    case "accepted_values": {
-      const list = test.values.map((v) => (typeof v === "number" ? v : `'${v}'`)).join(", ");
-      return `SELECT count(*) AS failures FROM ${t} WHERE ${test.column} NOT IN (${list})`;
-    }
-    case "expression":
-      return `SELECT count(*) AS failures FROM ${t} WHERE NOT (${test.expression})`;
-    case "relationship":
-      return `SELECT count(*) AS failures FROM ${t} c
-WHERE c.${test.column} IS NOT NULL
-  AND NOT EXISTS (SELECT 1 FROM ${schema}.${test.to.model} p WHERE p.${test.to.column} = c.${test.column})`;
-    case "row_count":
-      return `SELECT CASE WHEN count(*) >= ${test.min} THEN 0 ELSE 1 END AS failures FROM ${t}`;
-    case "freshness":
-      return `SELECT CASE WHEN max(${test.column}) >= DATE '${today}' - INTERVAL ${test.maxAgeDays} DAY THEN 0 ELSE 1 END AS failures FROM ${t}`;
-    case "custom":
-      return render(test.sql, schema);
-  }
+export function testSql(test: Test, schema: string, today: string): string {
+  return render(test.sql, schema).replaceAll("{{ today }}", `DATE '${today}'`);
 }
 
 export async function runTests(
@@ -124,7 +98,7 @@ export async function runTests(
 ): Promise<TestResult[]> {
   const results: TestResult[] = [];
   for (const test of pipeline.tests) {
-    const sql = compileTest(test, schema, today);
+    const sql = testSql(test, schema, today);
     const started = now();
     const [row] = await engine.query(sql);
     const failures = Number(row?.failures ?? 0);
@@ -136,7 +110,7 @@ export async function runTests(
       status: failures === 0 ? "pass" : test.severity === "error" ? "fail" : "warn",
       failures,
       ms: now() - started,
-      sql: compileTest(test, "main", today),
+      sql: testSql(test, "main", today),
     };
     results.push(result);
     onEvent?.({ type: "test", result });

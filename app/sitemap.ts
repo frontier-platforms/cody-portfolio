@@ -6,11 +6,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const pages = [
     "",
     "/work",
-    "/projects",
-    "/lab/calgary",
-    "/lab/housing",
+    "/lab",
     "/lab/flames",
+    "/lab/housing",
+    "/lab/calgary",
     "/about",
+    "/contact",
     "/colophon",
   ];
   const work = (await getWorkSlugs()).map((s) => `/work/${s}`);

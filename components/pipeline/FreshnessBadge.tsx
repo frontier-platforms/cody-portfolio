@@ -21,8 +21,8 @@ export function FreshnessBadge({ runAt, slaDays }: { runAt: string; slaDays: num
   return (
     <span className="flex flex-col">
       <span>{age} ago</span>
-      <span className={`text-xs ${fresh ? "text-[#15803d] dark:text-[#4ade80]" : "text-flames"}`}>
-        {fresh ? "● within SLA" : "● past SLA"}
+      <span className={`text-xs ${fresh ? "text-text-muted" : "font-semibold"}`}>
+        {fresh ? "✓ Within SLA" : "! Past SLA"}
       </span>
     </span>
   );

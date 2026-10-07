@@ -17,13 +17,9 @@ export function TelemetryButton({ location }: { location: string }) {
       type="button"
       onClick={() => openTelemetry(location)}
       aria-label="Open telemetry"
-      className="flex items-center gap-2 border border-line px-2.5 py-2 sm:py-1 font-mono text-xs text-muted transition-colors hover:border-ink hover:text-ink"
+      className="flex items-center gap-2 border border-border px-3 py-2 sm:py-1 font-mono text-xs text-text-muted transition-colors hover:border-text hover:text-text rounded-md"
     >
-      <span
-        key={count}
-        aria-hidden
-        className="size-1.5 animate-[ping_0.6s_ease-out_1] rounded-full bg-accent"
-      />
+      <span key={count} aria-hidden className="size-2 rounded-full bg-accent" />
       <span className="sr-only sm:not-sr-only">Telemetry</span>
       <span className="num hidden sm:inline">· {count} queries</span>
     </button>

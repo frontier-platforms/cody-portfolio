@@ -82,7 +82,7 @@ export function AskData({ dataset }: { dataset: DatasetKey }) {
   const ds = datasets[dataset];
 
   return (
-    <div className="border border-line bg-surface">
+    <div className="border border-border bg-surface rounded-md">
       <div className="space-y-4 p-4 sm:p-6">
         <form
           onSubmit={(e) => {
@@ -100,7 +100,7 @@ export function AskData({ dataset }: { dataset: DatasetKey }) {
             onChange={(e) => setQuestion(e.target.value)}
             maxLength={300}
             placeholder={ds.examples[0]}
-            className="min-w-0 flex-1 border border-line bg-paper px-3 py-2.5 text-base outline-none focus:border-ink"
+            className="min-w-0 flex-1 border border-border bg-bg px-3 py-3 text-base outline-none focus:border-text rounded-md"
           />
           <button
             type="submit"
@@ -110,14 +110,14 @@ export function AskData({ dataset }: { dataset: DatasetKey }) {
             {status === "thinking" ? "Writing SQL…" : status === "running" ? "Running…" : "Ask"}
           </button>
         </form>
-        <ul className="flex flex-wrap gap-1.5" aria-label="Example questions">
+        <ul className="flex flex-wrap gap-2" aria-label="Example questions">
           {ds.examples.map((ex) => (
             <li key={ex}>
               <button
                 type="button"
                 onClick={() => ask(ex, "example")}
                 disabled={status !== "idle"}
-                className="border border-line px-2 py-1 text-left text-xs text-muted transition-colors hover:border-ink hover:text-ink"
+                className="min-h-11 rounded-md border border-border px-3 py-2 text-left text-sm text-text-muted transition-colors hover:border-text hover:text-text"
               >
                 {ex}
               </button>
@@ -126,15 +126,15 @@ export function AskData({ dataset }: { dataset: DatasetKey }) {
         </ul>
       </div>
 
-      <div aria-live="polite" className="border-t border-line">
-        {error && <p className="px-4 py-3 font-mono text-sm text-accent-ink sm:px-6">{error}</p>}
-        {answer && <p className="px-4 pt-4 text-[0.95rem] sm:px-6">{answer.explanation}</p>}
+      <div aria-live="polite" className="border-t border-border">
+        {error && <p className="px-4 py-3 font-mono text-sm text-accent sm:px-6">{error}</p>}
+        {answer && <p className="px-4 pt-4 text-base sm:px-6">{answer.explanation}</p>}
         {result && answer && <ResultView result={result} answer={answer} />}
       </div>
 
       {(answer?.sql || sql) && (
-        <details className="group border-t border-line" open={false}>
-          <summary className="cursor-pointer list-none px-4 py-2 font-mono text-xs text-muted hover:text-ink sm:px-6">
+        <details className="group border-t border-border" open={false}>
+          <summary className="cursor-pointer list-none px-4 py-2 font-mono text-xs text-text-muted hover:text-text sm:px-6">
             <span className="group-open:hidden">SQL Claude wrote. Edit and re-run it ↓</span>
             <span className="hidden group-open:inline">Hide SQL ↑</span>
           </summary>
@@ -148,7 +148,7 @@ export function AskData({ dataset }: { dataset: DatasetKey }) {
               onChange={(e) => setSql(e.target.value)}
               rows={Math.min(14, sql.split("\n").length + 1)}
               spellCheck={false}
-              className="w-full border border-line bg-paper p-3 font-mono text-xs leading-relaxed outline-none focus:border-ink"
+              className="w-full border border-border bg-bg p-3 font-mono text-xs leading-relaxed outline-none focus:border-text rounded-md"
             />
             <button
               type="button"
@@ -176,7 +176,7 @@ function ResultView({ result, answer }: { result: Result; answer: Answer }) {
 
   return (
     <div className="space-y-4 px-4 py-4 sm:px-6">
-      <p className="num text-xs text-muted">
+      <p className="num text-xs text-text-muted">
         {rows.length} row{rows.length === 1 ? "" : "s"} · {Math.max(1, Math.round(ms))} ms in your browser
       </p>
       {answer.chart === "bar" && x && numeric && rows.length <= 40 && (
@@ -190,7 +190,7 @@ function ResultView({ result, answer }: { result: Result; answer: Answer }) {
           series={[
             {
               name: y!,
-              color: "var(--accent)",
+              color: "var(--color-data-1)",
               width: 2,
               points: rows.map((r, i) => ({ x: i + 1, y: Number(r[y!] ?? 0) })),
             },
@@ -200,15 +200,15 @@ function ResultView({ result, answer }: { result: Result; answer: Answer }) {
           summary={`Line chart of ${y} over ${x}.`}
         />
       )}
-      <div className="max-h-80 overflow-auto border border-line">
+      <div className="max-h-80 overflow-auto border border-border rounded-md">
         <table className="w-full text-left text-sm">
-          <thead className="sticky top-0 bg-paper">
+          <thead className="sticky top-0 bg-bg">
             <tr>
               {columns.map((c) => (
                 <th
                   key={c}
                   scope="col"
-                  className="whitespace-nowrap border-b border-line px-3 py-2 font-mono text-xs font-normal text-muted"
+                  className="whitespace-nowrap border-b border-border px-3 py-2 font-mono text-xs font-regular text-text-muted"
                 >
                   {c}
                 </th>
@@ -217,11 +217,11 @@ function ResultView({ result, answer }: { result: Result; answer: Answer }) {
           </thead>
           <tbody>
             {rows.map((r, i) => (
-              <tr key={i} className="border-b border-line last:border-0">
+              <tr key={i} className="border-b border-border last:border-0">
                 {columns.map((c) => (
                   <td
                     key={c}
-                    className={`whitespace-nowrap px-3 py-1.5 ${typeof r[c] === "number" ? "num text-right" : ""}`}
+                    className={`whitespace-nowrap px-3 py-2 ${typeof r[c] === "number" ? "num text-right" : ""}`}
                   >
                     {formatCell(c, r[c])}
                   </td>

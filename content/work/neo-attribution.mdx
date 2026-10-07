@@ -1,43 +1,36 @@
 export const meta = {
   title: "Marketing attribution at Neo Financial",
   company: "Neo Financial",
+  industry: "Fintech",
   role: "Director, Marketing Operations & Analytics",
   period: "Dec 2023 to Jan 2025",
   summary:
-    "Directed a marketing analytics data mart covering attribution and paid media across Google, Meta, TikTok, Spotify and affiliates, plus acquisition cost and lifetime value models that guided where the budget went.",
+    "Built one attribution view across five paid channels, with CAC and LTV models that guided where the budget went.",
   problem: "We can't tell which marketing is working",
   status: "shipped",
   stack: ["Databricks", "dbt", "GitHub", "Hightouch", "Snowflake"],
   numbers: [
     { value: "5", label: "Paid channels in one attribution data mart" },
-    { value: "CAC · LTV", label: "Models used to allocate budget and judge return" },
-    { value: "4", label: "People on the analytics team" },
+    { value: "CAC + LTV", label: "Models used to set budget and judge return" },
   ],
   order: 2,
 };
 
-## Overview
-
-Neo Financial is a Calgary fintech offering digital banking, credit, savings and rewards as an alternative to Canada's big banks. Growth depended on paid acquisition, which raises the question every growth team ends up asking: which of these channels is actually producing customers, and what are they worth?
-
-This work built the data layer that answers it, then sent the answer back into the tools the marketing team already worked in.
-
 ## Problem
 
-Spend ran across Google, Meta, TikTok, Spotify and affiliate partners. Each platform reported its own results, and there was no shared view of what a customer cost to acquire or what they were worth once they arrived.
+Neo spent across Google, Meta, TikTok, Spotify and affiliate partners. Each platform reported its own results. There was no shared view of what a customer cost to acquire or was worth.
 
-## My role
+## Role
 
-I led a team of four analysts and owned their output, performance and development. I also ran marketing analytics, data strategy and technology partnerships, including the marketing technology budget.
+As Director, Marketing Operations & Analytics, I led a team of four analysts. I also owned martech partnerships and the martech budget.
 
 ## Solution
 
-- **A marketing analytics data mart** covering channel attribution and paid media performance across all five channels.
-- **CAC and LTV models** that put acquisition cost next to lifetime value, used to guide budget allocation and judge return on spend.
-- **Databricks and dbt** for the modelling, with **GitHub** for review, so attribution logic changed through pull requests instead of spreadsheet edits.
-- **Hightouch** to sync modelled data back into marketing tools, so the insight showed up where decisions were made.
-- **Vendor discipline.** I reviewed martech contracts and tools against actual usage to guide what we kept paying for.
-- A move to **Snowflake** late in my time there.
+- I directed a marketing analytics data mart for attribution and paid media across all five channels.
+- I built CAC and LTV models to guide budget allocation and judge return on spend.
+- We modelled in dbt on Databricks, with a GitHub review on every logic change.
+- Hightouch synced results back into marketing tools, so insights showed up where decisions were made.
+- I reviewed vendor contracts against actual usage before each renewal.
 
 <Media
   alt="Attribution model output by channel"
@@ -46,7 +39,9 @@ I led a team of four analysts and owned their output, performance and developmen
 
 ## Outcome
 
-Marketing got one shared view of channel performance and customer value to plan against, instead of five platform reports.
+<KeyNumbers numbers={meta.numbers} />
+
+Marketing planned its budget against one shared view of channel performance, instead of five platform reports.
 
 <Todo>
   Any result you can share: budget reallocated, cost per acquisition change, or reporting time saved.

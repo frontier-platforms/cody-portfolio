@@ -1,0 +1,29 @@
+# dbt project for the Lab: one schema per pipeline, raw (bronze) → stg_ (silver) → marts (gold) → highlights.
+# Build everything:  uv run dbt build --project-dir dbt --profiles-dir dbt
+name: lab
+version: "1.0.0"
+profile: lab
+
+model-paths: ["models"]
+test-paths: ["tests"]
+macro-paths: ["macros"]
+target-path: "target"
+clean-targets: ["target", "dbt_packages"]
+
+vars:
+  # NHL team id for the Calgary Flames.
+  flames_team_id: 20
+
+models:
+  lab:
+    +materialized: table
+    permits:
+      +schema: permits
+    housing:
+      +schema: housing
+    flames:
+      +schema: flames
+
+tests:
+  lab:
+    +store_failures: false

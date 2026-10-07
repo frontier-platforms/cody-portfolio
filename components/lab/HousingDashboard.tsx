@@ -86,7 +86,7 @@ ORDER BY 1`;
         }}
       />
 
-      <dl className="grid grid-cols-2 border-l border-t border-line lg:grid-cols-4">
+      <dl className="grid grid-cols-2 border-l border-t border-border lg:grid-cols-4">
         <Stat label="Median assessed value" value={s ? money(num(s, "median_value")) : "…"} />
         <Stat label="Homes" value={s ? num(s, "homes").toLocaleString() : "…"} />
         <Stat label="Median year built" value={s ? String(Math.round(num(s, "median_year"))) : "…"} />
@@ -123,7 +123,7 @@ ORDER BY 1`;
               label: num(r, "bucket") >= 2e6 ? "$2M+" : money(num(r, "bucket")),
               value: num(r, "homes"),
             }))}
-            color="var(--ink)"
+            color="var(--color-data-3)"
             summary="Histogram of homes by assessed value in $100,000 bands."
           />
         </QueryCard>

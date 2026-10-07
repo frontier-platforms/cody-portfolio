@@ -1,4 +1,4 @@
-/** Page section with the numbered mono label ("01 / Work") that runs through the site. */
+/** BRAND.md section 6, section header: a small mono label above an h2 in the display face. */
 export function Section({
   index,
   label,
@@ -12,14 +12,14 @@ export function Section({
   children: React.ReactNode;
   className?: string;
 }) {
-  const headingId = id ? `${id}-label` : undefined;
+  const headingId = id ? `${id}-heading` : undefined;
   return (
-    <section id={id} aria-labelledby={headingId} className={`mx-auto max-w-6xl px-4 sm:px-6 ${className}`}>
-      <div className="mb-8 flex items-center gap-3 border-t border-ink pt-3">
-        <p id={headingId} className="label text-ink">
-          {index && <span className="text-accent">{index} / </span>}
+    <section id={id} aria-labelledby={headingId} className={`mx-auto max-w-site px-4 sm:px-6 ${className}`}>
+      <div className="mb-8 border-t border-border pt-4">
+        {index && <p className="label">{index}</p>}
+        <h2 id={headingId} className="mt-2 text-2xl sm:text-3xl">
           {label}
-        </p>
+        </h2>
       </div>
       {children}
     </section>

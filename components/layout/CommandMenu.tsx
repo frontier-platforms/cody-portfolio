@@ -11,12 +11,12 @@ export type CommandItem = { href: string; label: string; hint?: string };
 const TELEMETRY = "#telemetry";
 
 const baseItems: CommandItem[] = [
-  { href: "/", label: "Home" },
   ...nav.map((n) => ({ href: n.href, label: n.label })),
-  { href: "/lab/calgary", label: "Calgary building permits", hint: "Lab" },
+  { href: "/work#side-projects", label: "Side projects", hint: "Valve and Signl List" },
+  { href: "/lab/flames", label: "Calgary Flames shot analysis", hint: "Lab" },
   { href: "/lab/housing", label: "Calgary housing values", hint: "Lab" },
   { href: "/lab/housing#model", label: "Home value predictor", hint: "Lab · ML" },
-  { href: "/lab/flames", label: "Flames shot map", hint: "Lab" },
+  { href: "/lab/calgary", label: "Calgary building permits", hint: "Lab" },
   { href: "/lab/calgary#pipeline", label: "Run a pipeline live", hint: "Lab · data" },
   { href: "/lab/calgary#ask", label: "Ask the data", hint: "Lab · AI" },
   { href: TELEMETRY, label: "Open telemetry", hint: "Queries · events · vitals" },
@@ -83,7 +83,7 @@ export function CommandMenu({ items }: { items: CommandItem[] }) {
         type="button"
         onClick={open}
         aria-label="Open command menu"
-        className="hidden items-center gap-1.5 border border-line px-2 py-1 font-mono text-xs text-muted transition-colors hover:border-ink hover:text-ink sm:flex"
+        className="hidden min-h-11 items-center gap-2 rounded-md px-2 font-mono text-xs text-text-muted transition-colors hover:text-text sm:flex"
       >
         <span aria-hidden>⌘K</span>
         <span className="sr-only">Search pages</span>
@@ -92,7 +92,7 @@ export function CommandMenu({ items }: { items: CommandItem[] }) {
         ref={dialog}
         aria-label="Jump to a page"
         onClick={(e) => e.target === dialog.current && dialog.current?.close()}
-        className="m-auto mt-[12vh] w-[min(36rem,calc(100vw-2rem))] border border-line bg-surface p-0 text-ink shadow-2xl backdrop:bg-black/40"
+        className="m-auto mt-24 w-[min(36rem,calc(100vw-2rem))] border border-border bg-surface p-0 text-text backdrop:bg-text/40 rounded-md"
       >
         <input
           autoFocus
@@ -106,7 +106,7 @@ export function CommandMenu({ items }: { items: CommandItem[] }) {
           aria-label="Search pages"
           aria-controls="command-results"
           aria-activedescendant={results[active] ? `cmd-${active}` : undefined}
-          className="w-full border-b border-line bg-transparent px-4 py-3 text-base outline-none placeholder:text-muted"
+          className="w-full border-b border-border bg-transparent px-4 py-3 text-base outline-none placeholder:text-text-muted"
         />
         <ul id="command-results" role="listbox" className="max-h-80 overflow-y-auto py-1">
           {results.map((item, i) => (
@@ -117,13 +117,13 @@ export function CommandMenu({ items }: { items: CommandItem[] }) {
               aria-selected={i === active}
               onMouseEnter={() => setActive(i)}
               onClick={() => go(item)}
-              className="flex cursor-pointer items-center justify-between px-4 py-2 text-sm aria-selected:bg-accent-soft"
+              className="flex min-h-11 cursor-pointer items-center justify-between px-4 text-sm aria-selected:bg-accent-subtle"
             >
               <span>{item.label}</span>
-              {item.hint && <span className="font-mono text-xs text-muted">{item.hint}</span>}
+              {item.hint && <span className="font-mono text-xs text-text-muted">{item.hint}</span>}
             </li>
           ))}
-          {results.length === 0 && <li className="px-4 py-3 text-sm text-muted">No matches.</li>}
+          {results.length === 0 && <li className="px-4 py-3 text-sm text-text-muted">No matches.</li>}
         </ul>
       </dialog>
     </>

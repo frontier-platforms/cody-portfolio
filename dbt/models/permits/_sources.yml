@@ -1,0 +1,45 @@
+version: 2
+
+sources:
+  - name: permits
+    schema: permits
+    description: Calgary building permits, loaded as-is from the City's open data API.
+    meta:
+      pipeline:
+        id: permits
+        label: Calgary building permits
+        source_name: "City of Calgary Open Data · Building Permits"
+        source_url: https://data.calgary.ca/resource/c2es-76ed.json
+        docs: https://data.calgary.ca/Business-and-Economic-Activity/Building-Permits/c2es-76ed
+        licence: "Open Government Licence – City of Calgary"
+      contract:
+        owner: Cody Chandler
+        cadence: "Weekly, Mondays at 10:00 UTC, via Airflow on GitHub Actions"
+        freshness_sla_days: 8
+        consumers: ["Lab dashboards", "Ask the data (Claude-generated SQL)"]
+        guarantees:
+          - permit_id is unique and never null.
+          - Dates are DATE values. No timestamps, no time zones.
+          - Missing coordinates are NULL, never 0.
+          - A failing error-level test blocks the refresh. The last good snapshot keeps serving.
+          - Schema changes land in this repo, reviewed, before they ship.
+    tables:
+      - name: raw_permits
+        description: Permit records exactly as the City's API returns them. Every field is text.
+        columns:
+          - { name: permitnum, data_type: varchar }
+          - { name: applieddate, data_type: varchar }
+          - { name: issueddate, data_type: varchar }
+          - { name: completeddate, data_type: varchar }
+          - { name: statuscurrent, data_type: varchar }
+          - { name: permittypemapped, data_type: varchar }
+          - { name: permitclassmapped, data_type: varchar }
+          - { name: permitclassgroup, data_type: varchar }
+          - { name: workclassgroup, data_type: varchar }
+          - { name: housingunits, data_type: varchar }
+          - { name: estprojectcost, data_type: varchar }
+          - { name: totalsqft, data_type: varchar }
+          - { name: communityname, data_type: varchar }
+          - { name: latitude, data_type: varchar }
+          - { name: longitude, data_type: varchar }
+          - { name: source_updated_at, data_type: varchar }

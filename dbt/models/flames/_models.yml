@@ -1,0 +1,96 @@
+version: 2
+
+models:
+  - name: stg_games
+    description: Finished regular-season games, re-expressed from the Flames' side of the ice.
+  - name: stg_shots
+    description: Shot attempts with strength derived from the situation code and coordinates flipped so every shooter attacks the right-hand net.
+
+  - name: flames_games
+    description: One row per game with result and standings points.
+    config:
+      contract: { enforced: true }
+    columns:
+      - name: game_id
+        data_type: bigint
+        data_tests:
+          - unique:
+              config: { meta: { label: "game_id is unique", description: "One row per game." } }
+      - { name: season, data_type: varchar }
+      - { name: game_date, data_type: date }
+      - { name: home, data_type: boolean }
+      - { name: opponent, data_type: varchar }
+      - { name: goals_for, data_type: integer }
+      - { name: goals_against, data_type: integer }
+      - name: result
+        data_type: varchar
+        data_tests:
+          - accepted_values:
+              arguments: { values: ["W", "L", "OTL"] }
+              config: { meta: { label: "result is W, L or OTL", description: "No ties, no unknowns." } }
+      - { name: decided_in, data_type: varchar }
+      - { name: points, data_type: integer }
+    data_tests:
+      - expression_is_true:
+          arguments: { expression: "points = case result when 'W' then 2 when 'OTL' then 1 else 0 end" }
+          config:
+            {
+              meta:
+                { label: "Points match the result", description: "Standings logic is applied consistently." },
+            }
+      - row_count_at_least:
+          arguments: { min_rows: 82 }
+          config:
+            {
+              meta:
+                {
+                  label: "At least 82 games",
+                  description: "Guards against a partial extract replacing full seasons.",
+                },
+            }
+
+  - name: flames_shots
+    description: Every shot attempt in those games, for and against.
+    config:
+      contract: { enforced: true }
+    columns:
+      - name: game_id
+        data_type: bigint
+        data_tests:
+          - relationships:
+              arguments: { to: "ref('flames_games')", field: game_id }
+              config:
+                {
+                  meta:
+                    {
+                      label: "Every shot belongs to a known game",
+                      description: "Referential integrity between the two served tables.",
+                    },
+                }
+      - { name: period, data_type: integer }
+      - { name: period_seconds, data_type: integer }
+      - { name: team, data_type: varchar }
+      - { name: event, data_type: varchar }
+      - { name: is_goal, data_type: boolean }
+      - { name: shot_type, data_type: varchar }
+      - { name: strength, data_type: varchar }
+      - { name: x, data_type: integer }
+      - { name: y, data_type: integer }
+      - name: shooter
+        data_type: varchar
+        data_tests:
+          - not_null:
+              config:
+                severity: warn
+                meta:
+                  {
+                    label: "Shooter name is present",
+                    description: "A few events arrive without a matching roster entry.",
+                  }
+    data_tests:
+      - expression_is_true:
+          arguments: { expression: "x between -100 and 100 and y between -43 and 43" }
+          config: { meta: { label: "Coordinates are on the ice", description: "A rink is 200 by 85 feet." } }
+
+  - name: flames_highlights
+    description: Three headline findings for the lab header, recomputed every run.

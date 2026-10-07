@@ -41,7 +41,7 @@ export function LazyMount({
         children
       ) : (
         <div
-          className="grid h-full place-items-center border border-dashed border-line"
+          className="grid h-full place-items-center border border-dashed border-border rounded-md"
           style={{ minHeight }}
         >
           <span className="label">Loading {label}…</span>

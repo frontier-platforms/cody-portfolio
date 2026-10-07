@@ -3,3 +3,11 @@ node_modules
 public/data
 .cache
 next-env.d.ts
+BRAND.md
+app/tokens.css
+lib/pipelines/generated
+public/dbt-docs
+public/ml
+dbt/target
+.venv
+ml/tests/fixtures

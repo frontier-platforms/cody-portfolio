@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Architecture } from "@/components/lab/Architecture";
 import { StackList } from "@/components/ui/StackList";
 import { labs, type LabEntry } from "@/lib/lab/catalog";
 import { manifest } from "@/lib/pipelines/manifest";
@@ -12,12 +13,12 @@ export const metadata: Metadata = {
 
 const anatomy = [
   {
-    title: "Dashboard",
-    body: "Charts that are SQL queries running in DuckDB in your browser. Every one shows its query.",
-  },
-  {
     title: "Ask the data",
     body: "Plain-English questions. Claude writes the SQL, the site checks it, your browser runs it.",
+  },
+  {
+    title: "Dashboard",
+    body: "Charts that are SQL queries running in DuckDB in your browser. Every one shows its query.",
   },
   {
     title: "Tested pipeline",
@@ -31,12 +32,12 @@ const anatomy = [
 
 export default function LabIndex() {
   return (
-    <div className="mx-auto max-w-6xl px-4 pt-12 sm:px-6 sm:pt-20">
+    <div className="mx-auto max-w-site px-4 pt-12 sm:px-6 sm:pt-16">
       <p className="label">Lab</p>
-      <h1 className="mt-3 max-w-3xl text-balance text-4xl font-semibold tracking-tight sm:text-5xl">
+      <h1 className="mt-3 max-w-measure text-balance text-2xl sm:text-4xl">
         Real Calgary data, with the whole pipeline showing.
       </h1>
-      <p className="mt-5 max-w-2xl text-pretty text-lg text-muted">
+      <p className="mt-6 max-w-measure text-pretty text-lg text-text-muted">
         Three small data products, built the way I’d want a team to build them: tested, documented and
         observable. Everything runs in your browser, and you can run each pipeline yourself against the live
         source.
@@ -49,19 +50,31 @@ export default function LabIndex() {
       </ul>
 
       <section aria-labelledby="anatomy" className="mt-16">
-        <h2 id="anatomy" className="label text-ink">
+        <h2 id="anatomy" className="text-2xl sm:text-3xl">
           Every lab has the same four parts
         </h2>
-        <ol className="mt-4 grid border-l border-t border-line sm:grid-cols-2 lg:grid-cols-4">
+        <ol className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {anatomy.map((a, i) => (
-            <li key={a.title} className="border-b border-r border-line p-5">
-              <p className="num text-xs text-accent">{String(i + 1).padStart(2, "0")}</p>
-              <p className="mt-1 font-semibold">{a.title}</p>
-              <p className="mt-1 text-sm text-muted">{a.body}</p>
+            <li key={a.title} className="rounded-md border border-border p-4">
+              <p className="num text-sm text-text-muted">{String(i + 1).padStart(2, "0")}</p>
+              <h3 className="mt-1 text-base">{a.title}</h3>
+              <p className="mt-1 text-sm text-text-muted">{a.body}</p>
             </li>
           ))}
         </ol>
-        <p className="mt-4 text-sm text-muted">
+      </section>
+
+      <section aria-labelledby="architecture" className="mt-16">
+        <h2 id="architecture" className="text-2xl sm:text-3xl">
+          How it fits together
+        </h2>
+        <p className="mt-2 max-w-measure text-text-muted">
+          From public APIs to your browser. Most of it is static files, so it costs almost nothing to run.
+        </p>
+        <div className="mt-6">
+          <Architecture />
+        </div>
+        <p className="mt-6 text-sm text-text-muted">
           The details, from the pipeline runner to the AI guardrails, are in{" "}
           <Link href="/colophon#pipelines" className="link">
             how this site is built
@@ -104,36 +117,36 @@ function stats(lab: LabEntry): { value: string; label: string }[] {
 
 function LabCard({ lab }: { lab: LabEntry }) {
   return (
-    <li className="group relative flex flex-col border border-line bg-surface p-6 transition-colors hover:border-ink">
+    <li className="group relative flex flex-col border border-border bg-surface p-6 transition-colors hover:border-text rounded-md">
       <p className="label">
         <span className="text-accent">{lab.number}</span> · {lab.kicker}
       </p>
-      <h2 className="mt-2 text-2xl font-semibold tracking-tight">
-        <Link href={lab.href} className="after:absolute after:inset-0 group-hover:text-accent-ink">
+      <h2 className="mt-2 text-2xl">
+        <Link href={lab.href} className="after:absolute after:inset-0 group-hover:text-accent">
           {lab.title}
         </Link>
       </h2>
-      <p className="mt-3 text-[0.95rem] text-muted">{lab.lede}</p>
+      <p className="mt-3 text-base text-text-muted">{lab.lede}</p>
 
-      <dl className="mt-5 grid grid-cols-3 border-y border-line py-3">
+      <dl className="mt-6 grid grid-cols-3 border-y border-border py-3">
         {stats(lab).map((s) => (
           <div key={s.label} className="flex flex-col-reverse">
-            <dt className="text-[0.7rem] text-muted">{s.label}</dt>
-            <dd className="num text-xl font-medium">{s.value}</dd>
+            <dt className="text-xs text-text-muted">{s.label}</dt>
+            <dd className="num text-xl font-regular">{s.value}</dd>
           </div>
         ))}
       </dl>
 
       <p className="mt-4 text-sm">
-        <span className="font-medium">Standout:</span> {lab.standout}.
+        <span className="font-semibold">Standout:</span> {lab.standout}.
       </p>
-      <ul className="prose-cc mt-3 text-[0.9rem]">
+      <ul className="prose-cc mt-3 text-sm">
         {lab.points.map((p) => (
           <li key={p}>{p}</li>
         ))}
       </ul>
-      <StackList items={lab.stack} className="mt-5" />
-      <span className="mt-auto pt-6 text-sm font-medium text-accent-ink">Open the lab →</span>
+      <StackList items={lab.stack} className="mt-6" />
+      <span className="mt-auto pt-6 text-sm font-semibold text-accent">Open the lab →</span>
     </li>
   );
 }

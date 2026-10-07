@@ -1,0 +1,42 @@
+version: 2
+
+sources:
+  - name: housing
+    schema: housing
+    description: Calgary residential property assessments for home uses, and the City's use-code lookup.
+    meta:
+      pipeline:
+        id: housing
+        label: Calgary home assessments
+        source_name: "City of Calgary Open Data · Current Year Property Assessments"
+        source_url: https://data.calgary.ca/resource/4bsw-nn7w.json
+        docs: https://data.calgary.ca/Government/Current-Year-Property-Assessments-Parcel-/4bsw-nn7w
+        licence: "Open Government Licence – City of Calgary"
+      contract:
+        owner: Cody Chandler
+        cadence: "Weekly, Mondays at 10:00 UTC, via Airflow on GitHub Actions"
+        freshness_sla_days: 8
+        consumers: ["Lab dashboards", "Value model", "Ask the data (Claude-generated SQL)"]
+        guarantees:
+          - "Values are the City's 2026 assessments (market value as of July 1, 2025), not sale prices."
+          - "Homes only: detached, duplex, townhouse and condo apartment units."
+          - No addresses or owner details are served to the browser.
+          - The model retrains only after every error-level test passes.
+    tables:
+      - name: raw_assessments
+        description: Residential parcels for home property uses, as the API returns them. Every field is text.
+        columns:
+          - { name: roll_year, data_type: varchar }
+          - { name: roll_number, data_type: varchar }
+          - { name: assessed_value, data_type: varchar }
+          - { name: comm_name, data_type: varchar }
+          - { name: year_of_construction, data_type: varchar }
+          - { name: land_use_designation, data_type: varchar }
+          - { name: land_size_sf, data_type: varchar }
+          - { name: sub_property_use, data_type: varchar }
+          - { name: mod_date, data_type: varchar }
+      - name: raw_use_codes
+        description: The City's lookup of sub-property use codes to labels, from a second dataset.
+        columns:
+          - { name: code, data_type: varchar }
+          - { name: description, data_type: varchar }

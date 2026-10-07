@@ -5,10 +5,11 @@ import { extractFlames, seasonIds } from "@/lib/pipelines/flames";
 import { pipelines } from "@/lib/pipelines/index";
 import { extractHousing } from "@/lib/pipelines/housing";
 import { extractPermits } from "@/lib/pipelines/permits";
-import { bronzeSql, runModels, runTests, type RunEvent } from "@/lib/pipelines/runner";
-import type { Pipeline, TestResult } from "@/lib/pipelines/types";
+import { bronzeSql, render, runModels, runTests, type RunEvent } from "@/lib/pipelines/runner";
+import type { HighlightResult, Pipeline, TestResult } from "@/lib/pipelines/types";
 import { telemetry } from "@/lib/telemetry";
 import { browserEngine, dataVersion, ensureTables, runQuery, type TableName } from "./db";
+import { formatHighlight, liveResults } from "./live-results";
 
 /**
  * Runs a pipeline incrementally in the visitor's browser, using the same model
@@ -19,7 +20,8 @@ import { browserEngine, dataVersion, ensureTables, runQuery, type TableName } fr
  *   3. load bronze and build silver and gold into a separate `live` schema
  *   4. merge gold into the served tables on each model's merge key
  *   5. run every test against the merged result
- *   6. bump the data version so the dashboards re-query
+ *   6. recompute the lab header's findings on the merged data
+ *   7. bump the data version so the dashboards re-query
  *
  * Changes live only in this tab. Refreshing the page goes back to the snapshot.
  */
@@ -126,6 +128,7 @@ export async function runLive(id: Pipeline["id"], emit: (e: LiveEvent) => void):
   let inserted = 0;
   let updated = 0;
   let tests: TestResult[] = [];
+  let highlights: HighlightResult[] | null = null;
 
   try {
     const engine = await browserEngine(`pipeline: ${id}`);
@@ -201,6 +204,23 @@ export async function runLive(id: Pipeline["id"], emit: (e: LiveEvent) => void):
     );
     emit({ kind: "node", node: "tests", status: failed ? "failed" : "done" });
 
+    if (pipeline.highlights) {
+      await ensureTables(pipeline.models.filter((m) => m.served).map((m) => m.name as TableName));
+      const today = new Date().toISOString().slice(0, 10);
+      const sql = render(pipeline.highlights.sql, "main").replaceAll("{{ today }}", `DATE '${today}'`);
+      const rows = await engine.query(`SELECT * FROM (${sql}) ORDER BY sort`);
+      highlights = rows.map((r) => ({
+        label: String(r.label),
+        value: formatHighlight(
+          r.value_number == null ? null : Number(r.value_number),
+          r.value_text == null ? null : String(r.value_text),
+          String(r.format),
+        ),
+        detail: r.detail == null ? null : String(r.detail),
+      }));
+      log("done", `Findings recomputed: ${highlights.map((h) => `${h.label} ${h.value}`).join(" · ")}`);
+    }
+
     // Flames re-reads the whole current schedule, so replaced games aren't changes.
     const changed = inserted + (id === "flames" ? 0 : updated);
     if (changed > 0) dataVersion.bump();
@@ -222,7 +242,7 @@ export async function runLive(id: Pipeline["id"], emit: (e: LiveEvent) => void):
       tests,
       ms,
     };
-    finish(id, summary);
+    finish(id, summary, highlights);
     return summary;
   } catch (e) {
     log("done", `Run failed: ${(e as Error).message}`, "bad");
@@ -234,13 +254,27 @@ export async function runLive(id: Pipeline["id"], emit: (e: LiveEvent) => void):
       tests,
       ms: performance.now() - started,
     };
-    finish(id, summary);
+    finish(id, summary, highlights);
     return summary;
   }
 }
 
-function finish(id: Pipeline["id"], s: LiveSummary) {
+function finish(id: Pipeline["id"], s: LiveSummary, highlights: HighlightResult[] | null) {
   const testsFailed = s.tests.filter((t) => t.status === "fail").length;
+  const testsWarned = s.tests.filter((t) => t.status === "warn").length;
+  liveResults.add({
+    pipeline: id,
+    runAt: new Date().toISOString(),
+    durationMs: s.ms,
+    outcome: s.outcome,
+    rowsIn: s.rowsIn,
+    inserted: s.inserted,
+    updated: s.updated,
+    passed: s.tests.length - testsFailed - testsWarned,
+    warned: testsWarned,
+    failed: testsFailed,
+    highlights,
+  });
   telemetry.run({
     pipeline: id,
     ms: s.ms,
@@ -249,7 +283,7 @@ function finish(id: Pipeline["id"], s: LiveSummary) {
     inserted: s.inserted,
     updated: s.updated,
     testsFailed,
-    testsWarned: s.tests.filter((t) => t.status === "warn").length,
+    testsWarned,
   });
   track("pipeline_run_completed", {
     dataset: id,
