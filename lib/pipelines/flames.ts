@@ -282,6 +282,42 @@ WHERE event <> 'blocked-shot'`,
       description: "A few events arrive without a matching roster entry.",
     },
   ],
+  highlights: [
+    {
+      label: "Last full season",
+      format: "text",
+      sql: `
+SELECT w || '-' || l || '-' || otl AS value, season || ', ' || pts || ' points' AS detail
+FROM (
+  SELECT season,
+         count(*) FILTER (WHERE result = 'W') AS w,
+         count(*) FILTER (WHERE result = 'L') AS l,
+         count(*) FILTER (WHERE result = 'OTL') AS otl,
+         sum(points) AS pts
+  FROM {{ ref('flames_games') }}
+  GROUP BY 1 HAVING count(*) >= 82
+  ORDER BY season DESC LIMIT 1
+)`,
+    },
+    {
+      label: "Top goal scorer",
+      format: "text",
+      sql: `
+WITH last AS (
+  SELECT season FROM {{ ref('flames_games') }} GROUP BY 1 HAVING count(*) >= 82 ORDER BY season DESC LIMIT 1
+)
+SELECT s.shooter AS value, count(*) || ' goals in ' || (SELECT season FROM last) AS detail
+FROM {{ ref('flames_shots') }} s
+JOIN {{ ref('flames_games') }} g USING (game_id)
+WHERE s.team = 'CGY' AND s.is_goal AND g.season = (SELECT season FROM last)
+GROUP BY 1 ORDER BY count(*) DESC LIMIT 1`,
+    },
+    {
+      label: "Games reconciled to the official score",
+      format: "count",
+      sql: `SELECT count(*) AS value, 'every game, every season' AS detail FROM {{ ref('flames_games') }}`,
+    },
+  ],
   contract: {
     owner: "Cody Chandler",
     cadence: "Weekly, Mondays at 10:00 UTC, via GitHub Actions",

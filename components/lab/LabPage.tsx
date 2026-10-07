@@ -1,17 +1,18 @@
-import Link from "next/link";
 import { PipelineSection } from "@/components/pipeline/PipelineSection";
 import { Section } from "@/components/ui/Section";
 import { labFor } from "@/lib/lab/catalog";
 import { datasets, type DatasetKey } from "@/lib/lab/datasets";
 import { pipelines } from "@/lib/pipelines/index";
 import { manifest } from "@/lib/pipelines/manifest";
-import { AskDemo } from "./LabDemos";
+import { LabHero } from "./LabHero";
+import { WhyItMatters } from "./WhyItMatters";
 
 type Extra = { id: string; label: string; intro: React.ReactNode; content: React.ReactNode };
 
 /**
- * Shared shell for a Lab tab: Ask the data first, then the dashboard, optional
- * extra sections (the housing tab adds its model), and the pipeline behind it all.
+ * Shared shell for a lab: a header with this dataset's findings and question
+ * bar, then the dashboard, any extra sections (housing adds its model), why it
+ * matters to a business, and the pipeline behind all of it.
  */
 export function LabPage({
   dataset,
@@ -26,27 +27,8 @@ export function LabPage({
 }) {
   const pipeline = pipelines[dataset];
   const lab = labFor(dataset);
+  const run = manifest.pipelines[dataset];
   const sections: Extra[] = [
-    {
-      id: "ask",
-      label: "Ask the data",
-      intro: (
-        <>
-          <p>
-            Ask a question in plain English. Claude writes one SQL query, the site checks it, and your browser
-            runs it. You get the answer, a chart and the SQL, and you can edit the SQL and run it yourself.
-          </p>
-          <p className="text-sm">
-            Claude only sees your question and the table schemas.{" "}
-            <Link href="/colophon#ai" className="link">
-              How the guardrails work
-            </Link>
-            .
-          </p>
-        </>
-      ),
-      content: <AskDemo dataset={dataset} />,
-    },
     {
       id: "dashboard",
       label: "Dashboard",
@@ -60,34 +42,35 @@ export function LabPage({
     },
     ...extras,
     {
+      id: "why",
+      label: "Why it matters",
+      intro: (
+        <p>Anyone can generate a dashboard now. The value is knowing what to build, and what it’s for.</p>
+      ),
+      content: <WhyItMatters lab={lab} />,
+    },
+    {
       id: "pipeline",
       label: "Pipeline",
       intro: (
         <p>
-          The data above comes from a tested, scheduled pipeline: raw (bronze), cleaned (silver) and
-          business-ready (gold) layers, the same pattern I used to rebuild StellarAlgo’s platform. The same
-          definitions run weekly on GitHub Actions and, when you press the button, in your browser.
+          Every number above comes from this pipeline: raw, cleaned and business-ready layers, with tests and
+          a contract. It runs weekly on GitHub Actions, and in your browser when you press the button.
         </p>
       ),
-      content: <PipelineSection pipeline={pipeline} run={manifest.pipelines[dataset]} />,
+      content: <PipelineSection pipeline={pipeline} run={run} history={manifest.history?.[dataset] ?? []} />,
     },
   ];
 
   return (
     <>
-      <header className="mx-auto max-w-site px-4 pt-12 sm:px-6 sm:pt-16">
-        <p className="label">
-          <span className="text-accent">Lab {lab.number}</span> · {lab.kicker}
-        </p>
-        <h1 className="mt-3 max-w-measure text-balance text-2xl sm:text-4xl">{lab.title}</h1>
-        <p className="mt-4 max-w-measure text-pretty text-lg text-text-muted">{lab.lede}</p>
-      </header>
+      <LabHero lab={lab} run={run} />
 
-      <nav aria-label="On this page" className="mx-auto mt-6 max-w-site px-4 sm:px-6">
-        <ul className="flex flex-wrap gap-x-6 gap-y-2 font-mono text-sm">
+      <nav aria-label="On this page" className="mx-auto mt-8 max-w-site px-4 sm:px-6">
+        <ul className="flex flex-wrap gap-x-6 font-mono text-sm">
           {sections.map((s) => (
             <li key={s.id}>
-              <a href={`#${s.id}`} className="link">
+              <a href={`#${s.id}`} className="link inline-flex min-h-11 items-center">
                 {s.label}
               </a>
             </li>
@@ -101,7 +84,7 @@ export function LabPage({
           index={String(i + 1).padStart(2, "0")}
           label={s.label}
           id={s.id}
-          className={i === 0 ? "mt-12" : "mt-24"}
+          className={i === 0 ? "mt-8" : "mt-12 sm:mt-16"}
         >
           <div className="mb-6 max-w-measure space-y-3 text-text-muted">{s.intro}</div>
           {s.content}

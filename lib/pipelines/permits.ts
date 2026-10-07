@@ -194,6 +194,38 @@ ORDER BY applied_date, permit_id`,
       description: "If the City stops publishing, the refresh fails instead of serving stale data quietly.",
     },
   ],
+  highlights: [
+    {
+      label: "New homes permitted",
+      format: "count",
+      sql: `
+WITH last AS (SELECT year(max(issued_date)) - 1 AS yr FROM {{ ref('permits') }})
+SELECT sum(housing_units) AS value, 'in ' || (SELECT yr FROM last) AS detail
+FROM {{ ref('permits') }}
+WHERE work_group = 'New' AND year(issued_date) = (SELECT yr FROM last)`,
+    },
+    {
+      label: "Of new homes were apartments",
+      format: "percent",
+      sql: `
+WITH last AS (SELECT year(max(issued_date)) - 1 AS yr FROM {{ ref('permits') }})
+SELECT sum(housing_units) FILTER (WHERE class_group = 'Apartment') / sum(housing_units) AS value,
+       'by units permitted in ' || (SELECT yr FROM last) AS detail
+FROM {{ ref('permits') }}
+WHERE work_group = 'New' AND year(issued_date) = (SELECT yr FROM last)`,
+    },
+    {
+      label: "Median wait for a new-home permit",
+      format: "text",
+      sql: `
+WITH last AS (SELECT year(max(applied_date)) - 1 AS yr FROM {{ ref('permits') }})
+SELECT CAST(round(median(issued_date - applied_date)) AS INTEGER) || ' days' AS value,
+       'applications in ' || (SELECT yr FROM last) AS detail
+FROM {{ ref('permits') }}
+WHERE work_group = 'New' AND permit_class = 'Residential' AND issued_date IS NOT NULL
+  AND year(applied_date) = (SELECT yr FROM last)`,
+    },
+  ],
   contract: {
     owner: "Cody Chandler",
     cadence: "Weekly, Mondays at 10:00 UTC, via GitHub Actions",

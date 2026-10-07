@@ -1,6 +1,6 @@
 # Brand Guide: Cody Chandler Portfolio
 
-Version 1.3 (2026-10-07). Single source of truth for how the site looks and sounds. Read this before writing any copy, styles, or components.
+Version 1.4 (2026-10-07). Single source of truth for how the site looks and sounds. Read this before writing any copy, styles, or components.
 
 ## How to use this file
 
@@ -139,7 +139,7 @@ Rules:
 - Spacing uses a 4px unit. Use `--space-1` through `--space-24` only.
 - Content max width: `--container` (1120px). Text blocks: `--measure`.
 - Mobile first. Breakpoints: 640px and 960px. Side gutter on phones: 16px.
-- PREFER generous vertical rhythm between sections (`--space-20` or more on desktop).
+- PREFER a steady vertical rhythm between sections: `--space-16` on desktop, `--space-12` on phones. Avoid gaps above `--space-16` between sections.
 - PREFER left-aligned text. Center only short hero lines.
 - MUST NOT cause horizontal scroll at 360px wide.
 
@@ -164,6 +164,14 @@ Site-specific components (added in 1.3):
 - **Form field:** input, select or textarea with a 1px border, `--radius-md`, min height 44px.
 - **Telemetry panel:** a side sheet listing queries, events and Web Vitals. Text and borders only.
 - **Status marker:** test and run results (pass, warn, fail) shown with a symbol and a word, not color. See section 11.
+
+Added in 1.4:
+
+- **Lab header:** h1, one-line lede, three findings computed by the pipeline (mono value, muted label), then the dataset's question bar. Each lab opens on its own numbers.
+- **Translation card:** a technique (mono label) and what it does for a sales or marketing team (one sentence).
+- **Decision row:** a decision in semibold, then "Why" and "Trade-off" lines. Used to show judgment, not only output.
+- **Playbook step:** number, h3, two sentences, and links to proof (a case study and a lab).
+- **Architecture diagram:** bordered stage cards with a small data-color marker, left to right on desktop, stacked on phones.
 
 ## 7. Motion
 
@@ -331,3 +339,4 @@ Site-specific components (added in 1.3):
 - 0.1 (2026-10-05): First draft.
 - 0.2 (2026-10-05): Interactive guide with single-file BRAND.md export.
 - 1.3 (2026-10-07): Nav set to Work, Lab, About, Contact (Resume moves to Contact and About). Dark mode toggle kept. Added `--radius-full` for dots and pills. Added site-specific components to section 6. Added status colors as an open decision.
+- 1.4 (2026-10-07): Section spacing tightened to `--space-16` on desktop at the owner's request (was `--space-20` or more). Added lab header, translation card, decision row, playbook step and architecture diagram components.

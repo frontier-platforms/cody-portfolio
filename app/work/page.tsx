@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export default async function WorkIndex() {
   const work = await getAllWork();
   return (
-    <div className="mx-auto max-w-site px-4 pt-12 sm:px-6 sm:pt-20">
+    <div className="mx-auto max-w-site px-4 pt-12 sm:px-6 sm:pt-16">
       <p className="label">Work</p>
       <h1 className="mt-3 max-w-measure text-balance text-2xl sm:text-4xl">What I changed, and how.</h1>
       <p className="mt-6 max-w-measure text-lg text-text-muted">

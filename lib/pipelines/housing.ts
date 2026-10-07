@@ -188,6 +188,28 @@ ORDER BY community, roll_number`,
       description: "Guards against a partial extract replacing the table and retraining the model on it.",
     },
   ],
+  highlights: [
+    {
+      label: "Median detached home",
+      format: "money",
+      sql: `SELECT median(assessed_value) AS value, '2026 assessment' AS detail FROM {{ ref('housing_homes') }} WHERE property_group = 'Detached'`,
+    },
+    {
+      label: "Homes assessed at $1M or more",
+      format: "percent",
+      sql: `SELECT avg((assessed_value >= 1000000)::INTEGER) AS value, 'of all homes' AS detail FROM {{ ref('housing_homes') }}`,
+    },
+    {
+      label: "Highest-value community",
+      format: "text",
+      sql: `
+SELECT community AS value, 'by median detached value' AS detail
+FROM {{ ref('housing_homes') }}
+WHERE property_group = 'Detached' AND community NOT LIKE 'RESIDUAL%'
+GROUP BY 1 HAVING count(*) >= 50
+ORDER BY median(assessed_value) DESC LIMIT 1`,
+    },
+  ],
   contract: {
     owner: "Cody Chandler",
     cadence: "Weekly, Mondays at 10:00 UTC, via GitHub Actions",

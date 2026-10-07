@@ -1,4 +1,4 @@
-import type { ManifestEntry, Pipeline } from "@/lib/pipelines/types";
+import type { ManifestEntry, Pipeline, RunSummary } from "@/lib/pipelines/types";
 import { FreshnessBadge } from "./FreshnessBadge";
 import { PipelineExplorer } from "./PipelineExplorer";
 
@@ -8,7 +8,15 @@ const REPO = "https://github.com/frontier-platforms/cody-portfolio";
  * The pipeline behind a Lab tab: last production run (from manifest.json),
  * an interactive DAG with a live run, test results and the data contract.
  */
-export function PipelineSection({ pipeline, run }: { pipeline: Pipeline; run: ManifestEntry | undefined }) {
+export function PipelineSection({
+  pipeline,
+  run,
+  history,
+}: {
+  pipeline: Pipeline;
+  run: ManifestEntry | undefined;
+  history: RunSummary[];
+}) {
   const served = run?.outputs ?? [];
   const passed = run?.tests.filter((t) => t.status === "pass").length ?? 0;
   const warned = run?.tests.filter((t) => t.status === "warn").length ?? 0;
@@ -30,6 +38,8 @@ export function PipelineSection({ pipeline, run }: { pipeline: Pipeline; run: Ma
       )}
 
       <PipelineExplorer pipeline={pipeline} run={run} />
+
+      {history.length > 0 && <RunHistory history={history} />}
 
       <div className="grid gap-4 lg:grid-cols-2">
         <section className="border border-border bg-surface p-6 rounded-md">
@@ -121,5 +131,60 @@ function Cell({ label, children }: { label: string; children: React.ReactNode })
       <dt className="text-xs text-text-muted">{label}</dt>
       <dd className="num mt-1 text-sm">{children}</dd>
     </div>
+  );
+}
+
+/** Recent production runs, newest first, from manifest.json. */
+function RunHistory({ history }: { history: RunSummary[] }) {
+  return (
+    <section className="rounded-md border border-border bg-surface">
+      <header className="flex flex-wrap items-baseline justify-between gap-2 border-b border-border px-4 py-3 sm:px-6">
+        <h3 className="text-base">Production runs</h3>
+        <p className="text-xs text-text-muted">
+          The last {history.length}, newest first. Kept in manifest.json.
+        </p>
+      </header>
+      <div className="overflow-x-auto">
+        <table className="w-full text-left text-sm">
+          <thead className="text-xs text-text-muted">
+            <tr>
+              <th scope="col" className="px-4 py-2 font-regular sm:px-6">
+                Run
+              </th>
+              <th scope="col" className="px-4 py-2 font-regular">
+                Trigger
+              </th>
+              <th scope="col" className="px-4 py-2 text-right font-regular">
+                Rows in
+              </th>
+              <th scope="col" className="px-4 py-2 text-right font-regular">
+                Duration
+              </th>
+              <th scope="col" className="px-4 py-2 text-right font-regular sm:px-6">
+                Tests
+              </th>
+            </tr>
+          </thead>
+          <tbody className="num">
+            {history.map((h) => (
+              <tr key={h.runAt} className="border-t border-border">
+                <td className="whitespace-nowrap px-4 py-2 sm:px-6">
+                  {new Date(h.runAt).toLocaleString("en-CA", { dateStyle: "medium", timeStyle: "short" })}
+                </td>
+                <td className="whitespace-nowrap px-4 py-2 font-body">
+                  {h.trigger === "github-actions" ? "GitHub Actions" : "Local"}
+                </td>
+                <td className="px-4 py-2 text-right">{h.rows.toLocaleString("en-CA")}</td>
+                <td className="px-4 py-2 text-right">{(h.durationMs / 1000).toFixed(1)} s</td>
+                <td className="whitespace-nowrap px-4 py-2 text-right sm:px-6">
+                  {h.failed ? `✗ ${h.failed} failed` : `✓ ${h.passed} pass`}
+                  {h.warned ? ` · ! ${h.warned} warn` : ""}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
   );
 }

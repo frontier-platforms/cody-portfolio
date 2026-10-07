@@ -69,6 +69,29 @@ export type Pipeline = {
   contract: Contract;
   /** Optional ML model trained on a gold table after the tests pass. */
   model?: { name: string; description: string; file: string; trainedOn: string };
+  /**
+   * Headline findings computed on the gold tables at the end of each production
+   * run. Each query returns one row with `value` (and optionally `detail`).
+   */
+  highlights?: Highlight[];
+};
+
+export type Highlight = {
+  label: string;
+  sql: string;
+  format: "count" | "money" | "percent" | "text";
+};
+
+export type HighlightResult = { label: string; value: string; detail: string | null };
+
+export type RunSummary = {
+  runAt: string;
+  trigger: ManifestEntry["trigger"];
+  durationMs: number;
+  rows: number;
+  passed: number;
+  warned: number;
+  failed: number;
 };
 
 export type ModelResult = {
@@ -100,6 +123,7 @@ export type ManifestEntry = {
   models: ModelResult[];
   tests: TestResult[];
   outputs: { model: string; file: string; rows: number; bytes: number; sha256: string }[];
+  highlights?: HighlightResult[];
   /** Present when the pipeline trains a model. Metrics are on held-out rows. */
   model?: {
     file: string;
@@ -114,4 +138,9 @@ export type ManifestEntry = {
   };
 };
 
-export type Manifest = { version: 1; pipelines: Partial<Record<Pipeline["id"], ManifestEntry>> };
+export type Manifest = {
+  version: 1;
+  pipelines: Partial<Record<Pipeline["id"], ManifestEntry>>;
+  /** The most recent production runs per pipeline, newest first. */
+  history?: Partial<Record<Pipeline["id"], RunSummary[]>>;
+};

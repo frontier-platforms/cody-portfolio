@@ -23,8 +23,15 @@ import { pipelines } from "../lib/pipelines/index";
 import { extractHousing } from "../lib/pipelines/housing";
 import { extractPermits } from "../lib/pipelines/permits";
 import { trainHousingModel, type HomeRow } from "../lib/ml/housing";
-import { bronzeSql, runModels, runTests, type Engine } from "../lib/pipelines/runner";
-import type { Manifest, ManifestEntry, Pipeline, TestResult } from "../lib/pipelines/types";
+import { bronzeSql, render, runModels, runTests, type Engine } from "../lib/pipelines/runner";
+import type {
+  HighlightResult,
+  Manifest,
+  ManifestEntry,
+  Pipeline,
+  RunSummary,
+  TestResult,
+} from "../lib/pipelines/types";
 
 const DATA_DIR = path.resolve("public/data");
 const CACHE_DIR = path.resolve(".cache/data");
@@ -185,6 +192,7 @@ async function run(
     console.log(`  serve    ${model.served!.file}: ${(bytes / 1e6).toFixed(2)} MB`);
   }
 
+  const highlights = await computeHighlights(engine, pipeline, schema);
   const trained = pipeline.model ? await trainModel(engine, pipeline) : undefined;
   engine.close();
 
@@ -206,9 +214,41 @@ async function run(
     ],
     tests,
     outputs,
+    highlights,
     model: trained,
   };
   return entry;
+}
+
+const titleCase = (s: string) =>
+  s === s.toUpperCase() ? s.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase()) : s;
+
+function formatHighlight(value: unknown, format: "count" | "money" | "percent" | "text") {
+  const n = Number(value);
+  if (format === "count") return n.toLocaleString("en-CA");
+  if (format === "money") return n >= 1e6 ? `$${(n / 1e6).toFixed(2)}M` : `$${Math.round(n / 1e3)}K`;
+  if (format === "percent") return `${(n * 100).toFixed(1)}%`;
+  return titleCase(String(value));
+}
+
+/** Headline findings for the lab header, computed on the gold tables after the tests pass. */
+async function computeHighlights(
+  engine: Engine,
+  pipeline: Pipeline,
+  schema: string,
+): Promise<HighlightResult[]> {
+  const out: HighlightResult[] = [];
+  for (const h of pipeline.highlights ?? []) {
+    const [row] = await engine.query(render(h.sql, schema));
+    const result = {
+      label: h.label,
+      value: formatHighlight(row?.value, h.format),
+      detail: row?.detail == null ? null : String(row.detail),
+    };
+    out.push(result);
+    console.log(`  insight  ${h.label}: ${result.value}${result.detail ? ` (${result.detail})` : ""}`);
+  }
+  return out;
 }
 
 const quote = (s: string) => `'${s.replaceAll("'", "''")}'`;
@@ -325,7 +365,19 @@ async function main() {
   }
 
   for (const pipeline of selected) {
-    manifest.pipelines[pipeline.id] = (await run(pipeline))!;
+    const entry = (await run(pipeline))!;
+    manifest.pipelines[pipeline.id] = entry;
+    const summary: RunSummary = {
+      runAt: entry.runAt,
+      trigger: entry.trigger,
+      durationMs: entry.durationMs,
+      rows: entry.extract.rows,
+      passed: entry.tests.filter((t) => t.status === "pass").length,
+      warned: entry.tests.filter((t) => t.status === "warn").length,
+      failed: entry.tests.filter((t) => t.status === "fail").length,
+    };
+    manifest.history ??= {};
+    manifest.history[pipeline.id] = [summary, ...(manifest.history[pipeline.id] ?? [])].slice(0, 12);
     await writeFile(MANIFEST, `${JSON.stringify(manifest, null, 2)}\n`);
   }
 }

@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { KpiStrip } from "@/components/home/KpiStrip";
+import { Playbook } from "@/components/home/Playbook";
 import { Section } from "@/components/ui/Section";
 import { ProjectGrid } from "@/components/work/ProjectCard";
 import { labs } from "@/lib/lab/catalog";
@@ -14,7 +15,7 @@ export default async function Home() {
   return (
     <>
       {/* BRAND.md section 6, hero: one h1, one sentence, one primary button, one text link. */}
-      <section className="mx-auto max-w-site px-4 pb-16 pt-12 sm:px-6 sm:pb-20 sm:pt-24">
+      <section className="mx-auto max-w-site px-4 pb-12 pt-12 sm:px-6 sm:pb-16 sm:pt-16">
         <div className="flex items-center gap-3">
           <Image
             src="/media/cody.jpg"
@@ -59,7 +60,7 @@ export default async function Home() {
         <KpiStrip items={visibleKpis()} />
       </section>
 
-      <Section index="01" label="Selected work" className="mt-24">
+      <Section index="01" label="Selected work" className="mt-12 sm:mt-16">
         <ProjectGrid items={work} />
         <p className="mt-6">
           <Link href="/projects" className="link inline-flex min-h-11 items-center">
@@ -68,7 +69,15 @@ export default async function Home() {
         </p>
       </Section>
 
-      <Section index="02" label="Where I help" className="mt-24">
+      <Section index="02" label="How I help teams" className="mt-12 sm:mt-16">
+        <p className="mb-6 max-w-measure text-text-muted">
+          Four things I do on every data team. Each links to where I’ve done it, and to a lab where you can
+          see it run.
+        </p>
+        <Playbook />
+      </Section>
+
+      <Section index="03" label="Work with me" className="mt-12 sm:mt-16">
         <div className="grid gap-12 lg:grid-cols-2">
           <div>
             <h3 className="text-xl">For hiring teams</h3>
@@ -108,7 +117,7 @@ export default async function Home() {
         </div>
       </Section>
 
-      <Section index="03" label="The Lab" className="mt-24">
+      <Section index="04" label="The Lab" className="mt-12 sm:mt-16">
         <p className="mb-8 max-w-measure text-text-muted">
           Three small data products on Calgary data. Each one has a tested pipeline you can run live in your
           browser.

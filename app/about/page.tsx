@@ -76,7 +76,7 @@ const certifications: Credential[] = [
 
 export default function AboutPage() {
   return (
-    <div className="mx-auto max-w-site px-4 pt-12 sm:px-6 sm:pt-20">
+    <div className="mx-auto max-w-site px-4 pt-12 sm:px-6 sm:pt-16">
       <div className="grid gap-12 lg:grid-cols-[1fr_18rem]">
         <div>
           <p className="label">About</p>

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Architecture } from "@/components/lab/Architecture";
 import { StackList } from "@/components/ui/StackList";
 import { labs, type LabEntry } from "@/lib/lab/catalog";
 import { manifest } from "@/lib/pipelines/manifest";
@@ -31,7 +32,7 @@ const anatomy = [
 
 export default function LabIndex() {
   return (
-    <div className="mx-auto max-w-site px-4 pt-12 sm:px-6 sm:pt-20">
+    <div className="mx-auto max-w-site px-4 pt-12 sm:px-6 sm:pt-16">
       <p className="label">Lab</p>
       <h1 className="mt-3 max-w-measure text-balance text-2xl sm:text-4xl">
         Real Calgary data, with the whole pipeline showing.
@@ -49,19 +50,31 @@ export default function LabIndex() {
       </ul>
 
       <section aria-labelledby="anatomy" className="mt-16">
-        <h2 id="anatomy" className="label text-text">
+        <h2 id="anatomy" className="text-2xl sm:text-3xl">
           Every lab has the same four parts
         </h2>
-        <ol className="mt-4 grid border-l border-t border-border sm:grid-cols-2 lg:grid-cols-4">
+        <ol className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {anatomy.map((a, i) => (
-            <li key={a.title} className="border-b border-r border-border p-6">
-              <p className="num text-xs text-accent">{String(i + 1).padStart(2, "0")}</p>
-              <p className="mt-1 font-semibold">{a.title}</p>
+            <li key={a.title} className="rounded-md border border-border p-4">
+              <p className="num text-sm text-text-muted">{String(i + 1).padStart(2, "0")}</p>
+              <h3 className="mt-1 text-base">{a.title}</h3>
               <p className="mt-1 text-sm text-text-muted">{a.body}</p>
             </li>
           ))}
         </ol>
-        <p className="mt-4 text-sm text-text-muted">
+      </section>
+
+      <section aria-labelledby="architecture" className="mt-16">
+        <h2 id="architecture" className="text-2xl sm:text-3xl">
+          How it fits together
+        </h2>
+        <p className="mt-2 max-w-measure text-text-muted">
+          From public APIs to your browser. Most of it is static files, so it costs almost nothing to run.
+        </p>
+        <div className="mt-6">
+          <Architecture />
+        </div>
+        <p className="mt-6 text-sm text-text-muted">
           The details, from the pipeline runner to the AI guardrails, are in{" "}
           <Link href="/colophon#pipelines" className="link">
             how this site is built

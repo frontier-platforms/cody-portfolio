@@ -63,7 +63,7 @@ const projects: Project[] = [
 
 export default function ProjectsPage() {
   return (
-    <div className="mx-auto max-w-site px-4 pt-12 sm:px-6 sm:pt-20">
+    <div className="mx-auto max-w-site px-4 pt-12 sm:px-6 sm:pt-16">
       <p className="label">Projects</p>
       <h1 className="mt-3 max-w-measure text-balance text-2xl sm:text-4xl">
         Things I build because I want them to exist.

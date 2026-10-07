@@ -230,7 +230,7 @@ const sections = [
 
 export default function ColophonPage() {
   return (
-    <div className="mx-auto max-w-site px-4 pt-12 sm:px-6 sm:pt-20">
+    <div className="mx-auto max-w-site px-4 pt-12 sm:px-6 sm:pt-16">
       <p className="label">Colophon</p>
       <h1 className="mt-3 max-w-measure text-balance text-2xl sm:text-4xl">How this site is built.</h1>
       <p className="mt-6 max-w-measure text-lg text-text-muted">

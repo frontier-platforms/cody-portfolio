@@ -103,17 +103,20 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-/* Display face for h1 and h2 only, weight 400. h3 and below use the body face at 600. */
-h1,
-h2 {
-  font-family: var(--font-display);
-  font-weight: var(--weight-regular);
-  line-height: var(--leading-tight);
-}
-h3,
-h4 {
-  font-weight: var(--weight-semibold);
-  line-height: var(--leading-snug);
+/* Display face for h1 and h2 only, weight 400. h3 and below use the body face at 600.
+   In the base layer so a utility class can still override a specific heading. */
+@layer base {
+  h1,
+  h2 {
+    font-family: var(--font-display);
+    font-weight: var(--weight-regular);
+    line-height: var(--leading-tight);
+  }
+  h3,
+  h4 {
+    font-weight: var(--weight-semibold);
+    line-height: var(--leading-snug);
+  }
 }
 
 ::selection {
