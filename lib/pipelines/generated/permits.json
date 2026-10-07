@@ -205,6 +205,9 @@
       "sql": "select count(*) as failures from (\nselect\n    permit_id as unique_field,\n    count(*) as n_records\n\nfrom {{ ref('permits') }}\nwhere permit_id is not null\ngroup by permit_id\nhaving count(*) > 1\n) dbt_test"
     }
   ],
+  "highlights": {
+    "sql": "-- Headline findings for the lab header. Formatting happens at publish time.\nwith last as (select year(max(issued_date)) - 1 as yr from {{ ref('permits') }}),\nlast_applied as (select year(max(applied_date)) - 1 as yr from {{ ref('permits') }})\n\nselect 1 as sort, 'New homes permitted' as label, 'count' as format,\n       sum(housing_units)::double as value_number, null::varchar as value_text,\n       'in ' || (select yr from last) as detail\nfrom {{ ref('permits') }}\nwhere work_group = 'New' and year(issued_date) = (select yr from last)\n\nunion all\n\nselect 2, 'Of new homes were apartments', 'percent',\n       sum(housing_units) filter (where class_group = 'Apartment') / sum(housing_units), null,\n       'by units permitted in ' || (select yr from last)\nfrom {{ ref('permits') }}\nwhere work_group = 'New' and year(issued_date) = (select yr from last)\n\nunion all\n\nselect 3, 'Median wait for a new-home permit', 'text',\n       null, cast(round(median(issued_date - applied_date)) as integer) || ' days',\n       'applications in ' || (select yr from last_applied)\nfrom {{ ref('permits') }}\nwhere work_group = 'New' and permit_class = 'Residential' and issued_date is not null\n  and year(applied_date) = (select yr from last_applied)"
+  },
   "contract": {
     "owner": "Cody Chandler",
     "cadence": "Weekly, Mondays at 10:00 UTC, via Airflow on GitHub Actions",

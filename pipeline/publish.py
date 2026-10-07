@@ -146,6 +146,15 @@ def publish_all(
                 if n["config"]["meta"].get("layer") != "metrics"
             ],
             "tests": [],
+            # The lab header's findings, so a live run in the browser can recompute them.
+            "highlights": next(
+                (
+                    {"sql": _ref_template(n["compiled_code"], relations)}
+                    for n in models
+                    if n["config"]["meta"].get("layer") == "metrics"
+                ),
+                None,
+            ),
             "contract": {
                 "owner": meta["contract"]["owner"],
                 "cadence": meta["contract"]["cadence"],

@@ -273,6 +273,9 @@
       "sql": "select count(*) as failures from (\nselect\n    game_id as unique_field,\n    count(*) as n_records\n\nfrom {{ ref('flames_games') }}\nwhere game_id is not null\ngroup by game_id\nhaving count(*) > 1\n) dbt_test"
     }
   ],
+  "highlights": {
+    "sql": "with last as (\n    select season from {{ ref('flames_games') }} group by 1 having count(*) >= 82 order by season desc limit 1\n),\nseason_record as (\n    select season,\n           count(*) filter (where result = 'W') as w,\n           count(*) filter (where result = 'L') as l,\n           count(*) filter (where result = 'OTL') as otl,\n           sum(points) as pts\n    from {{ ref('flames_games') }}\n    where season = (select season from last)\n    group by 1\n),\ntop_scorer as (\n    select s.shooter, count(*) as goals\n    from {{ ref('flames_shots') }} s\n    join {{ ref('flames_games') }} g using (game_id)\n    where s.team = 'CGY' and s.is_goal and g.season = (select season from last)\n    group by 1 order by goals desc limit 1\n)\n\nselect 1 as sort, 'Last full season' as label, 'text' as format, null::double as value_number,\n       w || '-' || l || '-' || otl as value_text, season || ', ' || pts || ' points' as detail\nfrom season_record\n\nunion all\n\nselect 2, 'Top goal scorer', 'text', null, shooter, goals || ' goals in ' || (select season from last)\nfrom top_scorer\n\nunion all\n\nselect 3, 'Games reconciled to the official score', 'count', count(*)::double, null, 'every game, every season'\nfrom {{ ref('flames_games') }}"
+  },
   "contract": {
     "owner": "Cody Chandler",
     "cadence": "Weekly, Mondays at 10:00 UTC, via Airflow on GitHub Actions",

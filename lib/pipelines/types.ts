@@ -67,6 +67,11 @@ export type Pipeline = {
   models: Model[];
   tests: Test[];
   contract: Contract;
+  /**
+   * dbt-compiled SQL for the lab header's findings. Rows: sort, label, format,
+   * value_number, value_text, detail. Formatted the same way as publish.py.
+   */
+  highlights: { sql: string } | null;
   /** ML model trained on a gold table after the tests pass. */
   model?: { name: string; description: string; file: string; trainedOn: string; path: string };
 };

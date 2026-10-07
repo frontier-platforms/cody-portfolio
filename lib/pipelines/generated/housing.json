@@ -168,6 +168,9 @@
       "sql": "select count(*) as failures from (\nselect\n    roll_number as unique_field,\n    count(*) as n_records\n\nfrom {{ ref('housing_homes') }}\nwhere roll_number is not null\ngroup by roll_number\nhaving count(*) > 1\n) dbt_test"
     }
   ],
+  "highlights": {
+    "sql": "select 1 as sort, 'Median detached home' as label, 'money' as format,\n       median(assessed_value)::double as value_number, null::varchar as value_text, '2026 assessment' as detail\nfrom {{ ref('housing_homes') }} where property_group = 'Detached'\n\nunion all\n\nselect 2, 'Homes assessed at $1M or more', 'percent',\n       avg((assessed_value >= 1000000)::integer), null, 'of all homes'\nfrom {{ ref('housing_homes') }}\n\nunion all\n\nselect * from (\n    select 3, 'Highest-value community', 'text', null, community, 'by median detached value'\n    from {{ ref('housing_homes') }}\n    where property_group = 'Detached' and community not like 'RESIDUAL%'\n    group by community having count(*) >= 50\n    order by median(assessed_value) desc limit 1\n)"
+  },
   "contract": {
     "owner": "Cody Chandler",
     "cadence": "Weekly, Mondays at 10:00 UTC, via Airflow on GitHub Actions",
