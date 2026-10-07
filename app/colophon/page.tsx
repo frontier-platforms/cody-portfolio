@@ -89,13 +89,13 @@ const sections = [
     body: (
       <>
         <p>
-          The housing tab’s model is gradient-boosted trees in Python, using scikit-learn’s
-          HistGradientBoostingRegressor. It trains on 390,000 homes in the weekly Airflow run. The same Python
-          file trains on a sample in your browser through Pyodide.
+          The housing tab’s model is gradient-boosted trees in Python, using XGBoost. It trains on 390,000
+          homes in the weekly Airflow run. The same Python file trains on a sample in your browser through
+          Pyodide.
         </p>
         <p>
           The trees are exported to JSON, and a small TypeScript scorer explains each estimate. Tests check
-          its predictions match scikit-learn’s.
+          its predictions match XGBoost’s.
         </p>
         <ul>
           <li>

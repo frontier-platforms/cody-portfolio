@@ -6,21 +6,23 @@ log of the value, so errors are proportional.
 
 This one module trains the production model in the weekly Airflow run
 (ml/train.py) and the "train your own" model in the browser through Pyodide,
-so it depends only on numpy, pandas and scikit-learn.
+so it depends only on numpy, pandas and XGBoost (pinned to Pyodide's version).
 
 The trained trees are exported to a small JSON format that the site reads to
 make predictions and explain them (lib/ml/gbm.ts). Tests in ml/tests check the
-export predicts exactly what scikit-learn predicts.
+export predicts what XGBoost predicts.
 """
 
 from __future__ import annotations
 
+import json
+import os
 import time
 from collections.abc import Callable
 
 import numpy as np
 import pandas as pd
-from sklearn.ensemble import HistGradientBoostingRegressor
+import xgboost as xgb
 
 CATEGORICAL = ["community", "use", "zoning"]
 NUMERIC = ["year_built", "lot_sqft"]
@@ -130,35 +132,56 @@ def rmse(a: np.ndarray, b: np.ndarray) -> float:
 # ------------------------------------------------------------------ export
 
 
-def export_trees(model: HistGradientBoostingRegressor) -> dict:
-    """scikit-learn's fitted trees as flat arrays the browser can walk.
+def _node_values(tree: dict) -> list[float]:
+    """Leaf values as XGBoost stores them (learning rate included). Each internal
+    node gets the hessian-weighted mean of its children, XGBoost's own convention
+    for per-feature contributions, so explanations add up to the prediction."""
+    left, right = tree["left_children"], tree["right_children"]
+    cover, leaf = tree["sum_hessian"], tree["split_conditions"]
+    values = [0.0] * len(left)
+
+    def fill(n: int) -> float:
+        if left[n] == -1:
+            values[n] = float(leaf[n])
+        else:
+            a, b = fill(left[n]), fill(right[n])
+            values[n] = (a * cover[left[n]] + b * cover[right[n]]) / cover[n]
+        return values[n]
+
+    fill(0)
+    return values
+
+
+def export_trees(booster: xgb.Booster) -> dict:
+    """XGBoost's fitted trees as flat arrays the browser can walk.
 
     Each node is [feature, threshold, left, right, value, missing_go_left].
-    Leaves have feature -1. Leaf values already include the learning rate;
-    internal values are scaled here so per-feature explanations add up.
+    Leaves have feature -1. As in XGBoost, a row goes left when its value is
+    below the threshold, both compared as 32-bit floats.
     """
-    lr = model.learning_rate
+    raw = json.loads(booster.save_raw("json"))["learner"]
     trees = []
     gain = np.zeros(len(FEATURES))
-    for (predictor,) in model._predictors:
+    for tree in raw["gradient_booster"]["model"]["trees"]:
+        values = _node_values(tree)
         flat: list[float] = []
-        for node in predictor.nodes:
-            leaf = bool(node["is_leaf"])
-            value = float(node["value"]) if leaf else float(node["value"]) * lr
+        for n, left in enumerate(tree["left_children"]):
+            leaf = left == -1
             if not leaf:
-                gain[int(node["feature_idx"])] += float(node["gain"])
+                gain[tree["split_indices"][n]] += tree["loss_changes"][n]
             flat += [
-                -1 if leaf else int(node["feature_idx"]),
-                0.0 if leaf else round(float(node["num_threshold"]), 6),
-                0 if leaf else int(node["left"]),
-                0 if leaf else int(node["right"]),
-                round(value, 7),
-                1 if (not leaf and node["missing_go_to_left"]) else 0,
+                -1 if leaf else tree["split_indices"][n],
+                # Shortest decimal that reads back as the same 32-bit float.
+                0.0 if leaf else float(str(np.float32(tree["split_conditions"][n]))),
+                0 if leaf else left,
+                0 if leaf else tree["right_children"][n],
+                round(values[n], 7),
+                1 if (not leaf and tree["default_left"][n]) else 0,
             ]
         trees.append(flat)
     return {
         "features": FEATURES,
-        "base": float(np.ravel(model._baseline_prediction)[0]),
+        "base": float(raw["learner_model_param"]["base_score"].strip("[]")),
         "trees": trees,
         "gain": [round(float(g), 3) for g in gain],
     }
@@ -195,8 +218,8 @@ def train(
 ) -> dict:
     """Train, evaluate on the fixed holdout, and return the exported model.
 
-    Trees are added `step` at a time with warm_start, so the learning curve is
-    measured on the holdout as training happens.
+    Training and holdout error are recorded every `step` trees, so the learning
+    curve shows how the model improved as trees were added.
     """
     p = {**DEFAULT_PARAMS, **(params or {})}
     started = time.perf_counter()
@@ -209,44 +232,58 @@ def train(
 
     X_train, encoders = training_matrix(train_df, y_train, p["seed"])
     X_test = scoring_matrix(test_df, encoders)
+    dtrain = xgb.DMatrix(X_train, label=y_train, feature_names=FEATURES)
+    dtest = xgb.DMatrix(X_test, label=y_test, feature_names=FEATURES)
 
-    model = HistGradientBoostingRegressor(
-        learning_rate=p["learning_rate"],
-        max_depth=p["depth"],
-        max_leaf_nodes=None,
-        min_samples_leaf=p["min_leaf"],
-        l2_regularization=p["l2"],
-        max_iter=0,
-        early_stopping=False,
-        warm_start=True,
-        random_state=p["seed"],
+    curve: list[dict] = []
+
+    class Progress(xgb.callback.TrainingCallback):
+        """Records the learning curve every `step` trees, as training happens."""
+
+        def after_iteration(self, model, epoch, evals_log) -> bool:
+            built = epoch + 1
+            if built % step == 0 or built == p["trees"]:
+                point = {
+                    "tree": built,
+                    "train": round(evals_log["train"]["rmse"][-1], 4),
+                    "valid": round(evals_log["holdout"]["rmse"][-1], 4),
+                }
+                curve.append(point)
+                if on_progress:
+                    on_progress(built, point["train"], point["valid"])
+            return False
+
+    booster = xgb.train(
+        {
+            "objective": "reg:squarederror",
+            "eval_metric": "rmse",
+            "tree_method": "hist",
+            "learning_rate": p["learning_rate"],
+            "max_depth": p["depth"],
+            # Squared error gives every home a hessian of 1, so this is the minimum homes per leaf.
+            "min_child_weight": p["min_leaf"],
+            "lambda": p["l2"],
+            "seed": p["seed"],
+            "nthread": os.cpu_count() or 1,
+        },
+        dtrain,
+        num_boost_round=p["trees"],
+        evals=[(dtrain, "train"), (dtest, "holdout")],
+        verbose_eval=False,
+        callbacks=[Progress()],
     )
-    curve = []
-    built = 0
-    while built < p["trees"]:
-        built = min(built + step, p["trees"])
-        model.set_params(max_iter=built)
-        model.fit(X_train, y_train)
-        point = {
-            "tree": built,
-            "train": round(rmse(y_train, model.predict(X_train)), 4),
-            "valid": round(rmse(y_test, model.predict(X_test)), 4),
-        }
-        curve.append(point)
-        if on_progress:
-            on_progress(built, point["train"], point["valid"])
 
-    log_pred = model.predict(X_test)
+    log_pred = booster.predict(dtest).astype(float)
     actual = test_df[TARGET].to_numpy(dtype=float)
     residuals = np.sort(y_test - log_pred)
-    gbm = export_trees(model)
+    gbm = export_trees(booster)
     total_gain = sum(gbm["gain"]) or 1.0
 
     return {
         "version": 2,
         "trainedAt": pd.Timestamp.now(tz="UTC").isoformat(),
         "target": "City of Calgary assessed value, 2026 roll",
-        "library": "scikit-learn HistGradientBoostingRegressor",
+        "library": f"XGBoost {xgb.__version__}",
         "params": p,
         "rows": {"train": len(train_df), "test": len(test_df)},
         "trainMs": int((time.perf_counter() - started) * 1000),

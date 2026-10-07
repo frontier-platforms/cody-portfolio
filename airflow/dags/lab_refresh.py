@@ -6,7 +6,7 @@ Weekly refresh of the three Lab datasets on cody-portfolio.
 1. **Extract** each source API to JSON (in parallel).
 2. **Load** the JSON into bronze tables in the DuckDB warehouse (one at a time; DuckDB has one writer).
 3. **dbt build**: silver and gold models, data tests and enforced contracts. An error-level test fails the task, and nothing downstream runs.
-4. **Train** the scikit-learn value model on the gold housing table.
+4. **Train** the XGBoost value model on the gold housing table.
 5. **dbt docs** for the lineage site.
 6. **Publish** Parquet, the run manifest and dbt-compiled SQL for the website.
 

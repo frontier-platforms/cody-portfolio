@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { AcrossTheBusiness } from "@/components/home/AcrossTheBusiness";
 import { KpiStrip } from "@/components/home/KpiStrip";
 import { Playbook } from "@/components/home/Playbook";
 import { Section } from "@/components/ui/Section";
@@ -31,8 +32,7 @@ export default async function Home() {
           I build data platforms that change how teams make money.
         </h1>
         <p className="mt-6 max-w-measure text-pretty text-lg text-text-muted">
-          I’m a technology and data leader who turns data platforms and product work into measurable business
-          outcomes.
+          I’m a technology and data leader who started in sales, marketing and finance.
         </p>
         <div className="mt-8 flex flex-wrap items-center gap-6">
           <Link
@@ -69,7 +69,15 @@ export default async function Home() {
         </p>
       </Section>
 
-      <Section index="02" label="How I help teams" className="mt-12 sm:mt-16">
+      <Section index="02" label="Across the business" className="mt-12 sm:mt-16">
+        <p className="mb-6 max-w-measure text-text-muted">
+          I’ve sold memberships, run marketing operations and worked in municipal finance. That’s why my data
+          work starts with the people who use it.
+        </p>
+        <AcrossTheBusiness />
+      </Section>
+
+      <Section index="03" label="How I help teams" className="mt-12 sm:mt-16">
         <p className="mb-6 max-w-measure text-text-muted">
           Four things I do on every data team. Each links to where I’ve done it, and to a lab where you can
           see it run.
@@ -77,13 +85,13 @@ export default async function Home() {
         <Playbook />
       </Section>
 
-      <Section index="03" label="Work with me" className="mt-12 sm:mt-16">
+      <Section index="04" label="Work with me" className="mt-12 sm:mt-16">
         <div className="grid gap-12 lg:grid-cols-2">
           <div>
             <h3 className="text-xl">For hiring teams</h3>
             <p className="mt-2 max-w-measure text-text-muted">
-              I’m looking for senior data, product and strategy roles in Calgary. I’ve led product, analytics
-              and marketing operations teams, and I still write the SQL.
+              I’m looking for senior roles in Calgary across data, product, marketing and business operations.
+              I’ve led product, analytics and marketing operations teams, and I still write the SQL.
             </p>
             <p className="mt-4">
               <a
@@ -117,7 +125,7 @@ export default async function Home() {
         </div>
       </Section>
 
-      <Section index="04" label="The Lab" className="mt-12 sm:mt-16">
+      <Section index="05" label="The Lab" className="mt-12 sm:mt-16">
         <p className="mb-8 max-w-measure text-text-muted">
           Three small data products on Calgary data. Each one has a tested pipeline you can run live in your
           browser.

@@ -196,7 +196,7 @@ def publish_all(
         if pid == "housing" and model_summary:
             definition["model"] = {
                 "name": "value_model",
-                "description": "scikit-learn gradient boosting on log assessed value, trained in Python after the tests pass. Features: community, property type, zoning, year built, lot size.",
+                "description": "XGBoost gradient-boosted trees on log assessed value, trained in Python after the tests pass. Features: community, property type, zoning, year built, lot size.",
                 "file": "housing-model.json",
                 "trainedOn": "housing_homes",
                 "path": "ml/housing_model.py",

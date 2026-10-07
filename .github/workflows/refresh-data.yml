@@ -3,7 +3,7 @@
 # `airflow dags test` (airflow/dags/lab_refresh.py). No Airflow server to host.
 #
 #   extract (Python) → load bronze → dbt build (models, tests, contracts)
-#   → train the value model (scikit-learn) + dbt docs → publish
+#   → train the value model (XGBoost) + dbt docs → publish
 #
 # An error-level dbt test fails the DAG before anything is published, so the
 # site keeps serving last week's data. Vercel redeploys on the commit.

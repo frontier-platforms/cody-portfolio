@@ -1,7 +1,7 @@
 [project]
 name = "cody-portfolio-data"
 version = "0.1.0"
-description = "Data platform behind the Lab: Python ingest, dbt models and tests, scikit-learn value model, Airflow DAG."
+description = "Data platform behind the Lab: Python ingest, dbt models and tests, XGBoost value model, Airflow DAG."
 requires-python = ">=3.12,<3.13"
 dependencies = [
   "duckdb",
@@ -10,8 +10,8 @@ dependencies = [
   "requests",
   "pandas",
   "numpy",
-  "scikit-learn",
   "pyyaml>=6.0.3",
+  "xgboost==2.1.4",
 ]
 
 [dependency-groups]

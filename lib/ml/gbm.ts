@@ -1,11 +1,11 @@
 /**
- * Inference for gradient-boosted trees trained in Python (ml/housing_model.py,
- * scikit-learn HistGradientBoostingRegressor) and exported to JSON. The browser
- * only predicts and explains; training happens in Python, in the weekly run or
- * in your browser through Pyodide.
+ * Inference for gradient-boosted trees trained with XGBoost in Python
+ * (ml/housing_model.py) and exported to JSON. The browser only predicts and
+ * explains; training happens in Python, in the weekly run or in your browser
+ * through Pyodide.
  *
  * ml/tests and scripts/check-ml-parity.ts check these predictions match
- * scikit-learn's.
+ * XGBoost's.
  */
 
 /** One tree, flattened: node i is [feature, threshold, left, right, value, missingGoesLeft]. Leaves have feature -1. */
@@ -20,9 +20,10 @@ export type GbmModel = {
   gain: number[];
 };
 
+/** XGBoost's rule: missing values follow the learned default; others go left when, compared as 32-bit floats, they're below the threshold. */
 function next(tree: Tree, node: number, x: number) {
   const o = node * STRIDE;
-  const left = Number.isNaN(x) ? tree[o + 5] === 1 : x <= tree[o + 1];
+  const left = Number.isNaN(x) ? tree[o + 5] === 1 : Math.fround(x) < Math.fround(tree[o + 1]);
   return left ? tree[o + 2] : tree[o + 3];
 }
 

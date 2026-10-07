@@ -2,7 +2,7 @@
   Web Worker: trains the home value model in Python, in the browser.
 
   Loads Pyodide (CPython compiled to WebAssembly) with numpy, pandas and
-  scikit-learn, then runs ml/housing_model.py, the same module the weekly
+  XGBoost, then runs ml/housing_model.py, the same module the weekly
   Airflow run uses. Progress is posted back after each batch of trees, so the
   page can draw the learning curve while Python trains.
 
@@ -18,8 +18,8 @@ function boot() {
     postMessage({ type: "status", text: "Downloading Python (Pyodide)…" });
     importScripts(`${PYODIDE}pyodide.js`);
     const py = await loadPyodide({ indexURL: PYODIDE });
-    postMessage({ type: "status", text: "Installing numpy, pandas and scikit-learn…" });
-    await py.loadPackage(["numpy", "pandas", "scikit-learn"]);
+    postMessage({ type: "status", text: "Installing numpy, pandas and XGBoost…" });
+    await py.loadPackage(["numpy", "pandas", "xgboost"]);
     const source = await (await fetch("/ml/housing_model.py")).text();
     py.FS.mkdirTree("/home/pyodide/ml");
     py.FS.writeFile("/home/pyodide/ml/__init__.py", "");

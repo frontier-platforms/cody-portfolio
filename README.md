@@ -9,7 +9,7 @@ Personal site for Cody Chandler: case studies, side projects, and a Lab of live 
 - **MDX** case studies with Zod-validated metadata
 - **DuckDB-WASM** for in-browser queries over **Parquet**
 - **Claude API** (`@anthropic-ai/sdk`) for natural-language to SQL
-- **Python 3.12** with [uv](https://docs.astral.sh/uv/): **dbt** on **DuckDB** for the pipelines, **Airflow** to orchestrate them, **scikit-learn** for the value model, **Pyodide** to train it in the browser
+- **Python 3.12** with [uv](https://docs.astral.sh/uv/): **dbt** on **DuckDB** for the pipelines, **Airflow** to orchestrate them, **XGBoost** for the value model, **Pyodide** to train it in the browser
 - **Vercel Web Analytics** (cookieless)
 
 Every page except `/api/ask` is statically generated.
@@ -18,7 +18,7 @@ Every page except `/api/ask` is statically generated.
 
 ```bash
 npm install
-uv sync                      # Python: dbt, scikit-learn, pytest (add --group airflow for Airflow)
+uv sync                      # Python: dbt, XGBoost, pytest (add --group airflow for Airflow)
 cp .env.example .env.local   # optional: add ANTHROPIC_API_KEY to enable "Ask the data"
 npm run dev
 ```
@@ -35,7 +35,7 @@ npm run dev
 | `npm run data:db`      | Same, from the last extract and without publishing. Open with `duckdb -ui lab.duckdb`       |
 | `npm run data:airflow` | Run the `lab_refresh` Airflow DAG once with `airflow dags test`, as GitHub Actions does     |
 | `npm run test:ml`      | pytest: the model, its export, and the extractors                                           |
-| `npm run test:parity`  | Checks the TypeScript scorer matches scikit-learn's predictions                             |
+| `npm run test:parity`  | Checks the TypeScript scorer matches XGBoost's predictions                                  |
 
 ## Project layout
 
@@ -56,7 +56,7 @@ lib/
   telemetry.ts          in-browser telemetry store
 ingest/                 Python extract and bronze load
 dbt/                    dbt project: sources, models, tests, contracts
-ml/                     the value model in Python (scikit-learn) and its tests
+ml/                     the value model in Python (XGBoost) and its tests
 pipeline/               the steps the DAG runs, the local runner, and publish
 airflow/dags/           the lab_refresh DAG
 public/data/            committed Parquet files, the model and manifest.json from the last run
@@ -113,9 +113,9 @@ extract_{permits,housing,flames} → load_* → dbt_build → train_value_model 
 
 ### Home value model
 
-[`ml/housing_model.py`](ml/housing_model.py) trains scikit-learn's `HistGradientBoostingRegressor` on log assessed value, with out-of-fold target encoding, a hashed train/test split and metrics against a community-median baseline. The DAG trains it after `dbt build` passes and writes `public/data/housing-model.json`, with the trees exported to JSON.
+[`ml/housing_model.py`](ml/housing_model.py) trains an XGBoost gradient-boosted tree model on log assessed value, with out-of-fold target encoding, a hashed train/test split and metrics against a community-median baseline. The DAG trains it after `dbt build` passes and writes `public/data/housing-model.json`, with the trees exported to JSON.
 
-In the browser, [`lib/ml/gbm.ts`](lib/ml/gbm.ts) scores and explains estimates from that JSON. `npm run test:parity` checks it matches scikit-learn to within 1e-9. "Train your own" runs the same Python file in a Web Worker with [Pyodide](https://pyodide.org) ([`public/ml/train-worker.js`](public/ml/train-worker.js)).
+In the browser, [`lib/ml/gbm.ts`](lib/ml/gbm.ts) scores and explains estimates from that JSON. `npm run test:parity` checks it matches the Python export, and pytest checks the export matches XGBoost. On macOS, XGBoost needs `brew install libomp`. "Train your own" runs the same Python file in a Web Worker with [Pyodide](https://pyodide.org) ([`public/ml/train-worker.js`](public/ml/train-worker.js)).
 
 ### Telemetry and analytics
 

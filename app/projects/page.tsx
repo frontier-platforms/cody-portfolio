@@ -51,9 +51,9 @@ const projects: Project[] = [
     points: [
       "dbt models and tests, run weekly by an Airflow DAG on GitHub Actions.",
       "Data tests and a contract block bad refreshes.",
-      "A scikit-learn value model that you can retrain in Python, in your browser.",
+      "An XGBoost value model that you can retrain in Python, in your browser.",
     ],
-    stack: ["dbt", "Airflow", "DuckDB", "Python", "scikit-learn", "Claude API"],
+    stack: ["dbt", "Airflow", "DuckDB", "Python", "XGBoost", "Claude API"],
     links: [
       { href: "/lab", label: "Open the Lab" },
       { href: "/colophon", label: "How it’s built" },

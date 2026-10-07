@@ -32,7 +32,7 @@ export default function HousingLab() {
                 it’s judged against the obvious baseline, not against nothing.
               </p>
               <p>
-                It’s scikit-learn, trained in Python. The same Python file trains in the weekly pipeline and,
+                It’s XGBoost, trained in Python. The same Python file trains in the weekly pipeline and,
                 through Pyodide, in your browser.
               </p>
             </>

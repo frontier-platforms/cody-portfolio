@@ -24,7 +24,7 @@ const stages: Stage[] = [
     items: [
       "dbt on DuckDB builds raw, cleaned and business-ready layers",
       "dbt tests and contracts gate the run",
-      "scikit-learn retrains the value model after tests pass",
+      "XGBoost retrains the value model after tests pass",
     ],
     link: { href: `${REPO}/blob/main/airflow/dags/lab_refresh.py`, label: "Airflow DAG" },
   },

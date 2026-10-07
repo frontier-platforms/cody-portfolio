@@ -1,5 +1,5 @@
 """Tests for the value model. The export tests matter most: the browser predicts
-from the exported JSON, so it has to agree with scikit-learn exactly."""
+from the exported JSON, so it has to agree with XGBoost."""
 
 import json
 from pathlib import Path
@@ -30,14 +30,18 @@ def synthetic(n: int = 3000, seed: int = 0) -> pd.DataFrame:
     )  # fmt: skip
 
 
+def goes_left(x: float, threshold: float, missing_left: int) -> bool:
+    """XGBoost's rule: missing values follow the learned default, others go left below the threshold."""
+    return bool(missing_left) if np.isnan(x) else np.float32(x) < np.float32(threshold)
+
+
 def walk(tree: list, row: np.ndarray) -> float:
     node = 0
     while True:
         f, t, left, right, value, missing_left = tree[node * 6 : node * 6 + 6]
         if f < 0:
             return value
-        x = row[int(f)]
-        node = int(left) if (np.isnan(x) and missing_left) or (not np.isnan(x) and x <= t) else int(right)
+        node = int(left) if goes_left(row[int(f)], t, missing_left) else int(right)
 
 
 def predict_exported(gbm: dict, row: np.ndarray) -> float:
@@ -60,18 +64,18 @@ def test_holdout_hash_matches_the_typescript_split():
     assert 0.18 < share < 0.22
 
 
-def test_export_predicts_exactly_what_sklearn_predicts():
+def test_export_predicts_what_xgboost_predicts():
     df = synthetic()
     y = np.log(df["assessed_value"].to_numpy())
     X, encoders = hm.training_matrix(df, y, seed=1)
-    model = hm.HistGradientBoostingRegressor(
-        max_iter=50, max_depth=5, max_leaf_nodes=None, early_stopping=False
-    )
-    model.fit(X, y)
-    gbm = hm.export_trees(model)
+    X[::9, 3] = np.nan  # exercise the missing-value directions
+    booster = hm.xgb.train({"max_depth": 5, "tree_method": "hist", "seed": 1}, hm.xgb.DMatrix(X, label=y), 50)
+    gbm = hm.export_trees(booster)
     X_new = hm.scoring_matrix(df.head(300), encoders)
+    X_new[::7, 3] = np.nan
     ours = np.array([predict_exported(gbm, r) for r in X_new])
-    np.testing.assert_allclose(ours, model.predict(X_new), atol=1e-5)
+    # XGBoost sums leaves in 32-bit floats; the export sums in 64-bit.
+    np.testing.assert_allclose(ours, booster.predict(hm.xgb.DMatrix(X_new)), atol=1e-5)
 
 
 def test_explanations_add_up_to_the_prediction(trained):
@@ -84,8 +88,7 @@ def test_explanations_add_up_to_the_prediction(trained):
         bias += tree[4]
         while tree[node * 6] >= 0:
             f, t, left, right, value, missing_left = tree[node * 6 : node * 6 + 6]
-            x = row[int(f)]
-            nxt = int(left) if (np.isnan(x) and missing_left) or (not np.isnan(x) and x <= t) else int(right)
+            nxt = int(left) if goes_left(row[int(f)], t, missing_left) else int(right)
             contrib[int(f)] += tree[nxt * 6 + 4] - value
             node = nxt
     assert bias + contrib.sum() == pytest.approx(predict_exported(gbm, row), abs=1e-6)
@@ -108,7 +111,7 @@ def test_model_beats_the_community_median_baseline(trained):
 
 
 def test_write_cross_language_parity_fixture(trained):
-    """Writes rows, the exported model and sklearn's predictions for the TypeScript parity check."""
+    """Writes rows, the exported model and its predictions for the TypeScript parity check."""
     df, model = trained
     sample = df.head(50)
     rows = sample[hm.FEATURES].replace({np.nan: None}).to_dict("records")

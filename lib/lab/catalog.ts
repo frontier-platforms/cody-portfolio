@@ -84,7 +84,7 @@ export const labs: LabEntry[] = [
       "Holdout accuracy, feature importance and the learning curve",
       "Train your own in Python, in your browser, and compare it with production",
     ],
-    stack: ["scikit-learn", "Python", "dbt", "Pyodide"],
+    stack: ["XGBoost", "Python", "dbt", "Pyodide"],
     askLabel: "Ask the housing data",
     inYourTeam: [
       {
@@ -103,7 +103,7 @@ export const labs: LabEntry[] = [
     ],
     decisions: [
       {
-        decision: "Train in Python with scikit-learn, score in TypeScript",
+        decision: "Train in Python with XGBoost, score in TypeScript",
         why: "One Python file trains weekly and in your browser. Scoring needs no Python download.",
         tradeoff: "Two languages to keep in step. A parity test checks they agree.",
       },

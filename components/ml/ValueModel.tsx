@@ -274,6 +274,54 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   );
 }
 
+const REPO = "https://github.com/frontier-platforms/cody-portfolio";
+
+const GLOSSARY: [string, string][] = [
+  ["Holdout", "Homes the model never saw while training. Every number in this table comes from them."],
+  ["Median error", "The typical miss. Half of the estimates land closer than this to the City’s assessment."],
+  ["Within 10% of assessment", "The share of homes where the estimate is within 10% of the City’s number."],
+  [
+    "Mean absolute error",
+    "The average miss in dollars. A few very expensive homes pull it up, so I lead with the median.",
+  ],
+  [
+    "R²",
+    "How much of the spread in home values the model explains. 1 is perfect; 0 is guessing the average.",
+  ],
+  [
+    "Community median",
+    "The bar to beat: the median value for that property type in that community. A model that can’t beat it isn’t worth running.",
+  ],
+];
+
+function buildSteps(model: HousingModel): [string, string][] {
+  const p = model.params;
+  return [
+    [
+      "Data",
+      `${(model.rows.train + model.rows.test).toLocaleString()} homes from the tested housing table. It retrains only after every error-level dbt test passes.`,
+    ],
+    ["Inputs", "Community, property type, zoning, year built and lot size. That’s all the public data has."],
+    [
+      "Encoding",
+      "Each category becomes the average value of its group, calculated on other homes. A home’s own value never leaks in.",
+    ],
+    [
+      "Holdout",
+      "One home in five is set aside by hashing its roll number. The same homes are held out every week.",
+    ],
+    [
+      "Training",
+      `XGBoost builds ${model.gbm.trees.length} small trees, each correcting the errors of the ones before. Depth ${p.depth}, learning rate ${p.learning_rate}, at least ${p.min_leaf} homes per leaf. It took ${(model.trainMs / 1000).toFixed(1)} s.`,
+    ],
+    ["Checking", "The holdout homes are scored and compared with the community median."],
+    [
+      "Serving",
+      "The trees are exported to JSON. Your browser walks them to make and explain each estimate. A test checks it matches XGBoost.",
+    ],
+  ];
+}
+
 function ModelCard({ model }: { model: HousingModel }) {
   const m = model.metrics.model;
   const b = model.metrics.baseline;
@@ -313,6 +361,16 @@ function ModelCard({ model }: { model: HousingModel }) {
           </tbody>
         </table>
 
+        <h4 className="label mt-6 text-text">What the numbers mean</h4>
+        <dl className="mt-3 space-y-3 text-sm">
+          {GLOSSARY.map(([term, meaning]) => (
+            <div key={term}>
+              <dt className="font-semibold">{term}</dt>
+              <dd className="text-text-muted">{meaning}</dd>
+            </div>
+          ))}
+        </dl>
+
         <h4 className="label mt-6 text-text">What drives it</h4>
         <ul className="mt-3 space-y-2 text-sm">
           {model.importance.map((f) => (
@@ -325,33 +383,38 @@ function ModelCard({ model }: { model: HousingModel }) {
             </li>
           ))}
         </ul>
-        <p className="mt-2 text-xs text-text-muted">Share of total split gain across all trees.</p>
+        <p className="mt-2 text-xs text-text-muted">
+          How much each input cut the error across all trees (total gain), as a share. Location does most of
+          the work.
+        </p>
       </div>
 
       <div className="bg-surface p-6">
         <h4 className="label text-text">Learning curve</h4>
         <p className="mt-1 text-sm text-text-muted">
-          Error (RMSE of log value) after each tree. Holdout tracking training closely means it isn’t
-          overfitting.
+          How far off the model is as trees are added, on a log scale (RMSE). Lower is better. The holdout
+          line staying close to the training line means it learned patterns, not individual homes.
         </p>
         <div className="mt-3">
           <Curve curve={model.learningCurve} />
         </div>
         <h4 className="label mt-6 text-text">How it’s built</h4>
-        <ul className="prose-cc mt-3 text-sm">
-          <li>
-            Gradient-boosted trees, {model.gbm.trees.length} trees, depth {model.params.depth}, learning rate{" "}
-            {model.params.learning_rate}. scikit-learn’s HistGradientBoostingRegressor, trained in Python.
-          </li>
-          <li>
-            Trained on {model.rows.train.toLocaleString()} homes in {(model.trainMs / 1000).toFixed(0)} s
-            during the weekly pipeline, after every data test passes.
-          </li>
-          <li>
-            Categories are target-encoded out of fold, so a home’s own value never leaks into its features.
-          </li>
-          <li>The same homes are held out every run (hashed on roll number), so versions are comparable.</li>
-        </ul>
+        <ol className="mt-3 space-y-3 text-sm">
+          {buildSteps(model).map(([step, detail], i) => (
+            <li key={step} className="grid grid-cols-[1.5rem_1fr] gap-2">
+              <span className="num text-text-muted">{i + 1}</span>
+              <span>
+                <span className="font-semibold">{step}.</span>{" "}
+                <span className="text-text-muted">{detail}</span>
+              </span>
+            </li>
+          ))}
+        </ol>
+        <p className="mt-3 text-sm">
+          <a href={`${REPO}/blob/main/ml/housing_model.py`} className="link">
+            Read the model code
+          </a>
+        </p>
         <h4 className="label mt-6 text-text">Limits</h4>
         <ul className="prose-cc mt-3 text-sm">
           <li>It predicts the City’s assessment, not what a home would sell for.</li>
@@ -494,7 +557,7 @@ function TrainYourOwn({
       const ms = performance.now() - started;
       setResult(model);
       setStatus(
-        `Trained ${trees} trees on ${model.rows.train.toLocaleString()} homes in ${(model.trainMs / 1000).toFixed(1)} s with scikit-learn, in your browser.`,
+        `Trained ${trees} trees on ${model.rows.train.toLocaleString()} homes in ${(model.trainMs / 1000).toFixed(1)} s with XGBoost, in your browser.`,
       );
       onTrained(model);
       track("model_trained", {
@@ -526,9 +589,8 @@ function TrainYourOwn({
       <header className="border-b border-border px-6 py-4">
         <h3 className="font-semibold">Train your own, in Python, in your browser</h3>
         <p className="mt-1 text-sm text-text-muted">
-          This runs ml/housing_model.py, the file the weekly pipeline uses, with scikit-learn on Pyodide. The
-          first run downloads Python and scikit-learn, up to 37 MB. Watch the holdout error fall as trees are
-          added.
+          This runs ml/housing_model.py, the file the weekly pipeline uses, with XGBoost on Pyodide. The first
+          run downloads Python and XGBoost, about 35 MB. Watch the holdout error fall as trees are added.
         </p>
       </header>
       <div className="grid gap-6 p-6 lg:grid-cols-[20rem_1fr]">

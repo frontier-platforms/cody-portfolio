@@ -1,6 +1,6 @@
 # Brand Guide: Cody Chandler Portfolio
 
-Version 1.4 (2026-10-07). Single source of truth for how the site looks and sounds. Read this before writing any copy, styles, or components.
+Version 1.5 (2026-10-07). Single source of truth for how the site looks and sounds. Read this before writing any copy, styles, or components.
 
 ## How to use this file
 
@@ -15,9 +15,11 @@ Version 1.4 (2026-10-07). Single source of truth for how the site looks and soun
 
 **Who it's for:** Hiring managers and recruiters (employee track) and prospective clients (consulting track). Both should leave knowing what I do and how to reach me.
 
-**Role line:** Technology and data leader. I turn data platforms and product work into measurable business outcomes.
+**Role line:** Technology and data leader who started in sales, marketing and finance. I turn data platforms and product work into measurable business outcomes.
 
 **Hero line:** I build data platforms that change how teams make money.
+
+**Breadth:** Data and product lead, but the business side (sales, marketing, operations, finance) is shown as real experience, not a footnote.
 
 **Personality:** Clear, credible, quietly confident. Think good analyst memo, not marketing landing page.
 
@@ -172,6 +174,10 @@ Added in 1.4:
 - **Decision row:** a decision in semibold, then "Why" and "Trade-off" lines. Used to show judgment, not only output.
 - **Playbook step:** number, h3, two sentences, and links to proof (a case study and a lab).
 - **Architecture diagram:** bordered stage cards with a small data-color marker, left to right on desktop, stacked on phones.
+
+Added in 1.5:
+
+- **Capability card:** where (mono meta), area (h3), one or two sentences of fact, and one proof link. Used for the business side on Home.
 
 ## 7. Motion
 
@@ -340,3 +346,4 @@ Added in 1.4:
 - 0.2 (2026-10-05): Interactive guide with single-file BRAND.md export.
 - 1.3 (2026-10-07): Nav set to Work, Lab, About, Contact (Resume moves to Contact and About). Dark mode toggle kept. Added `--radius-full` for dots and pills. Added site-specific components to section 6. Added status colors as an open decision.
 - 1.4 (2026-10-07): Section spacing tightened to `--space-16` on desktop at the owner's request (was `--space-20` or more). Added lab header, translation card, decision row, playbook step and architecture diagram components.
+- 1.5 (2026-10-07): Role line names the sales, marketing and finance background. Added a breadth note to positioning and the capability card component.

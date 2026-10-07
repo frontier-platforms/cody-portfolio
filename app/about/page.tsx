@@ -2,15 +2,16 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { Todo } from "@/components/case/Todo";
 import Link from "next/link";
+import { skills } from "@/lib/business";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "About",
   description:
-    "Cody Chandler: technology and data leader in Calgary. Experience, education and certifications.",
+    "Cody Chandler: technology and data leader in Calgary, with a sales, marketing and finance background.",
 };
 
-type Role = { title: string; dates: string };
+type Role = { title: string; dates: string; note?: string };
 type Employer = { org: string; place: string; years: string; about: string; roles: Role[] };
 
 const experience: Employer[] = [
@@ -29,7 +30,13 @@ const experience: Employer[] = [
     place: "Calgary",
     years: "2023 to 2025",
     about: "Digital banking, credit and rewards",
-    roles: [{ title: "Director, Marketing Operations & Analytics", dates: "Dec 2023 to Jan 2025" }],
+    roles: [
+      {
+        title: "Director, Marketing Operations & Analytics",
+        dates: "Dec 2023 to Jan 2025",
+        note: "Led four analysts. Owned martech partnerships, the martech budget and vendor renewals.",
+      },
+    ],
   },
   {
     org: "Canucks Sports & Entertainment",
@@ -37,9 +44,17 @@ const experience: Employer[] = [
     years: "2019 to 2023",
     about: "Canucks (NHL), Abbotsford Canucks (AHL), Warriors (NLL), Rogers Arena",
     roles: [
-      { title: "Manager, Business Intelligence", dates: "Jul 2022 to Dec 2023" },
+      {
+        title: "Manager, Business Intelligence",
+        dates: "Jul 2022 to Dec 2023",
+        note: "Built the BI team. Led the HubSpot to Salesforce move, including vendor negotiation.",
+      },
       { title: "Business Analyst, Business Intelligence", dates: "Jul 2021 to Jul 2022" },
-      { title: "Account Executive, Membership Experience", dates: "Aug 2019 to Apr 2020" },
+      {
+        title: "Account Executive, Membership Experience",
+        dates: "Aug 2019 to Apr 2020",
+        note: "Managed 800+ memberships worth over $2M.",
+      },
     ],
   },
   {
@@ -95,8 +110,14 @@ export default function AboutPage() {
               BI team built from zero, and the analysis behind two strong revenue seasons.
             </p>
             <p>
-              I started on the business side, in city finance and then selling memberships. So I judge data
-              work by what it changes for the people using it.
+              I started on the business side, and I’ve never left it. I worked in municipal finance at the
+              City of Surrey. I sold memberships at the Canucks, managing 800+ accounts worth over $2M. At
+              Neo, I ran marketing operations: the analysts, the martech stack, its budget and the vendor
+              contracts. My degree is in marketing.
+            </p>
+            <p>
+              So I judge data work by what it changes for the people selling, marketing and running the
+              business.
             </p>
             <p>
               I still build. Valve, Signl List and the Lab on this site are mine. It keeps my estimates
@@ -105,6 +126,18 @@ export default function AboutPage() {
             <p>Outside work, I volunteered with the Canucks Autism Network for five years.</p>
             <Todo>A line about life in Calgary or what you do outside work, if you want one.</Todo>
           </div>
+
+          <h2 id="skills" className="mt-16 text-2xl sm:text-3xl">
+            What I bring
+          </h2>
+          <dl className="mt-6 border-t border-border">
+            {skills.map((s) => (
+              <div key={s.area} className="grid gap-1 border-b border-border py-4 sm:grid-cols-[14rem_1fr]">
+                <dt className="font-semibold">{s.area}</dt>
+                <dd className="text-text-muted">{s.items.join(" · ")}</dd>
+              </div>
+            ))}
+          </dl>
 
           <h2 id="experience" className="mt-16 text-2xl sm:text-3xl">
             Experience
@@ -119,11 +152,14 @@ export default function AboutPage() {
                   </p>
                   <p className="mt-1 text-sm text-text-muted">{e.about}</p>
                 </div>
-                <ul className="space-y-2">
+                <ul className="space-y-3">
                   {e.roles.map((r) => (
-                    <li key={r.title} className="flex flex-col sm:flex-row sm:justify-between sm:gap-4">
-                      <span>{r.title}</span>
-                      <span className="meta shrink-0 sm:pt-1">{r.dates}</span>
+                    <li key={r.title}>
+                      <div className="flex flex-col sm:flex-row sm:justify-between sm:gap-4">
+                        <span>{r.title}</span>
+                        <span className="meta shrink-0 sm:pt-1">{r.dates}</span>
+                      </div>
+                      {r.note && <p className="mt-1 text-sm text-text-muted">{r.note}</p>}
                     </li>
                   ))}
                 </ul>
