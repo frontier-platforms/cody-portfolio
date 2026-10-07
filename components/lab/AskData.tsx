@@ -117,7 +117,7 @@ export function AskData({ dataset }: { dataset: DatasetKey }) {
                 type="button"
                 onClick={() => ask(ex, "example")}
                 disabled={status !== "idle"}
-                className="border border-border px-2 py-1 text-left text-xs text-text-muted transition-colors hover:border-text hover:text-text rounded-md"
+                className="min-h-11 rounded-md border border-border px-3 py-2 text-left text-sm text-text-muted transition-colors hover:border-text hover:text-text"
               >
                 {ex}
               </button>

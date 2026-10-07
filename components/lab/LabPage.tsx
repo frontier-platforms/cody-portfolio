@@ -10,8 +10,8 @@ import { AskDemo } from "./LabDemos";
 type Extra = { id: string; label: string; intro: React.ReactNode; content: React.ReactNode };
 
 /**
- * Shared shell for a Lab tab: dashboard, optional extra sections (the housing
- * tab adds its model), Ask the data, and the pipeline behind all of it.
+ * Shared shell for a Lab tab: Ask the data first, then the dashboard, optional
+ * extra sections (the housing tab adds its model), and the pipeline behind it all.
  */
 export function LabPage({
   dataset,
@@ -28,18 +28,6 @@ export function LabPage({
   const lab = labFor(dataset);
   const sections: Extra[] = [
     {
-      id: "dashboard",
-      label: "Dashboard",
-      intro: (
-        <>
-          {intro}
-          <p className="text-xs">Source: {datasets[dataset].source}</p>
-        </>
-      ),
-      content: dashboard,
-    },
-    ...extras,
-    {
       id: "ask",
       label: "Ask the data",
       intro: (
@@ -48,7 +36,7 @@ export function LabPage({
             Ask a question in plain English. Claude writes one SQL query, the site checks it, and your browser
             runs it. You get the answer, a chart and the SQL, and you can edit the SQL and run it yourself.
           </p>
-          <p className="text-xs">
+          <p className="text-sm">
             Claude only sees your question and the table schemas.{" "}
             <Link href="/colophon#ai" className="link">
               How the guardrails work
@@ -59,6 +47,18 @@ export function LabPage({
       ),
       content: <AskDemo dataset={dataset} />,
     },
+    {
+      id: "dashboard",
+      label: "Dashboard",
+      intro: (
+        <>
+          {intro}
+          <p className="text-sm">Source: {datasets[dataset].source}</p>
+        </>
+      ),
+      content: dashboard,
+    },
+    ...extras,
     {
       id: "pipeline",
       label: "Pipeline",

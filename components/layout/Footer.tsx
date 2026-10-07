@@ -59,6 +59,11 @@ export function Footer() {
             </a>
           </li>
           <li>
+            <Link className={linkClass} href="/projects">
+              Projects
+            </Link>
+          </li>
+          <li>
             <Link className={linkClass} href="/colophon">
               How this site is built
             </Link>

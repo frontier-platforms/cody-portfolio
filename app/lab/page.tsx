@@ -12,12 +12,12 @@ export const metadata: Metadata = {
 
 const anatomy = [
   {
-    title: "Dashboard",
-    body: "Charts that are SQL queries running in DuckDB in your browser. Every one shows its query.",
-  },
-  {
     title: "Ask the data",
     body: "Plain-English questions. Claude writes the SQL, the site checks it, your browser runs it.",
+  },
+  {
+    title: "Dashboard",
+    body: "Charts that are SQL queries running in DuckDB in your browser. Every one shows its query.",
   },
   {
     title: "Tested pipeline",

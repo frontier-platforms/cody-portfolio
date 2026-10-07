@@ -61,6 +61,11 @@ export default async function Home() {
 
       <Section index="01" label="Selected work" className="mt-24">
         <ProjectGrid items={work} />
+        <p className="mt-6">
+          <Link href="/projects" className="link inline-flex min-h-11 items-center">
+            See the side projects I build
+          </Link>
+        </p>
       </Section>
 
       <Section index="02" label="Where I help" className="mt-24">
