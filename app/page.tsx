@@ -33,7 +33,7 @@ export default async function Home() {
           I help teams grow revenue with better data and products.
         </h1>
         <p className="mt-6 max-w-measure text-pretty text-lg text-text-muted">
-          I’ve led data, product and marketing operations teams, and I started out in sales and finance.
+          I lead data and product teams, with a background in sales, marketing and finance.
         </p>
         <div className="mt-8 flex flex-wrap items-center gap-6">
           <Link
