@@ -82,6 +82,13 @@ export const trackingPlan = {
     description: "The ⌘K menu is opened.",
     props: {},
   },
+  contact_submitted: {
+    description: "The contact form is sent. The message itself is never tracked.",
+    props: {
+      reason: { type: "string", values: ["hiring", "project", "other"] },
+      outcome: { type: "string", values: ["sent", "error"] },
+    },
+  },
   cta_clicked: {
     description: "A contact or hiring call to action is clicked.",
     props: {
