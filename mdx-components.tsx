@@ -6,6 +6,7 @@ import { KeyNumbers } from "@/components/case/KeyNumbers";
 import { Media } from "@/components/case/Media";
 import { MedallionDiagram } from "@/components/case/MedallionDiagram";
 import { NeoAttribution } from "@/components/case/NeoAttribution";
+import { ProductShots } from "@/components/case/ProductShots";
 import { Todo } from "@/components/case/Todo";
 
 const components: MDXComponents = {
@@ -16,6 +17,7 @@ const components: MDXComponents = {
   MedallionDiagram,
   Media,
   NeoAttribution,
+  ProductShots,
   Todo,
 };
 
