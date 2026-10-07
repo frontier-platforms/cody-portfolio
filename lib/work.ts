@@ -50,6 +50,11 @@ export async function getWork(slug: string) {
   return { meta: { ...meta, slug } as Work, Content: mod.default as React.ComponentType };
 }
 
+/** Side ventures (Valve, Signl List) are shown apart from professional work. */
+export function isSideProject(work: Work) {
+  return work.status === "side venture";
+}
+
 export async function getAllWork(): Promise<Work[]> {
   const slugs = await getWorkSlugs();
   const all = await Promise.all(slugs.map(async (s) => (await getWork(s)).meta));

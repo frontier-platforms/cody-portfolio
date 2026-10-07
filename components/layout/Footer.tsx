@@ -59,8 +59,8 @@ export function Footer() {
             </a>
           </li>
           <li>
-            <Link className={linkClass} href="/projects">
-              Projects
+            <Link className={linkClass} href="/work#side-projects">
+              Side projects
             </Link>
           </li>
           <li>

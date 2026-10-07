@@ -8,10 +8,11 @@ import { ProjectGrid } from "@/components/work/ProjectCard";
 import { labs } from "@/lib/lab/catalog";
 import { visibleKpis } from "@/lib/kpis";
 import { site } from "@/lib/site";
-import { getAllWork } from "@/lib/work";
+import { getAllWork, isSideProject } from "@/lib/work";
 
 export default async function Home() {
-  const work = await getAllWork();
+  const all = await getAllWork();
+  const work = all.filter((w) => !isSideProject(w));
 
   return (
     <>
@@ -63,8 +64,8 @@ export default async function Home() {
       <Section index="01" label="Selected work" className="mt-12 sm:mt-16">
         <ProjectGrid items={work} />
         <p className="mt-6">
-          <Link href="/projects" className="link inline-flex min-h-11 items-center">
-            See the side projects I build
+          <Link href="/work#side-projects" className="link inline-flex min-h-11 items-center">
+            See my side projects: Valve and Signl List
           </Link>
         </p>
       </Section>
