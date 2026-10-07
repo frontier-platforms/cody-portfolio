@@ -3,7 +3,8 @@ import type { Kpi } from "@/lib/kpis";
 
 /**
  * BRAND.md section 6, metric: large mono number in --color-text, small muted
- * label underneath. Accent only on the single most important one.
+ * label underneath. Accent only on the single most important one. Each card
+ * names the part of the business it proves, so the strip shows range.
  */
 export function KpiStrip({ items }: { items: Kpi[] }) {
   return (
@@ -14,8 +15,8 @@ export function KpiStrip({ items }: { items: Kpi[] }) {
             href={k.href}
             className="flex h-full flex-col rounded-md border border-border p-6 transition-colors hover:border-accent"
           >
-            {k.before && <span className="num text-sm text-text-muted">from {k.before}</span>}
-            <span className={`num text-3xl ${k.key ? "text-accent" : ""}`}>{k.value}</span>
+            <span className="label">{k.area}</span>
+            <span className={`num mt-3 text-3xl ${k.key ? "text-accent" : ""}`}>{k.value}</span>
             <span className="mt-2 text-sm text-text-muted">{k.label}</span>
             <span className="meta mt-auto pt-4">{k.source}</span>
           </Link>

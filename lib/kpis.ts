@@ -4,8 +4,9 @@
  * important metric (`key`).
  */
 export type Kpi = {
+  /** The part of the business this proves: revenue, sales, marketing, product. */
+  area: string;
   value: string;
-  before?: string;
   label: string;
   source: string;
   href: string;
@@ -15,30 +16,33 @@ export type Kpi = {
 
 export const kpis: Kpi[] = [
   {
+    area: "Revenue",
     value: "+27%",
-    label: "Revenue over two seasons, backed by my team's pricing and membership analysis",
-    source: "Canucks Sports & Entertainment",
+    label: "Revenue growth over two seasons, backed by my team’s pricing and membership analysis",
+    source: "Canucks",
     href: "/work/canucks-bi",
     key: true,
   },
   {
-    before: "7 days",
-    value: "<12 hrs",
-    label: "Data freshness for sports clients",
-    source: "StellarAlgo",
-    href: "/work/stellaralgo-prime",
+    area: "Sales",
+    value: "$2M+",
+    label: "In memberships I managed as an account executive, across 800+ accounts",
+    source: "Canucks",
+    href: "/work/canucks-bi",
   },
   {
-    value: "5",
-    label: "Paid channels in one attribution model, with CAC and LTV",
+    area: "Marketing",
+    value: "5 → 1",
+    label: "Platform reports replaced by one attribution view, with CAC and LTV guiding the budget",
     source: "Neo Financial",
     href: "/work/neo-attribution",
   },
   {
-    value: "$40M+",
-    label: "Municipal revenue in a property tax program I ran",
-    source: "City of Surrey",
-    href: "/about#experience",
+    area: "Product and data",
+    value: "<12 hrs",
+    label: "Data freshness for sports clients, down from 7 days",
+    source: "StellarAlgo",
+    href: "/work/stellaralgo-prime",
   },
 ];
 
