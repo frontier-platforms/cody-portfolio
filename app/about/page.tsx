@@ -149,7 +149,7 @@ export default function AboutPage() {
                   </p>
                   <p className="mt-1 text-sm text-text-muted">{e.about}</p>
                 </div>
-                <ul className="space-y-2">
+                <ul className="prose-cc max-w-none">
                   {e.roles.map((r) => (
                     <li key={r.title} className="flex flex-col sm:flex-row sm:justify-between sm:gap-4">
                       <span>{r.title}</span>
