@@ -1,6 +1,6 @@
 # Brand Guide: Cody Chandler Portfolio
 
-Version 1.11 (2026-10-07). Single source of truth for how the site looks and sounds. Read this before writing any copy, styles, or components.
+Version 1.12 (2026-10-07). Single source of truth for how the site looks and sounds. Read this before writing any copy, styles, or components.
 
 ## How to use this file
 
@@ -90,7 +90,7 @@ Light mode is the default. Dark mode follows the system setting.
 Rules:
 
 - MUST meet WCAG AA contrast (4.5:1 for body text, 3:1 for large text and UI elements).
-- MUST use accent for at most one primary action per screen.
+- MUST use accent for at most one primary action per screen. The nav bar background is the one deliberate exception (1.12).
 - PREFER accent at roughly 5% of any screen.
 - AVOID gradients, glows, and shadow-heavy cards.
 - Data colors are for charts only, never UI chrome.
@@ -149,7 +149,7 @@ Rules:
 
 Keep the set small. Add a component here before building it.
 
-- **Nav:** name at left (body face, 600), 5 links at right: Home, Work, Lab, About, Contact. Resume is reached from Contact and About. No hamburger above 640px.
+- **Nav:** an accent-colored bar with `--color-on-accent` text and icons. Name at left (body face, 600), 5 links at right: Home, Work, Lab, About, Contact. The current page is underlined and semibold. Focus rings in the bar use `--color-on-accent`. Resume is reached from Contact and About. No hamburger above 640px.
 - **Hero:** one h1 line, one supporting sentence, one primary button (Contact) and one text link (View work). A short availability line sits under the location label: open to consulting, contract and employment opportunities.
 - **Project card:** mono label (industry and company), title, one-line summary, one metric in mono. Whole card is the link. Border, no shadow, `--radius-md`. Border turns accent on hover.
 - **Metric:** large mono number in `--color-text`, small muted label underneath. Accent only for the single most important metric on a page.
@@ -358,3 +358,4 @@ Added in 1.8:
 - 1.9 (2026-10-07): Consulting is now stated openly, alongside full-time roles. Consulting runs through Frontier Platforms. Added the hero availability line.
 - 1.10 (2026-10-07): Contract roles added to the availability line. Added the compact work card for earlier roles.
 - 1.11 (2026-10-07): Availability reads consulting, contract and employment. City of Surrey joins Selected work on Home as a full card, making a 2 by 2 grid.
+- 1.12 (2026-10-07): Nav bar uses the accent color at the owner's request, with on-accent text.

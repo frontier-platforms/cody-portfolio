@@ -129,6 +129,10 @@ body {
   box-shadow: var(--focus-ring);
   border-radius: var(--radius-sm);
 }
+/* On the accent nav bar the accent focus ring would vanish, so it uses the on-accent color. */
+.site-header :focus-visible {
+  box-shadow: 0 0 0 3px var(--color-on-accent);
+}
 
 @layer components {
   /* Small mono label. Keep uppercase labels to three words or fewer. */

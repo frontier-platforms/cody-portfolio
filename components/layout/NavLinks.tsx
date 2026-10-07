@@ -16,7 +16,7 @@ export function NavLinks({ items }: { items: readonly { href: string; label: str
             key={item.href}
             href={item.href}
             aria-current={active ? "page" : undefined}
-            className="inline-flex min-h-11 items-center px-2 text-sm text-text-muted underline-offset-[3px] transition-colors hover:text-text hover:underline aria-[current=page]:text-text aria-[current=page]:underline sm:px-3 sm:text-base"
+            className="inline-flex min-h-11 items-center px-2 text-sm text-on-accent underline-offset-[3px] transition-colors hover:underline aria-[current=page]:font-semibold aria-[current=page]:underline sm:px-3 sm:text-base"
           >
             {item.label}
           </Link>

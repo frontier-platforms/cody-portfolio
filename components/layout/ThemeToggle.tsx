@@ -23,7 +23,7 @@ export function ThemeToggle() {
       type="button"
       onClick={toggle}
       aria-label="Toggle dark mode"
-      className="grid size-11 place-items-center rounded-md text-text-muted transition-colors hover:text-text"
+      className="grid size-11 place-items-center rounded-md text-on-accent transition-colors hover:bg-accent-hover"
     >
       <svg viewBox="0 0 20 20" className="size-5" aria-hidden>
         <circle cx="10" cy="10" r="7" fill="none" stroke="currentColor" strokeWidth="1.5" />
