@@ -54,17 +54,6 @@ export default function ContactPage() {
             )}
             <li>
               <a
-                href={site.frontier}
-                className="link inline-flex min-h-11 items-center"
-                data-track="cta_clicked"
-                data-track-cta="frontier"
-                data-track-location="contact"
-              >
-                Frontier Platforms ↗
-              </a>
-            </li>
-            <li>
-              <a
                 href={site.resume}
                 className="link inline-flex min-h-11 items-center"
                 data-track="cta_clicked"
@@ -91,6 +80,17 @@ export default function ContactPage() {
                 <Todo>Booking link for an intro call.</Todo>
               </li>
             )}
+            <li>
+              <a
+                href={site.frontier}
+                className="link inline-flex min-h-11 items-center"
+                data-track="cta_clicked"
+                data-track-cta="frontier"
+                data-track-location="contact"
+              >
+                Frontier Platforms ↗
+              </a>
+            </li>
           </ul>
           <p className="mt-6 text-sm text-text-muted">{site.location}</p>
         </aside>
