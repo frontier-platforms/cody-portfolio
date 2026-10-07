@@ -25,8 +25,8 @@ export const kpis: Kpi[] = [
   },
   {
     area: "Data platform",
-    value: "<12 hrs",
-    label: "Data freshness for sports clients, down from 7 days",
+    value: "1",
+    label: "Governed data layer for every client, replacing a database per client",
     source: "StellarAlgo",
     href: "/work/stellaralgo-prime",
   },

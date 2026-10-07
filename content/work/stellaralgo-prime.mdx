@@ -5,14 +5,14 @@ export const meta = {
   role: "Director, Product",
   period: "2025 to present",
   summary:
-    "Cut client data freshness from 7 days to under 12 hours with PRIME, then built the first AI products on top.",
+    "Unified every client's data into one governed layer, so teams self-serve and AI answers match the dashboards.",
   problem: "Our data is stale and nobody trusts the numbers",
   status: "shipped",
   stack: ["Snowflake", "dbt", "Airflow", "AWS", "Medallion architecture", "Semantic layer", "LLMs"],
   numbers: [
-    { before: "7 days", value: "<12 hrs", label: "Data freshness for clients" },
-    { value: "100+", label: "dbt models in production" },
-    { value: "2", label: "AI products built on the platform" },
+    { value: "1", label: "Governed layer for every client's data, replacing a database per client" },
+    { value: "Self-serve", label: "Routine Customer Success questions, without an engineering ticket" },
+    { value: "30 min", label: "To flag a missed refresh, before a client notices" },
   ],
   order: 1,
 };
@@ -50,6 +50,6 @@ I'm now leading the move of the remaining analytics workloads from AWS Athena to
 Customer Success, Product and clients now work from the same numbers, on a schedule they can rely on. Routine questions that once needed an engineering request are now self-serve.
 
 <Todo>
-  Any downstream outcome you can stand behind: support tickets, CS time saved, renewals, client feedback on
-  fresher data.
+  A real number would beat "Self-serve": routine engineering escalations down by some share, or Customer
+  Success hours saved per week.
 </Todo>
