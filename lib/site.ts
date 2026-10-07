@@ -10,7 +10,6 @@ export const site = {
   github: "https://github.com/frontier-platforms",
   // TODO(cody): booking link (Cal.com, Calendly or similar). Until then, email is the fallback.
   booking: null as string | null,
-  // TODO(cody): drop a general-purpose resume.pdf into /public.
   resume: "/resume.pdf",
   // Set NEXT_PUBLIC_SITE_URL once the custom domain is connected; Vercel's own domain is the fallback.
   url:
