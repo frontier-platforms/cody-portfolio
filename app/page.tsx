@@ -8,11 +8,11 @@ import { ProjectGrid } from "@/components/work/ProjectCard";
 import { labs } from "@/lib/lab/catalog";
 import { visibleKpis } from "@/lib/kpis";
 import { site } from "@/lib/site";
-import { getAllWork, isSideProject } from "@/lib/work";
+import { getAllWork, isCompact, isSideProject } from "@/lib/work";
 
 export default async function Home() {
   const all = await getAllWork();
-  const work = all.filter((w) => !isSideProject(w));
+  const work = all.filter((w) => !isSideProject(w) && !isCompact(w));
 
   return (
     <>
@@ -29,7 +29,7 @@ export default async function Home() {
           />
           <div>
             <p className="label">Calgary, Alberta</p>
-            <p className="text-sm text-text-muted">Open to full-time roles and consulting</p>
+            <p className="text-sm text-text-muted">Open to full-time, contract and consulting work</p>
           </div>
         </div>
         <h1 className="mt-6 max-w-measure text-balance text-2xl sm:text-4xl">
@@ -92,7 +92,7 @@ export default async function Home() {
       <Section index="04" label="Work with me" className="mt-12 sm:mt-16">
         <div className="grid gap-12 lg:grid-cols-2">
           <div>
-            <h3 className="text-xl">Full-time roles</h3>
+            <h3 className="text-xl">Full-time and contract roles</h3>
             <p className="mt-2 max-w-measure text-text-muted">
               I’m looking for senior roles in Calgary across data, product, marketing and business operations.
               I’ve led product, analytics and marketing operations teams, and I still write the SQL.

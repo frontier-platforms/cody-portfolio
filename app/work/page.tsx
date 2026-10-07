@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ProjectGrid } from "@/components/work/ProjectCard";
-import { getAllWork, isSideProject } from "@/lib/work";
+import { CompactCard, ProjectGrid } from "@/components/work/ProjectCard";
+import { getAllWork, isCompact, isSideProject } from "@/lib/work";
 
 export const metadata: Metadata = {
   title: "Work",
@@ -11,7 +11,8 @@ export const metadata: Metadata = {
 
 export default async function WorkIndex() {
   const work = await getAllWork();
-  const professional = work.filter((w) => !isSideProject(w));
+  const professional = work.filter((w) => !isSideProject(w) && !isCompact(w));
+  const earlier = work.filter((w) => !isSideProject(w) && isCompact(w));
   const side = work.filter(isSideProject);
 
   return (
@@ -29,6 +30,18 @@ export default async function WorkIndex() {
         <div className="mt-6">
           <ProjectGrid items={professional} />
         </div>
+        {earlier.length > 0 && (
+          <div className="mt-6">
+            <p className="label">Where I started</p>
+            <ul className="mt-3 space-y-3">
+              {earlier.map((w) => (
+                <li key={w.slug}>
+                  <CompactCard work={w} />
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </section>
 
       <section aria-labelledby="side-projects" className="mt-12 scroll-mt-24 sm:mt-16">

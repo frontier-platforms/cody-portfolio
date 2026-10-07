@@ -32,6 +32,32 @@ export function ProjectCard({ work }: { work: Work }) {
   );
 }
 
+/** BRAND.md section 6, compact work card: an earlier role in one line, with one metric. */
+export function CompactCard({ work }: { work: Work }) {
+  const metric = visibleNumbers(work.numbers)[0];
+  return (
+    <Link
+      href={`/work/${work.slug}`}
+      className="group flex flex-col gap-3 rounded-md border border-border p-4 transition-colors hover:border-accent sm:flex-row sm:items-center sm:justify-between sm:gap-6"
+    >
+      <span>
+        <span className="meta block">
+          {work.industry} · {work.company}
+          {work.period ? ` · ${work.period}` : ""}
+        </span>
+        <span className="mt-1 block font-semibold group-hover:underline">{work.title}</span>
+        <span className="mt-1 block text-sm text-text-muted">{work.summary}</span>
+      </span>
+      {metric && (
+        <span className="shrink-0 sm:text-right">
+          <span className="num block text-xl">{metric.value}</span>
+          <span className="block text-xs text-text-muted">{metric.label}</span>
+        </span>
+      )}
+    </Link>
+  );
+}
+
 export function ProjectGrid({ items }: { items: Work[] }) {
   return (
     <ul className="grid gap-4 lg:grid-cols-2">

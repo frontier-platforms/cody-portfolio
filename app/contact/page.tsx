@@ -17,8 +17,8 @@ export default function ContactPage() {
         Tell me about the role or the project.
       </h1>
       <p className="mt-6 max-w-measure text-lg text-text-muted">
-        I’m open to full-time roles and consulting. Consulting runs through Frontier Platforms. I read
-        everything and reply to anything specific.
+        I’m open to full-time and contract roles, and to consulting. Consulting runs through Frontier
+        Platforms. I read everything and reply to anything specific.
       </p>
 
       <div className="mt-12 grid gap-12 lg:grid-cols-[1fr_18rem]">

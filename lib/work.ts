@@ -31,6 +31,8 @@ export const WorkMetaSchema = z.object({
   stack: z.array(z.string()),
   numbers: z.array(NumberSchema),
   order: z.number(),
+  /** Earlier roles shown as a small card under professional work, and left off the home page. */
+  compact: z.boolean().optional(),
 });
 
 export type WorkMeta = z.infer<typeof WorkMetaSchema>;
@@ -48,6 +50,11 @@ export async function getWork(slug: string) {
   const mod = await import(`@/content/work/${slug}.mdx`);
   const meta = WorkMetaSchema.parse(mod.meta);
   return { meta: { ...meta, slug } as Work, Content: mod.default as React.ComponentType };
+}
+
+/** Earlier, smaller pieces of professional work, shown as compact cards. */
+export function isCompact(work: Work) {
+  return work.compact === true;
 }
 
 /** Side ventures (Valve, Signl List) are shown apart from professional work. */
