@@ -1,0 +1,8 @@
+lab:
+  target: local
+  outputs:
+    local:
+      type: duckdb
+      # The warehouse is one DuckDB file. Ingest loads raw tables into it; dbt builds the rest.
+      path: "{{ env_var('LAB_DUCKDB', 'lab.duckdb') }}"
+      threads: 4

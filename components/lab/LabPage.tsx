@@ -54,8 +54,8 @@ export function LabPage({
       label: "Pipeline",
       intro: (
         <p>
-          Every number above comes from this pipeline: raw, cleaned and business-ready layers, with tests and
-          a contract. It runs weekly on GitHub Actions, and in your browser when you press the button.
+          Every number above comes from this pipeline: dbt models in raw, cleaned and business-ready layers,
+          with tests and a contract. An Airflow DAG runs it weekly. You can run it in your browser too.
         </p>
       ),
       content: <PipelineSection pipeline={pipeline} run={run} history={manifest.history?.[dataset] ?? []} />,

@@ -49,11 +49,11 @@ const projects: Project[] = [
     kicker: "Live data products · This site",
     body: "Three small data products on Calgary data, with tested pipelines you can run in your browser.",
     points: [
-      "One pipeline definition runs weekly on GitHub Actions and live in the browser.",
+      "dbt models and tests, run weekly by an Airflow DAG on GitHub Actions.",
       "Data tests and a contract block bad refreshes.",
-      "A home value model, written from scratch, that you can retrain.",
+      "A scikit-learn value model that you can retrain in Python, in your browser.",
     ],
-    stack: ["DuckDB", "Parquet", "SQL", "Machine learning", "Claude API"],
+    stack: ["dbt", "Airflow", "DuckDB", "Python", "scikit-learn", "Claude API"],
     links: [
       { href: "/lab", label: "Open the Lab" },
       { href: "/colophon", label: "How it’s built" },

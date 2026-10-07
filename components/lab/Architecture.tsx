@@ -15,25 +15,25 @@ const stages: Stage[] = [
     where: "Public APIs",
     marker: "bg-data-4",
     items: ["City of Calgary: permits, assessments, use codes", "NHL: schedules and play-by-play"],
-    link: { href: `${REPO}/tree/main/lib/pipelines`, label: "Extract code" },
+    link: { href: `${REPO}/tree/main/ingest`, label: "Python extract code" },
   },
   {
     name: "Weekly run",
-    where: "GitHub Actions",
+    where: "Airflow on GitHub Actions",
     marker: "bg-data-1",
     items: [
-      "DuckDB builds raw, cleaned and business-ready layers",
-      "Data tests and contracts gate the run",
-      "The value model retrains after tests pass",
+      "dbt on DuckDB builds raw, cleaned and business-ready layers",
+      "dbt tests and contracts gate the run",
+      "scikit-learn retrains the value model after tests pass",
     ],
-    link: { href: `${REPO}/blob/main/.github/workflows/refresh-data.yml`, label: "Workflow" },
+    link: { href: `${REPO}/blob/main/airflow/dags/lab_refresh.py`, label: "Airflow DAG" },
   },
   {
     name: "Published",
     where: "Repo and CDN",
     marker: "bg-data-3",
-    items: ["Parquet files and the model, committed", "A manifest of every run", "Served as static files"],
-    link: { href: `${REPO}/tree/main/public/data`, label: "Data files" },
+    items: ["Parquet files and the model, committed", "A manifest of every run", "dbt docs with lineage"],
+    link: { href: "/dbt-docs/index.html", label: "dbt docs" },
   },
   {
     name: "In your browser",
@@ -42,9 +42,10 @@ const stages: Stage[] = [
     items: [
       "Loads only the tables a page needs",
       "Runs every chart query locally",
-      "Live pipeline runs and model training, same code",
+      "Live runs of dbt’s compiled SQL",
+      "Model training in Python, through Pyodide",
     ],
-    link: { href: `${REPO}/blob/main/lib/pipelines/runner.ts`, label: "Shared runner" },
+    link: { href: `${REPO}/blob/main/lib/pipelines/runner.ts`, label: "Browser runner" },
   },
 ];
 

@@ -1,15 +1,16 @@
 /**
- * A small, dbt-shaped pipeline model. A pipeline is plain data: raw sources,
- * SQL models in medallion layers, tests and a contract. The same definition
- * runs in Node (production refresh) and in DuckDB-WASM (live runs in the
- * browser) through the engine-agnostic runner in ./runner.ts.
+ * Pipeline types for the site. The pipelines themselves are defined in dbt
+ * (dbt/models) and built by the Airflow DAG. pipeline/publish.py turns dbt's
+ * manifest into lib/pipelines/generated/<id>.json: bronze shapes, the SQL dbt
+ * compiled for each model and test, and the contract. The site renders those,
+ * and the browser's live runs execute that same compiled SQL in DuckDB-WASM.
  */
 
 export type Layer = "bronze" | "silver" | "gold";
 
 export type Column = { name: string; type: string };
 
-/** Raw (bronze) table, loaded as-is from extracted JSON. */
+/** Raw (bronze) table, from dbt's sources.yml. */
 export type SourceTable = {
   name: string;
   description: string;
@@ -20,7 +21,7 @@ export type Model = {
   name: string;
   layer: Exclude<Layer, "bronze">;
   description: string;
-  /** SELECT statement. Reference other tables with {{ ref('name') }}. */
+  /** dbt-compiled SELECT. Other tables appear as {{ ref('name') }}. */
   sql: string;
   dependsOn: string[];
   /** Served to the browser as public/data/<file>. */
@@ -30,25 +31,24 @@ export type Model = {
    * key are replaced. Unique for permits; a partition key (game) for shots.
    */
   mergeKey?: string;
+  /** dbt enforces this model's column names and types. */
+  contract: boolean;
+  /** Source file in the repo, e.g. dbt/models/permits/stg_permits.sql. */
+  path: string;
 };
 
 export type Severity = "error" | "warn";
 
-/** Tests target served (gold) tables so they can also run in the browser after a live merge. */
-type TestBase = { name: string; model: string; severity: Severity; description: string };
-
-export type Test = TestBase &
-  (
-    | { kind: "not_null" | "unique"; column: string }
-    | { kind: "accepted_values"; column: string; values: (string | number)[] }
-    /** Every row must satisfy `expression`. */
-    | { kind: "expression"; expression: string }
-    | { kind: "relationship"; column: string; to: { model: string; column: string } }
-    | { kind: "row_count"; min: number }
-    | { kind: "freshness"; column: string; maxAgeDays: number }
-    /** Arbitrary SQL returning one row with a `failures` column. */
-    | { kind: "custom"; sql: string }
-  );
+/** A dbt test, compiled. `sql` returns one row with a `failures` count. */
+export type Test = {
+  name: string;
+  model: string;
+  /** dbt test name (unique, not_null, accepted_values, relationships, ...) or "singular". */
+  kind: string;
+  severity: Severity;
+  description: string;
+  sql: string;
+};
 
 export type Contract = {
   owner: string;
@@ -67,19 +67,8 @@ export type Pipeline = {
   models: Model[];
   tests: Test[];
   contract: Contract;
-  /** Optional ML model trained on a gold table after the tests pass. */
-  model?: { name: string; description: string; file: string; trainedOn: string };
-  /**
-   * Headline findings computed on the gold tables at the end of each production
-   * run. Each query returns one row with `value` (and optionally `detail`).
-   */
-  highlights?: Highlight[];
-};
-
-export type Highlight = {
-  label: string;
-  sql: string;
-  format: "count" | "money" | "percent" | "text";
+  /** ML model trained on a gold table after the tests pass. */
+  model?: { name: string; description: string; file: string; trainedOn: string; path: string };
 };
 
 export type HighlightResult = { label: string; value: string; detail: string | null };
@@ -105,7 +94,7 @@ export type ModelResult = {
 export type TestResult = {
   name: string;
   model: string;
-  kind: Test["kind"];
+  kind: string;
   severity: Severity;
   status: "pass" | "warn" | "fail";
   failures: number;
@@ -118,6 +107,7 @@ export type ManifestEntry = {
   runAt: string;
   durationMs: number;
   trigger: "local" | "github-actions";
+  orchestrator?: string;
   commit: string | null;
   extract: { requests: number; rows: number; ms: number };
   models: ModelResult[];
@@ -129,6 +119,7 @@ export type ManifestEntry = {
     file: string;
     bytes: number;
     trainMs: number;
+    library?: string;
     rows: { train: number; test: number };
     metrics: {
       model: { mae: number; mdape: number; within10: number; r2: number };

@@ -6,7 +6,7 @@ on:
     branches: [main]
 
 jobs:
-  check:
+  site:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -19,4 +19,28 @@ jobs:
       - run: npm run lint
       - run: npm run lint:brand
       - run: npx prettier --check .
+      - run: npm run test:parity
       - run: npm run build
+
+  python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - run: uv sync --group airflow
+      - run: uv run ruff check .
+      - run: uv run pytest
+      - name: dbt parse
+        run: uv run dbt parse --project-dir dbt --profiles-dir dbt
+      - name: Airflow DAG imports cleanly
+        env:
+          AIRFLOW_HOME: ${{ github.workspace }}/.cache/airflow
+          AIRFLOW__CORE__DAGS_FOLDER: ${{ github.workspace }}/airflow/dags
+          AIRFLOW__CORE__LOAD_EXAMPLES: "False"
+        run: |
+          uv run python -c "import runpy; runpy.run_path('airflow/dags/lab_refresh.py')"
+          uv run airflow db migrate > /dev/null
+          uv run airflow dags reserialize > /dev/null
+          uv run airflow dags list -o plain | grep -q lab_refresh

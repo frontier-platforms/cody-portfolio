@@ -1,0 +1,95 @@
+version: 2
+
+models:
+  - name: stg_homes
+    description: Typed and labelled. Use codes joined to the City's own descriptions, zoning reduced to its primary district, and the 1800 placeholder for an unknown build year turned into NULL.
+
+  - name: housing_homes
+    description: One row per home with its 2026 assessed value. No addresses. Served as Parquet and used to train the value model.
+    config:
+      contract: { enforced: true }
+    columns:
+      - name: roll_number
+        data_type: bigint
+        data_tests:
+          - unique:
+              config:
+                { meta: { label: "roll_number is unique", description: "One row per assessed property." } }
+          - not_null:
+              config:
+                {
+                  meta:
+                    {
+                      label: "roll_number is never null",
+                      description: "Every home is addressable for incremental merges.",
+                    },
+                }
+      - name: roll_year
+        data_type: integer
+        data_tests:
+          - accepted_values:
+              arguments: { values: [2026], quote: false }
+              config:
+                meta:
+                  label: One assessment roll year
+                  description: Mixing two roll years would blend two years of values into one model.
+      - { name: community, data_type: varchar }
+      - name: use
+        data_type: varchar
+        data_tests:
+          - not_null:
+              config:
+                meta:
+                  label: Every use code has a City label
+                  description: If the City adds a code, the join fails loudly instead of producing unlabelled homes.
+      - name: property_group
+        data_type: varchar
+        data_tests:
+          - accepted_values:
+              arguments: { values: ["Detached", "Duplex", "Townhouse", "Condo apartment"] }
+              config:
+                {
+                  meta:
+                    {
+                      label: "property_group is a known value",
+                      description: "Only the home types the model and dashboard expect.",
+                    },
+                }
+      - { name: zoning, data_type: varchar }
+      - name: year_built
+        data_type: integer
+        data_tests:
+          - not_null:
+              config:
+                severity: warn
+                meta:
+                  label: Year built is present
+                  description: Missing years are kept. The model routes missing values down their own branch.
+      - { name: lot_sqft, data_type: integer }
+      - { name: assessed_value, data_type: integer }
+      - { name: mod_date, data_type: date }
+    data_tests:
+      - expression_is_true:
+          arguments: { expression: "assessed_value between 50000 and 20000000" }
+          config:
+            severity: warn
+            meta:
+              label: Assessed value is plausible ($50k to $20M)
+              description: Outliers are kept but flagged. The model trains on log value, which limits their pull.
+      - expression_is_true:
+          arguments:
+            { expression: "year_built is null or year_built between 1875 and year(current_date) + 1" }
+          config:
+            severity: warn
+            meta:
+              label: Year built is plausible
+              description: Catches zeros and typos in construction year.
+      - row_count_at_least:
+          arguments: { min_rows: 400000 }
+          config:
+            meta:
+              label: At least 400,000 homes
+              description: Guards against a partial extract replacing the table and retraining the model on it.
+
+  - name: housing_highlights
+    description: Three headline findings for the lab header, recomputed every run.

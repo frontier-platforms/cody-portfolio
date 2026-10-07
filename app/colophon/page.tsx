@@ -35,19 +35,20 @@ const sections = [
     body: (
       <>
         <p>
-          Each Lab dataset is a small data product with a pipeline defined once, as data: raw sources, SQL
-          models in bronze, silver and gold layers, tests and a contract. Models reference each other with{" "}
-          <code>{"{{ ref('name') }}"}</code>, the same way dbt does.
+          Each Lab dataset is a small data product. Python pulls raw rows from the source API. A dbt project
+          on DuckDB builds bronze, silver and gold layers, with tests and enforced contracts on the gold
+          tables.
         </p>
         <p>
-          <strong>One definition, two runtimes.</strong> A small runner takes any engine that can execute SQL.
-          In production it drives DuckDB in Node; in the Lab it drives DuckDB compiled to WebAssembly in your
-          browser. The models, tests and results are identical.
+          <strong>One definition, two runtimes.</strong> Each publish exports the SQL dbt compiled for every
+          model and test. The Lab runs that same SQL in DuckDB compiled to WebAssembly in your browser. The
+          models, tests and results match.
         </p>
         <ul>
           <li>
-            <strong>Scheduled.</strong> GitHub Actions runs every pipeline weekly, then commits the new
-            Parquet files and a run manifest. Vercel redeploys on the commit.
+            <strong>Orchestrated.</strong> An Airflow DAG runs extract, load, dbt build, model training and
+            publish. GitHub Actions runs it weekly with <code>airflow dags test</code>, so there is no server
+            to host. Vercel redeploys on the commit.
           </li>
           <li>
             <strong>Tested.</strong> Uniqueness, nulls, accepted values, ranges, referential integrity,
@@ -55,7 +56,7 @@ const sections = [
             score for every game.
           </li>
           <li>
-            <strong>Contracted.</strong> An error-level failure stops the run before anything is written, so
+            <strong>Contracted.</strong> An error-level failure stops the DAG before anything is written, so
             the last good snapshot keeps serving. Warnings are real issues in the source data, shown rather
             than hidden.
           </li>
@@ -66,8 +67,16 @@ const sections = [
           </li>
         </ul>
         <p>
-          <a href={`${REPO}/tree/main/lib/pipelines`} className="link">
-            Read the pipeline code
+          <a href={`${REPO}/tree/main/dbt`} className="link">
+            Read the dbt project
+          </a>
+          ,{" "}
+          <a href={`${REPO}/blob/main/airflow/dags/lab_refresh.py`} className="link">
+            the Airflow DAG
+          </a>
+          , or{" "}
+          <a href="/dbt-docs/index.html" className="link">
+            browse the dbt docs and lineage
           </a>
           .
         </p>
@@ -80,10 +89,13 @@ const sections = [
     body: (
       <>
         <p>
-          The housing tab’s model is gradient-boosted regression trees written from scratch in TypeScript:
-          histogram splits, row subsampling, L2-regularized leaves and a seeded random generator so runs are
-          reproducible. No ML library, so the same code trains on 390,000 homes in the weekly pipeline and on
-          a sample in your browser.
+          The housing tab’s model is gradient-boosted trees in Python, using scikit-learn’s
+          HistGradientBoostingRegressor. It trains on 390,000 homes in the weekly Airflow run. The same Python
+          file trains on a sample in your browser through Pyodide.
+        </p>
+        <p>
+          The trees are exported to JSON, and a small TypeScript scorer explains each estimate. Tests check
+          its predictions match scikit-learn’s.
         </p>
         <ul>
           <li>
@@ -104,7 +116,7 @@ const sections = [
           </li>
         </ul>
         <p>
-          <a href={`${REPO}/tree/main/lib/ml`} className="link">
+          <a href={`${REPO}/blob/main/ml/housing_model.py`} className="link">
             Read the model code
           </a>
           .

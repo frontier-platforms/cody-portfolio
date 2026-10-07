@@ -5,14 +5,7 @@ import { LineChart } from "@/components/lab/charts";
 import { Segmented } from "@/components/lab/controls";
 import { runQuery } from "@/components/lab/db";
 import { track } from "@/lib/analytics";
-import {
-  estimate,
-  FEATURE_LABELS,
-  trainHousingModel,
-  type HomeInput,
-  type HomeRow,
-  type HousingModel,
-} from "@/lib/ml/housing";
+import { estimate, FEATURE_LABELS, type HomeInput, type HousingModel } from "@/lib/ml/housing";
 import { telemetry } from "@/lib/telemetry";
 
 const MODEL_URL = "/data/housing-model.json";
@@ -348,7 +341,7 @@ function ModelCard({ model }: { model: HousingModel }) {
         <ul className="prose-cc mt-3 text-sm">
           <li>
             Gradient-boosted trees, {model.gbm.trees.length} trees, depth {model.params.depth}, learning rate{" "}
-            {model.params.learningRate}, written from scratch in TypeScript. No ML library.
+            {model.params.learning_rate}. scikit-learn’s HistGradientBoostingRegressor, trained in Python.
           </li>
           <li>
             Trained on {model.rows.train.toLocaleString()} homes in {(model.trainMs / 1000).toFixed(0)} s
@@ -414,6 +407,36 @@ function Curve({ curve, live }: { curve: HousingModel["learningCurve"]; live?: b
 
 const SIZES = [10_000, 25_000, 50_000, 100_000];
 
+type WorkerMessage =
+  | { type: "status"; text: string }
+  | { type: "progress"; tree: number; train: number; valid: number }
+  | { type: "done"; model: HousingModel }
+  | { type: "error"; message: string };
+
+let worker: Worker | null = null;
+
+/** Trains with ml/housing_model.py in a Web Worker running Pyodide (Python on WebAssembly). */
+function trainInPython(
+  columns: Record<string, unknown[]>,
+  params: Partial<HousingModel["params"]>,
+  onMessage: (m: Exclude<WorkerMessage, { type: "done" | "error" }>) => void,
+) {
+  worker ??= new Worker("/ml/train-worker.js");
+  const w = worker;
+  return new Promise<HousingModel>((resolve, reject) => {
+    w.onmessage = (event: MessageEvent<WorkerMessage>) => {
+      const m = event.data;
+      if (m.type === "done") resolve(m.model);
+      else if (m.type === "error") reject(new Error(m.message));
+      else onMessage(m);
+    };
+    w.onerror = (e) => reject(new Error(e.message || "Worker failed"));
+    w.postMessage({ type: "train", columns, params });
+  });
+}
+
+const COLUMNS = ["key", "community", "use", "zoning", "year_built", "lot_sqft", "assessed_value"] as const;
+
 function TrainYourOwn({
   production,
   onTrained,
@@ -445,26 +468,33 @@ function TrainYourOwn({
          ) USING SAMPLE reservoir(${rows} ROWS) REPEATABLE (42)`,
         "ml: training sample",
       );
-      const data = sample.rows as unknown as (HomeRow & { key: number })[];
+      const columns = Object.fromEntries(
+        COLUMNS.map((c) => [c, sample.rows.map((r) => (typeof r[c] === "bigint" ? Number(r[c]) : r[c]))]),
+      );
       const points: HousingModel["learningCurve"] = [];
-      const model = await trainHousingModel(
-        data,
-        production.uses,
-        { trees, depth, learningRate, minLeaf: 20, seed: 42 },
-        (i, train, valid) => {
-          points.push({ tree: i + 1, train, valid: valid ?? NaN });
-          if ((i + 1) % 5 === 0 || i + 1 === trees) {
-            setCurve([...points]);
-            setStatus(
-              `Training tree ${i + 1} of ${trees} · ${((performance.now() - started) / 1000).toFixed(1)} s`,
-            );
+      let trainingStarted = 0;
+      const trained = await trainInPython(
+        columns,
+        { trees, depth, learning_rate: learningRate, min_leaf: 20, seed: 42 },
+        (m) => {
+          if (m.type === "status") {
+            setStatus(m.text);
+            return;
           }
+          trainingStarted ||= performance.now();
+          points.push({ tree: m.tree, train: m.train, valid: m.valid });
+          setCurve([...points]);
+          setStatus(
+            `Training tree ${m.tree} of ${trees} in Python · ${((performance.now() - trainingStarted) / 1000).toFixed(1)} s`,
+          );
         },
       );
+      // Prefill data is a production concern; reuse it so the predictor keeps working.
+      const model: HousingModel = { ...trained, typical: production.typical, uses: production.uses };
       const ms = performance.now() - started;
       setResult(model);
       setStatus(
-        `Trained ${trees} trees on ${model.rows.train.toLocaleString()} homes in ${(ms / 1000).toFixed(1)} s, in your browser.`,
+        `Trained ${trees} trees on ${model.rows.train.toLocaleString()} homes in ${(model.trainMs / 1000).toFixed(1)} s with scikit-learn, in your browser.`,
       );
       onTrained(model);
       track("model_trained", {
@@ -494,10 +524,11 @@ function TrainYourOwn({
   return (
     <section className="border border-border bg-surface rounded-md">
       <header className="border-b border-border px-6 py-4">
-        <h3 className="font-semibold">Train your own, in your browser</h3>
+        <h3 className="font-semibold">Train your own, in Python, in your browser</h3>
         <p className="mt-1 text-sm text-text-muted">
-          Same code as the production model. Pick a sample size and settings, and watch the holdout error fall
-          tree by tree. Bigger and deeper isn’t always better.
+          This runs ml/housing_model.py, the file the weekly pipeline uses, with scikit-learn on Pyodide. The
+          first run downloads Python and scikit-learn, up to 37 MB. Watch the holdout error fall as trees are
+          added.
         </p>
       </header>
       <div className="grid gap-6 p-6 lg:grid-cols-[20rem_1fr]">
@@ -528,7 +559,7 @@ function TrainYourOwn({
             disabled={running}
             className="btn btn-primary w-full justify-center disabled:opacity-60"
           >
-            {running ? "Training…" : "Train in my browser"}
+            {running ? "Training…" : "Train in Python"}
           </button>
           {status && (
             <p className="num text-xs text-text-muted" aria-live="polite">

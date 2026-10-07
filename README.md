@@ -9,6 +9,7 @@ Personal site for Cody Chandler: case studies, side projects, and a Lab of live 
 - **MDX** case studies with Zod-validated metadata
 - **DuckDB-WASM** for in-browser queries over **Parquet**
 - **Claude API** (`@anthropic-ai/sdk`) for natural-language to SQL
+- **Python 3.12** with [uv](https://docs.astral.sh/uv/): **dbt** on **DuckDB** for the pipelines, **Airflow** to orchestrate them, **scikit-learn** for the value model, **Pyodide** to train it in the browser
 - **Vercel Web Analytics** (cookieless)
 
 Every page except `/api/ask` is statically generated.
@@ -17,23 +18,24 @@ Every page except `/api/ask` is statically generated.
 
 ```bash
 npm install
+uv sync                      # Python: dbt, scikit-learn, pytest (add --group airflow for Airflow)
 cp .env.example .env.local   # optional: add ANTHROPIC_API_KEY to enable "Ask the data"
 npm run dev
 ```
 
-| Script                 | What it does                                                                                                      |
-| ---------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| `npm run dev`          | Local dev server                                                                                                  |
-| `npm run build`        | Production build                                                                                                  |
-| `npm run typecheck`    | `tsc --noEmit`                                                                                                    |
-| `npm run lint`         | ESLint                                                                                                            |
-| `npm run lint:brand`   | Brand check: enforces BRAND.md (tokens, type scale, spacing, copy rules, case study format)                       |
-| `npm run format`       | Prettier                                                                                                          |
-| `npm run data`         | Run every Lab pipeline: extract, build, test, write Parquet                                                       |
-| `npm run data:permits` | City of Calgary building permits only                                                                             |
-| `npm run data:housing` | Calgary home assessments + value model training                                                                   |
-| `npm run data:flames`  | Calgary Flames play-by-play only                                                                                  |
-| `npm run data:db`      | Run every pipeline into a local `lab.duckdb`, keeping bronze, silver and gold (open with `duckdb -ui lab.duckdb`) |
+| Script                 | What it does                                                                                |
+| ---------------------- | ------------------------------------------------------------------------------------------- |
+| `npm run dev`          | Local dev server                                                                            |
+| `npm run build`        | Production build                                                                            |
+| `npm run typecheck`    | `tsc --noEmit`                                                                              |
+| `npm run lint`         | ESLint                                                                                      |
+| `npm run lint:brand`   | Brand check: enforces BRAND.md (tokens, type scale, spacing, copy rules, case study format) |
+| `npm run format`       | Prettier                                                                                    |
+| `npm run data`         | Run every Lab pipeline: extract, load, `dbt build`, train the model, publish                |
+| `npm run data:db`      | Same, from the last extract and without publishing. Open with `duckdb -ui lab.duckdb`       |
+| `npm run data:airflow` | Run the `lab_refresh` Airflow DAG once with `airflow dags test`, as GitHub Actions does     |
+| `npm run test:ml`      | pytest: the model, its export, and the extractors                                           |
+| `npm run test:parity`  | Checks the TypeScript scorer matches scikit-learn's predictions                             |
 
 ## Project layout
 
@@ -48,11 +50,17 @@ components/
   telemetry/            Telemetry panel, Web Vitals and click instrumentation
 content/work/*.mdx      case studies
 lib/
-  pipelines/            pipeline definitions (models, tests, contracts) and the engine-agnostic runner
+  pipelines/            browser connectors, the browser runner, and generated/ (dbt's compiled SQL per pipeline)
+  ml/                   scores and explains the exported model in the browser
   analytics.ts          tracking plan as code + validated track()
   telemetry.ts          in-browser telemetry store
-scripts/run-pipeline.ts production pipeline run (Node + DuckDB)
-public/data/            committed Parquet files and manifest.json from the last run
+ingest/                 Python extract and bronze load
+dbt/                    dbt project: sources, models, tests, contracts
+ml/                     the value model in Python (scikit-learn) and its tests
+pipeline/               the steps the DAG runs, the local runner, and publish
+airflow/dags/           the lab_refresh DAG
+public/data/            committed Parquet files, the model and manifest.json from the last run
+public/dbt-docs/        dbt's static docs site
 .github/workflows/      CI and the weekly data refresh
 ```
 
@@ -91,17 +99,23 @@ Three tabs, `/lab/calgary`, `/lab/housing` and `/lab/flames`, each a small data 
 
 ### Pipelines
 
-Each pipeline is defined once as data in [`lib/pipelines/`](lib/pipelines): raw (bronze) sources, SQL models in silver and gold layers that reference each other with `{{ ref('name') }}`, declarative tests (`unique`, `not_null`, `accepted_values`, `expression`, `relationship`, `row_count`, `freshness`, `custom`) and a data contract.
+Weekly, an Airflow DAG ([`airflow/dags/lab_refresh.py`](airflow/dags/lab_refresh.py)) runs:
 
-[`runner.ts`](lib/pipelines/runner.ts) executes models and tests against any `Engine` (`exec` + `query`):
+```
+extract_{permits,housing,flames} → load_* → dbt_build → train_value_model + dbt_docs → publish
+```
 
-- **Production:** [`scripts/run-pipeline.ts`](scripts/run-pipeline.ts) drives DuckDB in Node: full extract → bronze → silver → gold → tests → Parquet + [`manifest.json`](public/data/manifest.json). An error-level test failure exits before any file is written.
-- **Scheduled:** [`.github/workflows/refresh-data.yml`](.github/workflows/refresh-data.yml) runs every Monday and commits the refreshed files, which triggers a Vercel deploy.
-- **Live, in the browser:** [`components/lab/live-run.ts`](components/lab/live-run.ts) drives DuckDB-WASM through the same runner. It reads a watermark from the loaded data, extracts only what changed (Calgary via the City's `:updated_at`; Flames via the [`/api/nhl`](app/api/nhl/route.ts) proxy, since the NHL API has no CORS), builds into a `live` schema, merges into the served tables on each model's `mergeKey`, re-runs the tests and refreshes the dashboards.
+- **Extract and load** ([`ingest/`](ingest)): Python pulls from the City's Socrata API and the NHL API and loads raw (bronze) tables. Their column types come from the dbt sources.
+- **Transform and test** ([`dbt/`](dbt)): dbt on DuckDB builds silver and gold models. Gold tables have enforced contracts. Tests cover uniqueness, nulls, accepted values, relationships, ranges, recency, row counts, and singular tests such as shot-level goals reconciling to each final score. An error-level failure stops the DAG.
+- **Publish** ([`pipeline/publish.py`](pipeline/publish.py)): reads dbt's `manifest.json` and `run_results.json`, then writes Parquet, [`manifest.json`](public/data/manifest.json), `lib/pipelines/generated/<id>.json` (dbt's compiled SQL for each model and test) and the dbt docs.
+- **Scheduled:** [`.github/workflows/refresh-data.yml`](.github/workflows/refresh-data.yml) runs the DAG every Monday with `airflow dags test` (no Airflow server to host) and commits the results, which triggers a Vercel deploy.
+- **Live, in the browser:** [`components/lab/live-run.ts`](components/lab/live-run.ts) runs dbt's compiled SQL in DuckDB-WASM through [`runner.ts`](lib/pipelines/runner.ts). It reads a watermark from the loaded data, extracts only what changed (Calgary via the City's `:updated_at`; Flames via the [`/api/nhl`](app/api/nhl/route.ts) proxy, since the NHL API has no CORS), builds into a `live` schema, merges on each model's `mergeKey`, re-runs the tests and refreshes the dashboards.
 
 ### Home value model
 
-[`lib/ml/gbm.ts`](lib/ml/gbm.ts) is a dependency-free gradient-boosted tree regressor (histogram splits, row subsampling, L2 leaves, seeded RNG, path-based explanations). [`lib/ml/housing.ts`](lib/ml/housing.ts) adds out-of-fold target encoding, a hashed train/test split, metrics against a community-median baseline, and the model file format. The housing pipeline trains it after the tests pass and writes `public/data/housing-model.json`; the Lab loads it for explained estimates and can retrain it in the browser.
+[`ml/housing_model.py`](ml/housing_model.py) trains scikit-learn's `HistGradientBoostingRegressor` on log assessed value, with out-of-fold target encoding, a hashed train/test split and metrics against a community-median baseline. The DAG trains it after `dbt build` passes and writes `public/data/housing-model.json`, with the trees exported to JSON.
+
+In the browser, [`lib/ml/gbm.ts`](lib/ml/gbm.ts) scores and explains estimates from that JSON. `npm run test:parity` checks it matches scikit-learn to within 1e-9. "Train your own" runs the same Python file in a Web Worker with [Pyodide](https://pyodide.org) ([`public/ml/train-worker.js`](public/ml/train-worker.js)).
 
 ### Telemetry and analytics
 

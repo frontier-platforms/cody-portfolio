@@ -47,3 +47,16 @@ next-env.d.ts
 # local exploration database (npm run data:db)
 /lab.duckdb
 /lab.duckdb.wal
+
+# python, dbt and airflow (npm run data, npm run data:airflow)
+.venv
+__pycache__/
+.pytest_cache
+.ruff_cache
+/dbt/target
+/dbt/logs
+/dbt/.user.yml
+logs/
+
+# copied from ml/ before dev and build (scripts/sync-ml.mjs)
+/public/ml/housing_model.py

@@ -7,14 +7,16 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "data:permits": "tsx scripts/run-pipeline.ts permits",
-    "data:flames": "tsx scripts/run-pipeline.ts flames",
-    "data": "tsx scripts/run-pipeline.ts all",
+    "data": "uv run python -m pipeline.run",
     "typecheck": "next typegen && tsc --noEmit",
     "format": "prettier --write .",
-    "data:housing": "tsx scripts/run-pipeline.ts housing",
-    "data:db": "tsx scripts/run-pipeline.ts all --db lab.duckdb",
-    "lint:brand": "tsx scripts/check-brand.ts"
+    "data:db": "uv run python -m pipeline.run --cached --no-publish",
+    "lint:brand": "tsx scripts/check-brand.ts",
+    "test:parity": "tsx scripts/check-ml-parity.ts",
+    "test:ml": "uv run pytest",
+    "predev": "node scripts/sync-ml.mjs",
+    "prebuild": "node scripts/sync-ml.mjs",
+    "data:airflow": "sh scripts/airflow-test.sh"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.131.0",

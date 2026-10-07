@@ -1,0 +1,63 @@
+version: 2
+
+sources:
+  - name: flames
+    schema: flames
+    description: Calgary Flames schedules and play-by-play from the NHL's public API, flattened to rows.
+    meta:
+      pipeline:
+        id: flames
+        label: Calgary Flames play-by-play
+        source_name: "NHL public API · schedules and play-by-play"
+        source_url: https://api-web.nhle.com/v1
+        docs: https://api-web.nhle.com/v1/club-schedule-season/CGY/now
+        licence: "Data © NHL. Used here for non-commercial illustration."
+      contract:
+        owner: Cody Chandler
+        cadence: "Weekly, Mondays at 10:00 UTC, via Airflow on GitHub Actions"
+        freshness_sla_days: 8
+        consumers: ["Lab dashboards", "Ask the data (Claude-generated SQL)"]
+        guarantees:
+          - Regular-season games only. Preseason and playoffs are excluded.
+          - Shot coordinates are in feet, with the shooter always attacking x = 89.
+          - Shot-level goals reconcile to the official final score for every game.
+          - A failing error-level test blocks the refresh. The last good snapshot keeps serving.
+    tables:
+      - name: raw_games
+        description: Every game on the Flames schedule, including preseason and games not yet played.
+        columns:
+          - { name: game_id, data_type: bigint }
+          - { name: season, data_type: varchar }
+          - { name: game_type, data_type: integer }
+          - { name: game_date, data_type: varchar }
+          - { name: game_state, data_type: varchar }
+          - { name: home_id, data_type: integer }
+          - { name: home_abbrev, data_type: varchar }
+          - { name: home_score, data_type: integer }
+          - { name: away_id, data_type: integer }
+          - { name: away_abbrev, data_type: varchar }
+          - { name: away_score, data_type: integer }
+          - { name: last_period_type, data_type: varchar }
+      - name: raw_plays
+        description: Shot-attempt events from play-by-play, flattened to one row per event.
+        columns:
+          - { name: game_id, data_type: bigint }
+          - { name: home_team_id, data_type: integer }
+          - { name: event_type, data_type: varchar }
+          - { name: period, data_type: integer }
+          - { name: period_type, data_type: varchar }
+          - { name: time_in_period, data_type: varchar }
+          - { name: situation_code, data_type: varchar }
+          - { name: home_defending_side, data_type: varchar }
+          - { name: x, data_type: integer }
+          - { name: y, data_type: integer }
+          - { name: owner_team_id, data_type: integer }
+          - { name: shot_type, data_type: varchar }
+          - { name: shooter_id, data_type: bigint }
+      - name: raw_roster
+        description: Players dressed for each game.
+        columns:
+          - { name: game_id, data_type: bigint }
+          - { name: player_id, data_type: bigint }
+          - { name: first_name, data_type: varchar }
+          - { name: last_name, data_type: varchar }

@@ -28,7 +28,9 @@ export function PipelineSection({
           <Cell label="Last production run">
             <FreshnessBadge runAt={run.runAt} slaDays={pipeline.contract.freshnessSlaDays} />
           </Cell>
-          <Cell label="Trigger">{run.trigger === "github-actions" ? "GitHub Actions" : "Local run"}</Cell>
+          <Cell label="Trigger">
+            {run.trigger === "github-actions" ? "Airflow on GitHub Actions" : "Local run"}
+          </Cell>
           <Cell label="Duration">{(run.durationMs / 1000).toFixed(1)} s</Cell>
           <Cell label="Rows extracted">{run.extract.rows.toLocaleString()}</Cell>
           <Cell label="Tests">
@@ -104,18 +106,23 @@ export function PipelineSection({
           </ul>
           <ul className="mt-4 space-y-2 text-sm">
             <li>
-              <a href={`${REPO}/blob/main/lib/pipelines/${pipeline.id}.ts`} className="link">
-                Pipeline definition: models, tests and contract ↗
+              <a href={`${REPO}/tree/main/dbt/models/${pipeline.id}`} className="link">
+                dbt models, tests and contract ↗
               </a>
             </li>
             <li>
-              <a href={`${REPO}/blob/main/lib/pipelines/runner.ts`} className="link">
-                The runner, shared by Node and the browser ↗
+              <a href="/dbt-docs/index.html" className="link">
+                dbt docs and lineage
+              </a>
+            </li>
+            <li>
+              <a href={`${REPO}/blob/main/airflow/dags/lab_refresh.py`} className="link">
+                The Airflow DAG ↗
               </a>
             </li>
             <li>
               <a href={`${REPO}/actions/workflows/refresh-data.yml`} className="link">
-                Scheduled runs on GitHub Actions ↗
+                Weekly runs on GitHub Actions ↗
               </a>
             </li>
           </ul>

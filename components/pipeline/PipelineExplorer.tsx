@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { compileTest } from "@/lib/pipelines/runner";
+import { testSql } from "@/lib/pipelines/runner";
 import type { ManifestEntry, Pipeline, TestResult } from "@/lib/pipelines/types";
 import type { LiveEvent } from "../lab/live-run";
 
@@ -13,7 +13,11 @@ type Node = {
   kind: string;
   description: string;
   sql?: string;
+  /** File in the repo that defines this node. */
+  path?: string;
 };
+
+const REPO = "https://github.com/frontier-platforms/cody-portfolio/blob/main";
 
 type LogLine = { t: number; stage: string; message: string; tone?: "muted" | "good" | "warn" | "bad" };
 
@@ -40,8 +44,9 @@ export function PipelineExplorer({ pipeline, run }: { pipeline: Pipeline; run: M
         {
           id: "source",
           label: new URL(pipeline.source.url).host,
-          kind: "API",
-          description: pipeline.source.name,
+          kind: "python ingest",
+          description: `${pipeline.source.name}. Extracted weekly by ingest/extract.py; live runs use a browser connector.`,
+          path: "ingest/extract.py",
         },
       ],
     },
@@ -50,15 +55,23 @@ export function PipelineExplorer({ pipeline, run }: { pipeline: Pipeline; run: M
       nodes: pipeline.sources.map((s) => ({
         id: s.name,
         label: s.name,
-        kind: "raw",
+        kind: "dbt source",
         description: s.description,
+        path: `dbt/models/${pipeline.id}/_sources.yml`,
       })),
     },
     {
       title: "Silver",
       nodes: pipeline.models
         .filter((m) => m.layer === "silver")
-        .map((m) => ({ id: m.name, label: m.name, kind: "model", description: m.description, sql: m.sql })),
+        .map((m) => ({
+          id: m.name,
+          label: m.name,
+          kind: "dbt model",
+          description: m.description,
+          sql: m.sql,
+          path: m.path,
+        })),
     },
     {
       title: "Gold",
@@ -67,9 +80,10 @@ export function PipelineExplorer({ pipeline, run }: { pipeline: Pipeline; run: M
         .map((m) => ({
           id: m.name,
           label: m.name,
-          kind: m.served ? "served" : "model",
+          kind: m.contract ? "dbt · contract" : "dbt model",
           description: m.description,
           sql: m.sql,
+          path: m.path,
         })),
     },
     {
@@ -78,8 +92,10 @@ export function PipelineExplorer({ pipeline, run }: { pipeline: Pipeline; run: M
         {
           id: "tests",
           label: `${pipeline.tests.length} tests`,
-          kind: "dq",
-          description: "Data quality tests. Error-level failures block the refresh.",
+          kind: "dbt tests",
+          description:
+            "dbt data tests, generic and singular. In the weekly Airflow run, an error-level failure stops the DAG before anything is published.",
+          path: `dbt/models/${pipeline.id}/_models.yml`,
         },
       ],
     },
@@ -91,8 +107,9 @@ export function PipelineExplorer({ pipeline, run }: { pipeline: Pipeline; run: M
               {
                 id: "model",
                 label: pipeline.model.name,
-                kind: "ml",
+                kind: "python · ml",
                 description: `${pipeline.model.description} Retrained in the weekly run only; live runs refresh the data, not the model.`,
+                path: pipeline.model.path,
               },
             ],
           },
@@ -209,7 +226,14 @@ export function PipelineExplorer({ pipeline, run }: { pipeline: Pipeline; run: M
 
         <div className="border-t border-border px-4 py-4 sm:px-6">
           <div className="flex flex-wrap items-baseline justify-between gap-2">
-            <p className="font-mono text-sm">{node.label}</p>
+            <p className="font-mono text-sm">
+              {node.label}
+              {node.path && (
+                <a href={`${REPO}/${node.path}`} className="link ml-3 font-body text-xs">
+                  {node.path}
+                </a>
+              )}
+            </p>
             {stats && (
               <p className="num text-xs text-text-muted">
                 {stats.rows.toLocaleString()} rows{stats.ms ? ` · built in ${Math.round(stats.ms)} ms` : ""} ·
@@ -308,7 +332,7 @@ export function PipelineExplorer({ pipeline, run }: { pipeline: Pipeline; run: M
                       {test.description} <span className="font-mono text-xs">severity: {test.severity}</span>
                     </p>
                     <pre className="overflow-x-auto bg-bg px-3 py-2 font-mono text-xs leading-relaxed">
-                      <code>{compileTest(test, "main", run?.runAt.slice(0, 10) ?? "today").trim()}</code>
+                      <code>{testSql(test, "main", run?.runAt.slice(0, 10) ?? "today").trim()}</code>
                     </pre>
                   </div>
                 </details>

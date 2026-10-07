@@ -1,7 +1,12 @@
-# Weekly production run of every Lab pipeline. Extracts from the source APIs,
-# builds bronze → silver → gold with DuckDB, runs the data tests, and commits
-# the new Parquet files and run manifest. Vercel redeploys on the commit.
-# An error-level test failure fails the job before anything is written.
+# Weekly production run of every Lab pipeline, orchestrated by Airflow.
+# GitHub Actions is the scheduler: it runs the lab_refresh DAG once with
+# `airflow dags test` (airflow/dags/lab_refresh.py). No Airflow server to host.
+#
+#   extract (Python) → load bronze → dbt build (models, tests, contracts)
+#   → train the value model (scikit-learn) + dbt docs → publish
+#
+# An error-level dbt test fails the DAG before anything is published, so the
+# site keeps serving last week's data. Vercel redeploys on the commit.
 name: Refresh Lab data
 
 on:
@@ -19,16 +24,15 @@ concurrency:
 jobs:
   refresh:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - uses: astral-sh/setup-uv@v6
         with:
-          node-version: 22
-          cache: npm
+          enable-cache: true
 
-      - run: npm ci
+      - run: uv sync --group airflow
 
       # Finished games never change, so keep their play-by-play between runs.
       - uses: actions/cache@v4
@@ -37,14 +41,14 @@ jobs:
           key: nhl-pbp-${{ github.run_id }}
           restore-keys: nhl-pbp-
 
-      - name: Run pipelines
-        run: npm run data
+      - name: Run the Airflow DAG
+        run: sh scripts/airflow-test.sh
 
       - name: Commit refreshed data
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add public/data
+          git add public/data lib/pipelines/generated public/dbt-docs
           if git diff --cached --quiet; then
             echo "No changes."
             exit 0

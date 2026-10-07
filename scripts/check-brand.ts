@@ -18,13 +18,15 @@
  *   - case studies use Problem, Role, Solution, Outcome in order, have a
  *     summary of 140 characters or fewer, and keep MDX sentences under
  *     20 words with no exclamation marks (section 2)
+ *   - dbt YAML descriptions, labels and contract text follow the same copy
+ *     rules, because the Lab shows them as site copy
  */
 import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 
 const ROOT = process.cwd();
-const SCAN = ["app", "components", "lib", "content", "mdx-components.tsx"];
-const EXTS = new Set([".ts", ".tsx", ".css", ".mdx"]);
+const SCAN = ["app", "components", "lib", "content", "mdx-components.tsx", "dbt/models"];
+const EXTS = new Set([".ts", ".tsx", ".css", ".mdx", ".yml"]);
 
 const BANNED = [
   "leverage",
@@ -120,6 +122,7 @@ function checkClasses(file: string, lineNo: number, line: string) {
 
 /** Visible copy on a line: JSX text, string literals and MDX prose. Code comments are skipped. */
 function copyOf(line: string, ext: string) {
+  if (ext === ".yml") return /^\s*#/.test(line) ? "" : line;
   if (/^\s*(\/\/|\*|\/\*)/.test(line)) return "";
   if (/^\s*(import|export)\b/.test(line)) return "";
   // Whole line, minus class names: JSX copy often wraps across lines, so quoted strings alone miss it.
@@ -211,6 +214,7 @@ async function main() {
         report(file, n, "error", "hardcoded color", line);
       if (/\b(rgba?|hsla?)\(/.test(line) && !/^\s*(\/\/|\*)/.test(line))
         report(file, n, "error", "hardcoded color", line);
+      if (ext === ".yml") return checkCopy(file, n, line, ext);
       if (ext !== ".css") checkClasses(file, n, line);
       checkCopy(file, n, line, ext);
     });

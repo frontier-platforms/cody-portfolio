@@ -1,0 +1,227 @@
+{
+  "id": "permits",
+  "label": "Calgary building permits",
+  "source": {
+    "name": "City of Calgary Open Data \u00b7 Building Permits",
+    "url": "https://data.calgary.ca/resource/c2es-76ed.json",
+    "docs": "https://data.calgary.ca/Business-and-Economic-Activity/Building-Permits/c2es-76ed",
+    "licence": "Open Government Licence \u2013 City of Calgary"
+  },
+  "sources": [
+    {
+      "name": "raw_permits",
+      "description": "Permit records exactly as the City's API returns them. Every field is text.",
+      "columns": [
+        {
+          "name": "permitnum",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "applieddate",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "issueddate",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "completeddate",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "statuscurrent",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "permittypemapped",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "permitclassmapped",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "permitclassgroup",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "workclassgroup",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "housingunits",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "estprojectcost",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "totalsqft",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "communityname",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "latitude",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "longitude",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "source_updated_at",
+          "type": "VARCHAR"
+        }
+      ]
+    }
+  ],
+  "models": [
+    {
+      "name": "stg_permits",
+      "layer": "silver",
+      "description": "Typed, renamed and deduplicated. Zero coordinates become NULL. One row per permit, latest version wins.",
+      "sql": "select\n    permitnum                                              as permit_id,\n    cast(cast(applieddate as timestamp) as date)           as applied_date,\n    cast(try_cast(issueddate as timestamp) as date)        as issued_date,\n    cast(try_cast(completeddate as timestamp) as date)     as completed_date,\n    statuscurrent                                          as status,\n    permittypemapped                                       as permit_type,\n    permitclassmapped                                      as permit_class,\n    permitclassgroup                                       as class_group,\n    workclassgroup                                         as work_group,\n    coalesce(try_cast(housingunits as integer), 0)         as housing_units,\n    try_cast(estprojectcost as double)                     as est_cost,\n    try_cast(totalsqft as double)                          as sqft,\n    communityname                                          as community,\n    nullif(round(try_cast(latitude as double), 4), 0)      as lat,\n    nullif(round(try_cast(longitude as double), 4), 0)     as lon,\n    try_cast(source_updated_at as timestamp)               as updated_at\nfrom {{ ref('raw_permits') }}\nwhere permitnum is not null\nqualify row_number() over (partition by permitnum order by source_updated_at desc) = 1",
+      "dependsOn": [
+        "raw_permits"
+      ],
+      "contract": false,
+      "path": "dbt/models/permits/stg_permits.sql"
+    },
+    {
+      "name": "permits",
+      "layer": "gold",
+      "description": "Applications since 2015, ready for analysis. Served to the browser as Parquet.",
+      "sql": "select *\nfrom {{ ref('stg_permits') }}\nwhere applied_date >= date '2015-01-01'\norder by applied_date, permit_id",
+      "dependsOn": [
+        "stg_permits"
+      ],
+      "served": {
+        "file": "permits.parquet"
+      },
+      "mergeKey": "permit_id",
+      "contract": true,
+      "path": "dbt/models/permits/permits.sql"
+    }
+  ],
+  "tests": [
+    {
+      "name": "permit_class is a known value",
+      "model": "permits",
+      "kind": "accepted_values",
+      "severity": "error",
+      "description": "Catches a new category upstream before it silently drops out of charts.",
+      "sql": "select count(*) as failures from (\nwith all_values as (\n\n    select\n        permit_class as value_field,\n        count(*) as n_records\n\n    from {{ ref('permits') }}\n    group by permit_class\n\n)\n\nselect *\nfrom all_values\nwhere value_field not in (\n    'Residential','Non-Residential','Unspecified'\n)\n) dbt_test"
+    },
+    {
+      "name": "work_group is a known value",
+      "model": "permits",
+      "kind": "accepted_values",
+      "severity": "error",
+      "description": "Same guard for the work type.",
+      "sql": "select count(*) as failures from (\nwith all_values as (\n\n    select\n        work_group as value_field,\n        count(*) as n_records\n\n    from {{ ref('permits') }}\n    group by work_group\n\n)\n\nselect *\nfrom all_values\nwhere value_field not in (\n    'New','Improvement','Demolition','Unspecified'\n)\n) dbt_test"
+    },
+    {
+      "name": "Completed on or after issued",
+      "model": "permits",
+      "kind": "expression_is_true",
+      "severity": "warn",
+      "description": "Upstream date entry issue. Flagged so time-to-complete metrics can exclude them.",
+      "sql": "select count(*) as failures from (\nselect * from {{ ref('permits') }} where not (completed_date is null or issued_date is null or completed_date >= issued_date)\n) dbt_test"
+    },
+    {
+      "name": "housing_units is between 0 and 2,000",
+      "model": "permits",
+      "kind": "expression_is_true",
+      "severity": "error",
+      "description": "A negative or huge unit count is a data entry error, not a building.",
+      "sql": "select count(*) as failures from (\nselect * from {{ ref('permits') }} where not (housing_units between 0 and 2000)\n) dbt_test"
+    },
+    {
+      "name": "Issued on or after applied",
+      "model": "permits",
+      "kind": "expression_is_true",
+      "severity": "warn",
+      "description": "A permit can't be issued before it's applied for. Flagged, not dropped.",
+      "sql": "select count(*) as failures from (\nselect * from {{ ref('permits') }} where not (issued_date is null or issued_date >= applied_date)\n) dbt_test"
+    },
+    {
+      "name": "Coordinates fall inside Calgary",
+      "model": "permits",
+      "kind": "expression_is_true",
+      "severity": "error",
+      "description": "Swapped or mistyped coordinates would put permits in another city.",
+      "sql": "select count(*) as failures from (\nselect * from {{ ref('permits') }} where not (lat is null or (lat between 50.80 and 51.25 and lon between -114.35 and -113.80))\n) dbt_test"
+    },
+    {
+      "name": "applied_date is never null",
+      "model": "permits",
+      "kind": "not_null",
+      "severity": "error",
+      "description": "Every permit has an application date.",
+      "sql": "select count(*) as failures from (\nselect applied_date\nfrom {{ ref('permits') }}\nwhere applied_date is null\n) dbt_test"
+    },
+    {
+      "name": "Coordinates are present",
+      "model": "permits",
+      "kind": "not_null",
+      "severity": "warn",
+      "description": "Some permits have no location. They stay in totals but can't be mapped.",
+      "sql": "select count(*) as failures from (\nselect lat\nfrom {{ ref('permits') }}\nwhere lat is null\n) dbt_test"
+    },
+    {
+      "name": "permit_id is never null",
+      "model": "permits",
+      "kind": "not_null",
+      "severity": "error",
+      "description": "Every row is addressable.",
+      "sql": "select count(*) as failures from (\nselect permit_id\nfrom {{ ref('permits') }}\nwhere permit_id is null\n) dbt_test"
+    },
+    {
+      "name": "Source updated in the last 8 days",
+      "model": "permits",
+      "kind": "recency",
+      "severity": "error",
+      "description": "If the City stops publishing, the refresh fails instead of serving stale data quietly.",
+      "sql": "select count(*) as failures from (\nselect max(updated_at) as latest from {{ ref('permits') }}\nhaving max(updated_at) < {{ today }} - interval 8 day\n) dbt_test"
+    },
+    {
+      "name": "At least 200,000 rows",
+      "model": "permits",
+      "kind": "row_count_at_least",
+      "severity": "error",
+      "description": "Guards against a partial extract replacing the full table.",
+      "sql": "select count(*) as failures from (\nselect count(*) as row_count from {{ ref('permits') }} having count(*) < 200000\n) dbt_test"
+    },
+    {
+      "name": "permit_id is unique",
+      "model": "permits",
+      "kind": "unique",
+      "severity": "error",
+      "description": "The primary key holds.",
+      "sql": "select count(*) as failures from (\nselect\n    permit_id as unique_field,\n    count(*) as n_records\n\nfrom {{ ref('permits') }}\nwhere permit_id is not null\ngroup by permit_id\nhaving count(*) > 1\n) dbt_test"
+    }
+  ],
+  "contract": {
+    "owner": "Cody Chandler",
+    "cadence": "Weekly, Mondays at 10:00 UTC, via Airflow on GitHub Actions",
+    "freshnessSlaDays": 8,
+    "primaryKeys": {
+      "permits": "permit_id"
+    },
+    "consumers": [
+      "Lab dashboards",
+      "Ask the data (Claude-generated SQL)"
+    ],
+    "guarantees": [
+      "permit_id is unique and never null.",
+      "Dates are DATE values. No timestamps, no time zones.",
+      "Missing coordinates are NULL, never 0.",
+      "A failing error-level test blocks the refresh. The last good snapshot keeps serving.",
+      "Schema changes land in this repo, reviewed, before they ship."
+    ]
+  }
+}

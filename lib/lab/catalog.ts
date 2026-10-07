@@ -37,7 +37,7 @@ export const labs: LabEntry[] = [
       "Live runs pull only what the City changed since the snapshot",
       "Warnings surface real source issues, like permits completed before they were issued",
     ],
-    stack: ["Socrata API", "DuckDB", "Parquet", "Canvas"],
+    stack: ["Socrata API", "dbt", "DuckDB", "Airflow"],
     askLabel: "Ask the permit data",
     inYourTeam: [
       {
@@ -77,14 +77,14 @@ export const labs: LabEntry[] = [
     number: "02",
     kicker: "Machine learning",
     title: "What’s a Calgary home worth?",
-    lede: "Every home’s 2026 assessment, and a value model I wrote from scratch. It explains each estimate.",
+    lede: "Every home’s 2026 assessment, and a value model trained in Python. It explains each estimate.",
     standout: "A model card that compares against the obvious baseline, not against nothing",
     points: [
       "Explained estimates: how much community, type, age and lot each add",
       "Holdout accuracy, feature importance and the learning curve",
-      "Train your own on a sample and compare it with production",
+      "Train your own in Python, in your browser, and compare it with production",
     ],
-    stack: ["Gradient boosting", "TypeScript", "DuckDB", "Two City datasets"],
+    stack: ["scikit-learn", "Python", "dbt", "Pyodide"],
     askLabel: "Ask the housing data",
     inYourTeam: [
       {
@@ -103,9 +103,9 @@ export const labs: LabEntry[] = [
     ],
     decisions: [
       {
-        decision: "Gradient boosting written from scratch in TypeScript",
-        why: "The same code trains in the weekly pipeline and in your browser.",
-        tradeoff: "A library like LightGBM is faster. At 390,000 homes, 23 seconds is fine.",
+        decision: "Train in Python with scikit-learn, score in TypeScript",
+        why: "One Python file trains weekly and in your browser. Scoring needs no Python download.",
+        tradeoff: "Two languages to keep in step. A parity test checks they agree.",
       },
       {
         decision: "Encode community and zoning out of fold",
@@ -132,7 +132,7 @@ export const labs: LabEntry[] = [
       "Coordinates normalized in SQL so every shooter attacks the same net",
       "Live runs check the NHL for new games through a locked-down proxy",
     ],
-    stack: ["NHL API", "Edge proxy", "DuckDB", "SVG"],
+    stack: ["NHL API", "dbt", "DuckDB", "Edge proxy"],
     askLabel: "Ask the Flames data",
     inYourTeam: [
       {
@@ -152,8 +152,8 @@ export const labs: LabEntry[] = [
     ],
     decisions: [
       {
-        decision: "Flatten JSON in TypeScript, keep business rules in SQL",
-        why: "Rules like power play and shot direction stay readable and testable in one place.",
+        decision: "Flatten JSON in Python, keep business rules in dbt",
+        why: "Rules like power play and shot direction stay readable and tested in one place.",
         tradeoff: "Two languages in the pipeline, with a clear line between them.",
       },
       {

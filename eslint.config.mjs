@@ -12,6 +12,11 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Python environment, pipeline caches and generated output:
+    ".venv/**",
+    ".cache/**",
+    "dbt/target/**",
+    "public/dbt-docs/**",
   ]),
 ]);
 
