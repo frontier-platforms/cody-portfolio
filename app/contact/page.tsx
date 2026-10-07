@@ -17,7 +17,7 @@ export default function ContactPage() {
         Tell me about the role or the project.
       </h1>
       <p className="mt-6 max-w-measure text-lg text-text-muted">
-        I’m open to full-time and contract roles, and to consulting. Consulting runs through Frontier
+        I’m open to consulting, contract and employment opportunities. Consulting runs through Frontier
         Platforms. I read everything and reply to anything specific.
       </p>
 
@@ -83,12 +83,12 @@ export default function ContactPage() {
                   data-track-cta="booking"
                   data-track-location="contact"
                 >
-                  Book a 30-minute call
+                  Book a call
                 </a>
               </li>
             ) : (
               <li>
-                <Todo>Booking link for a 30-minute intro call.</Todo>
+                <Todo>Booking link for an intro call.</Todo>
               </li>
             )}
           </ul>

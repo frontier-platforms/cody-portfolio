@@ -13,7 +13,7 @@ import { site } from "@/lib/site";
 const FORM_ID = process.env.NEXT_PUBLIC_FORMSPREE_ID || "xaeqejzp";
 
 const REASONS = [
-  { value: "hiring", label: "A full-time or contract role" },
+  { value: "hiring", label: "An employment or contract role" },
   { value: "project", label: "A consulting project" },
   { value: "other", label: "Something else" },
 ] as const;

@@ -109,7 +109,7 @@ export default function AboutPage() {
               honest.
             </p>
             <p>
-              I’m open to senior full-time and contract roles, and to consulting. Consulting runs through{" "}
+              I’m open to consulting, contract and employment opportunities. Consulting runs through{" "}
               <a href={site.frontier} className="link">
                 Frontier Platforms
               </a>

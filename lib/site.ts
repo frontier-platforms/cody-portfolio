@@ -11,8 +11,8 @@ export const site = {
   github: "https://github.com/frontier-platforms/cody-portfolio",
   // Consulting runs through Frontier Platforms, where Valve and Signl List are built.
   frontier: "https://www.frontier-platforms.com",
-  // TODO(cody): booking link (Cal.com, Calendly or similar). Until then, email is the fallback.
-  booking: null as string | null,
+  // Google Calendar appointment page.
+  booking: "https://calendar.app.google/JwNxKy9XtQ5vicds8" as string | null,
   resume: "/resume.pdf",
   // Set NEXT_PUBLIC_SITE_URL once the custom domain is connected; Vercel's own domain is the fallback.
   url:
