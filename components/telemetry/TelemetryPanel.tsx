@@ -181,8 +181,8 @@ function Overview({ state }: { state: TelemetryState }) {
               </tr>
             </thead>
             <tbody className="num">
-              {state.loads.map((l) => (
-                <tr key={l.table} className="border-t border-border">
+              {state.loads.map((l, i) => (
+                <tr key={`${l.table}-${i}`} className="border-t border-border">
                   <td className="py-2">{l.table}</td>
                   <td className="py-2 text-right">{formatBytes(l.bytes)}</td>
                   <td className="py-2 text-right">{Math.round(l.fetchMs)} ms</td>

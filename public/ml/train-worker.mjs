@@ -1,5 +1,6 @@
 /*
-  Web Worker: trains the home value model in Python, in the browser.
+  Web Worker: trains the home value model in Python, in the browser. It must
+  be a module worker: Pyodide 314 refuses to run in classic workers.
 
   Loads Pyodide (CPython compiled to WebAssembly) with numpy, pandas and
   XGBoost, then runs ml/housing_model.py, the same module the weekly
@@ -16,7 +17,7 @@ let ready = null;
 function boot() {
   ready ??= (async () => {
     postMessage({ type: "status", text: "Downloading Python (Pyodide)…" });
-    importScripts(`${PYODIDE}pyodide.js`);
+    const { loadPyodide } = await import(`${PYODIDE}pyodide.mjs`);
     const py = await loadPyodide({ indexURL: PYODIDE });
     postMessage({ type: "status", text: "Installing numpy, pandas and XGBoost…" });
     await py.loadPackage(["numpy", "pandas", "xgboost"]);

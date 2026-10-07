@@ -115,7 +115,7 @@ extract_{permits,housing,flames} → load_* → dbt_build → train_value_model 
 
 [`ml/housing_model.py`](ml/housing_model.py) trains an XGBoost gradient-boosted tree model on log assessed value, with out-of-fold target encoding, a hashed train/test split and metrics against a community-median baseline. The DAG trains it after `dbt build` passes and writes `public/data/housing-model.json`, with the trees exported to JSON.
 
-In the browser, [`lib/ml/gbm.ts`](lib/ml/gbm.ts) scores and explains estimates from that JSON. `npm run test:parity` checks it matches the Python export, and pytest checks the export matches XGBoost. On macOS, XGBoost needs `brew install libomp`. "Train your own" runs the same Python file in a Web Worker with [Pyodide](https://pyodide.org) ([`public/ml/train-worker.js`](public/ml/train-worker.js)).
+In the browser, [`lib/ml/gbm.ts`](lib/ml/gbm.ts) scores and explains estimates from that JSON. `npm run test:parity` checks it matches the Python export, and pytest checks the export matches XGBoost. On macOS, XGBoost needs `brew install libomp`. "Train your own" runs the same Python file in a Web Worker with [Pyodide](https://pyodide.org) ([`public/ml/train-worker.mjs`](public/ml/train-worker.mjs)).
 
 ### Telemetry and analytics
 

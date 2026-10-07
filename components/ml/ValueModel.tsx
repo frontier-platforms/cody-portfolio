@@ -484,7 +484,7 @@ function trainInPython(
   params: Partial<HousingModel["params"]>,
   onMessage: (m: Exclude<WorkerMessage, { type: "done" | "error" }>) => void,
 ) {
-  worker ??= new Worker("/ml/train-worker.js");
+  worker ??= new Worker("/ml/train-worker.mjs", { type: "module" });
   const w = worker;
   return new Promise<HousingModel>((resolve, reject) => {
     w.onmessage = (event: MessageEvent<WorkerMessage>) => {
