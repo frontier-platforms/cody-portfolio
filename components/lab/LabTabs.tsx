@@ -21,13 +21,13 @@ export function LabTabs() {
   }, [active]);
 
   return (
-    <nav aria-label="Labs" className="-mb-px flex min-w-0 gap-0.5 overflow-x-auto sm:gap-1">
+    <nav aria-label="Labs" className="-mb-px flex min-w-0 gap-1 overflow-x-auto sm:gap-1">
       {TABS.map((t) => (
         <Link
           key={t.href}
           href={t.href}
           aria-current={active?.href === t.href ? "page" : undefined}
-          className="shrink-0 whitespace-nowrap border-b-2 border-transparent px-2 py-3 text-sm text-muted transition-colors hover:text-ink aria-[current=page]:border-accent aria-[current=page]:font-medium aria-[current=page]:text-ink sm:px-3"
+          className="shrink-0 whitespace-nowrap border-b-2 border-transparent px-2 py-3 text-sm text-text-muted transition-colors hover:text-text aria-[current=page]:border-accent aria-[current=page]:font-semibold aria-[current=page]:text-text sm:px-3"
         >
           {"short" in t ? (
             <>

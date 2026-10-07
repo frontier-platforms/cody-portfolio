@@ -29,28 +29,28 @@ export function QueryCard({
   className?: string;
 }) {
   return (
-    <section className={`flex flex-col border border-line bg-surface ${className}`}>
-      <header className="flex items-start justify-between gap-4 px-4 pt-4 sm:px-5">
+    <section className={`flex flex-col border border-border bg-surface ${className}`}>
+      <header className="flex items-start justify-between gap-4 px-4 pt-4 sm:px-6">
         <div>
           <h3 className="font-semibold">{title}</h3>
-          {subtitle && <p className="mt-0.5 text-sm text-muted">{subtitle}</p>}
+          {subtitle && <p className="mt-1 text-sm text-text-muted">{subtitle}</p>}
         </div>
-        <span className="num shrink-0 pt-1 text-[0.7rem] text-muted" aria-live="polite">
+        <span className="num shrink-0 pt-1 text-xs text-text-muted" aria-live="polite">
           {loading ? "running…" : ms != null ? `${Math.max(1, Math.round(ms))} ms` : ""}
         </span>
       </header>
-      <div className={`flex-1 px-4 py-4 sm:px-5 ${loading ? "opacity-50" : ""}`}>
-        {error ? <p className="font-mono text-sm text-accent-ink">Query failed: {error}</p> : children}
+      <div className={`flex-1 px-4 py-4 sm:px-6 ${loading ? "opacity-50" : ""}`}>
+        {error ? <p className="font-mono text-sm text-accent">Query failed: {error}</p> : children}
       </div>
       <details
-        className="group border-t border-line"
+        className="group border-t border-border"
         onToggle={(e) => e.currentTarget.open && track("lab_sql_viewed", { dataset, panel: title })}
       >
-        <summary className="cursor-pointer list-none px-4 py-2 font-mono text-xs text-muted hover:text-ink sm:px-5">
+        <summary className="cursor-pointer list-none px-4 py-2 font-mono text-xs text-text-muted hover:text-text sm:px-6">
           <span className="group-open:hidden">Show SQL ↓</span>
           <span className="hidden group-open:inline">Hide SQL ↑</span>
         </summary>
-        <pre className="overflow-x-auto bg-paper px-4 py-3 font-mono text-xs leading-relaxed sm:px-5">
+        <pre className="overflow-x-auto bg-bg px-4 py-3 font-mono text-xs leading-relaxed sm:px-6">
           <code>{sql.trim()}</code>
         </pre>
       </details>

@@ -18,17 +18,18 @@ type Node = {
 type LogLine = { t: number; stage: string; message: string; tone?: "muted" | "good" | "warn" | "bad" };
 
 const statusRing: Record<NodeStatus, string> = {
-  idle: "border-line",
-  running: "border-accent ring-2 ring-accent/30",
-  done: "border-ink",
-  failed: "border-flames",
+  idle: "border-border",
+  running: "border-dashed border-text",
+  done: "border-text",
+  failed: "border-text bg-accent-subtle",
 };
 
+// BRAND.md section 11: no status colors yet, so status is carried by words and weight.
 const toneClass = {
-  muted: "text-muted",
-  good: "text-[#15803d] dark:text-[#4ade80]",
-  warn: "text-accent-ink",
-  bad: "text-flames",
+  muted: "text-text-muted",
+  good: "",
+  warn: "font-semibold",
+  bad: "font-semibold",
 };
 
 export function PipelineExplorer({ pipeline, run }: { pipeline: Pipeline; run: ManifestEntry | undefined }) {
@@ -141,11 +142,11 @@ export function PipelineExplorer({ pipeline, run }: { pipeline: Pipeline; run: M
 
   return (
     <div className="space-y-4">
-      <section className="border border-line bg-surface">
-        <header className="flex flex-col gap-3 border-b border-line px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-5">
+      <section className="border border-border bg-surface rounded-md">
+        <header className="flex flex-col gap-3 border-b border-border px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
           <div>
             <h3 className="font-semibold">Lineage</h3>
-            <p className="text-sm text-muted">Click a node for its SQL, schema and row counts.</p>
+            <p className="text-sm text-text-muted">Click a node for its SQL, schema and row counts.</p>
           </div>
           <div className="flex flex-col items-start gap-1 sm:items-end">
             <button
@@ -156,7 +157,7 @@ export function PipelineExplorer({ pipeline, run }: { pipeline: Pipeline; run: M
             >
               {running ? "Running…" : "Run pipeline live"}
             </button>
-            <span className="text-xs text-muted">
+            <span className="text-xs text-text-muted">
               {pipeline.id === "permits"
                 ? "Pulls changes from data.calgary.ca right now."
                 : "Checks the NHL for games newer than the snapshot."}{" "}
@@ -165,13 +166,13 @@ export function PipelineExplorer({ pipeline, run }: { pipeline: Pipeline; run: M
           </div>
         </header>
 
-        <ol className="grid gap-3 overflow-x-auto p-4 sm:p-5 md:grid-flow-col md:auto-cols-fr">
+        <ol className="grid gap-3 overflow-x-auto p-4 sm:p-6 lg:grid-flow-col lg:auto-cols-fr">
           {columns.map((col, i) => (
             <li key={col.title} className="relative min-w-0">
               <p className="label mb-2">
                 <span className="text-accent">{i + 1}</span> {col.title}
                 {i < columns.length - 1 && (
-                  <span aria-hidden className="float-right text-muted md:hidden">
+                  <span aria-hidden className="float-right text-text-muted lg:hidden">
                     ↓
                   </span>
                 )}
@@ -185,20 +186,20 @@ export function PipelineExplorer({ pipeline, run }: { pipeline: Pipeline; run: M
                         type="button"
                         onClick={() => setSelected(n.id)}
                         aria-pressed={selected === n.id}
-                        className={`w-full border bg-paper px-2.5 py-2 text-left transition-colors hover:border-ink aria-pressed:bg-accent-soft ${statusRing[s]}`}
+                        className={`w-full border bg-bg px-3 py-2 text-left transition-colors hover:border-text aria-pressed:bg-accent-subtle ${statusRing[s]}`}
                       >
                         <span className="flex items-center justify-between gap-2">
                           <span className="truncate font-mono text-xs">{n.label}</span>
                           <StatusDot status={s} />
                         </span>
-                        <span className="text-[0.7rem] text-muted">{n.kind}</span>
+                        <span className="text-xs text-text-muted">{n.kind}</span>
                       </button>
                     </li>
                   );
                 })}
               </ul>
               {i < columns.length - 1 && (
-                <span aria-hidden className="absolute -right-2.5 top-9 hidden text-muted md:block">
+                <span aria-hidden className="absolute -right-2.5 top-9 hidden text-text-muted lg:block">
                   →
                 </span>
               )}
@@ -206,37 +207,37 @@ export function PipelineExplorer({ pipeline, run }: { pipeline: Pipeline; run: M
           ))}
         </ol>
 
-        <div className="border-t border-line px-4 py-4 sm:px-5">
+        <div className="border-t border-border px-4 py-4 sm:px-6">
           <div className="flex flex-wrap items-baseline justify-between gap-2">
             <p className="font-mono text-sm">{node.label}</p>
             {stats && (
-              <p className="num text-xs text-muted">
+              <p className="num text-xs text-text-muted">
                 {stats.rows.toLocaleString()} rows{stats.ms ? ` · built in ${Math.round(stats.ms)} ms` : ""} ·
                 last production run
               </p>
             )}
           </div>
-          <p className="mt-1 text-sm text-muted">{node.description}</p>
+          <p className="mt-1 text-sm text-text-muted">{node.description}</p>
           {node.id === "model" && run?.model && <ModelStats model={run.model} />}
           {node.sql && (
-            <pre className="mt-3 max-h-72 overflow-auto bg-paper px-3 py-3 font-mono text-xs leading-relaxed">
+            <pre className="mt-3 max-h-72 overflow-auto bg-bg px-3 py-3 font-mono text-xs leading-relaxed">
               <code>{node.sql.trim()}</code>
             </pre>
           )}
           {stats?.columns && (
             <table className="mt-3 w-full text-left text-xs">
-              <thead className="text-muted">
+              <thead className="text-text-muted">
                 <tr>
-                  <th className="py-1 font-normal">Column</th>
-                  <th className="py-1 font-normal">Type</th>
-                  <th className="py-1 text-right font-normal">Null %</th>
+                  <th className="py-1 font-regular">Column</th>
+                  <th className="py-1 font-regular">Type</th>
+                  <th className="py-1 text-right font-regular">Null %</th>
                 </tr>
               </thead>
               <tbody className="font-mono">
                 {stats.columns.map((c) => (
-                  <tr key={c.name} className="border-t border-line">
+                  <tr key={c.name} className="border-t border-border">
                     <td className="py-1">{c.name}</td>
-                    <td className="py-1 text-muted">{c.type}</td>
+                    <td className="py-1 text-text-muted">{c.type}</td>
                     <td className="num py-1 text-right">{c.nullPct ? c.nullPct.toFixed(1) : "0"}</td>
                   </tr>
                 ))}
@@ -247,8 +248,8 @@ export function PipelineExplorer({ pipeline, run }: { pipeline: Pipeline; run: M
       </section>
 
       {log.length > 0 && (
-        <section aria-label="Run log" className="border border-line bg-[#141311] text-[#ede9e3]">
-          <p className="border-b border-white/10 px-4 py-2 font-mono text-xs text-white/60">
+        <section aria-label="Run log" className="rounded-md border border-border bg-surface">
+          <p className="border-b border-border px-4 py-2 font-mono text-xs text-text-muted">
             run log · {pipeline.id} · live
           </p>
           <ol
@@ -257,14 +258,14 @@ export function PipelineExplorer({ pipeline, run }: { pipeline: Pipeline; run: M
           >
             {log.map((l, i) => (
               <li key={i} className="flex gap-3">
-                <span className="num shrink-0 text-white/40">+{(l.t / 1000).toFixed(2)}s</span>
-                <span className="w-14 shrink-0 text-[#fb8c4a]">{l.stage}</span>
+                <span className="num shrink-0 text-text-muted">+{(l.t / 1000).toFixed(2)}s</span>
+                <span className="w-16 shrink-0 text-text-muted">{l.stage}</span>
                 <span
                   className={
                     l.tone && l.tone !== "muted"
                       ? toneClass[l.tone]
                       : l.tone === "muted"
-                        ? "text-white/60"
+                        ? "text-text-muted"
                         : ""
                   }
                 >
@@ -276,37 +277,37 @@ export function PipelineExplorer({ pipeline, run }: { pipeline: Pipeline; run: M
         </section>
       )}
 
-      <section className="border border-line bg-surface">
-        <header className="flex flex-wrap items-baseline justify-between gap-2 border-b border-line px-4 py-3 sm:px-5">
+      <section className="border border-border bg-surface rounded-md">
+        <header className="flex flex-wrap items-baseline justify-between gap-2 border-b border-border px-4 py-3 sm:px-6">
           <h3 className="font-semibold">Data quality tests</h3>
-          <p className="text-xs text-muted">
+          <p className="text-xs text-text-muted">
             {liveTests && liveTests.length ? "From your live run" : "From the last production run"}. Warnings
             are real issues in the source, flagged rather than hidden.
           </p>
         </header>
-        <ul className="divide-y divide-line">
+        <ul className="divide-y divide-border">
           {pipeline.tests.map((test) => {
             const r = tests.find((t) => t.name === test.name);
             return (
               <li key={test.name}>
                 <details className="group">
-                  <summary className="grid cursor-pointer list-none grid-cols-[4.5rem_1fr_auto] items-baseline gap-3 px-4 py-2.5 text-sm sm:px-5">
+                  <summary className="grid cursor-pointer list-none grid-cols-[4.5rem_1fr_auto] items-baseline gap-3 px-4 py-3 text-sm sm:px-6">
                     <TestPill status={r?.status} />
                     <span>
                       {test.name}
-                      <span className="ml-2 font-mono text-[0.7rem] text-muted">
+                      <span className="ml-2 font-mono text-xs text-text-muted">
                         {test.kind} · {test.model}
                       </span>
                     </span>
-                    <span className="num text-xs text-muted">
+                    <span className="num text-xs text-text-muted">
                       {r ? (r.failures ? `${r.failures.toLocaleString()} rows` : "0") : "–"}
                     </span>
                   </summary>
-                  <div className="space-y-2 px-4 pb-3 sm:px-5">
-                    <p className="text-sm text-muted">
+                  <div className="space-y-2 px-4 pb-3 sm:px-6">
+                    <p className="text-sm text-text-muted">
                       {test.description} <span className="font-mono text-xs">severity: {test.severity}</span>
                     </p>
-                    <pre className="overflow-x-auto bg-paper px-3 py-2 font-mono text-xs leading-relaxed">
+                    <pre className="overflow-x-auto bg-bg px-3 py-2 font-mono text-xs leading-relaxed">
                       <code>{compileTest(test, "main", run?.runAt.slice(0, 10) ?? "today").trim()}</code>
                     </pre>
                   </div>
@@ -321,35 +322,33 @@ export function PipelineExplorer({ pipeline, run }: { pipeline: Pipeline; run: M
 }
 
 function StatusDot({ status }: { status: NodeStatus }) {
-  if (status === "idle") return <span aria-hidden className="size-1.5 rounded-full bg-line" />;
+  if (status === "idle") return <span aria-hidden className="size-1.5 rounded-full bg-border" />;
   if (status === "running")
     return (
-      <span className="relative flex size-1.5" aria-label="running">
-        <span className="absolute inline-flex size-full animate-ping rounded-full bg-accent opacity-75" />
-        <span className="relative inline-flex size-1.5 rounded-full bg-accent" />
+      <span className="font-mono text-xs text-text-muted" aria-label="running">
+        …
       </span>
     );
   return (
-    <span
-      className={`font-mono text-[0.7rem] ${status === "failed" ? "text-flames" : "text-ink"}`}
-      aria-label={status}
-    >
+    <span className={`font-mono text-xs ${status === "failed" ? "font-semibold" : ""}`} aria-label={status}>
       {status === "failed" ? "✗" : "✓"}
     </span>
   );
 }
 
 function TestPill({ status }: { status?: TestResult["status"] }) {
+  // Status marker (BRAND.md section 6): a symbol and a word, no color.
   const map = {
-    pass: "border-[#15803d] text-[#15803d] dark:border-[#4ade80] dark:text-[#4ade80]",
-    warn: "border-accent text-accent-ink",
-    fail: "border-flames text-flames",
+    pass: { mark: "✓", cls: "border-border text-text-muted" },
+    warn: { mark: "!", cls: "border-text font-semibold" },
+    fail: { mark: "✗", cls: "border-text bg-text text-bg font-semibold" },
   };
+  const m = status ? map[status] : null;
   return (
     <span
-      className={`w-fit border px-1.5 py-0.5 text-center font-mono text-[0.65rem] uppercase ${status ? map[status] : "border-line text-muted"}`}
+      className={`w-fit rounded-sm border px-2 py-1 text-center font-mono text-xs uppercase ${m ? m.cls : "border-border text-text-muted"}`}
     >
-      {status ?? "…"}
+      {m ? `${m.mark} ${status}` : "…"}
     </span>
   );
 }
@@ -363,22 +362,22 @@ function ModelStats({ model }: { model: NonNullable<ManifestEntry["model"]> }) {
   ];
   return (
     <table className="mt-3 w-full text-left text-xs">
-      <thead className="text-muted">
+      <thead className="text-text-muted">
         <tr>
-          <th className="py-1 font-normal">Holdout ({model.rows.test.toLocaleString()} homes)</th>
-          <th className="py-1 text-right font-normal">Model</th>
-          <th className="py-1 text-right font-normal">Community median</th>
+          <th className="py-1 font-regular">Holdout ({model.rows.test.toLocaleString()} homes)</th>
+          <th className="py-1 text-right font-regular">Model</th>
+          <th className="py-1 text-right font-regular">Community median</th>
         </tr>
       </thead>
       <tbody className="num">
         {rows.map(([label, m, b]) => (
-          <tr key={label} className="border-t border-line">
+          <tr key={label} className="border-t border-border">
             <td className="py-1">{label}</td>
             <td className="py-1 text-right">{m}</td>
-            <td className="py-1 text-right text-muted">{b}</td>
+            <td className="py-1 text-right text-text-muted">{b}</td>
           </tr>
         ))}
-        <tr className="border-t border-line">
+        <tr className="border-t border-border">
           <td className="py-1">Trained on</td>
           <td className="py-1 text-right" colSpan={2}>
             {model.rows.train.toLocaleString()} homes in {(model.trainMs / 1000).toFixed(1)} s ·{" "}

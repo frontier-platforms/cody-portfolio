@@ -1,44 +1,37 @@
 export const meta = {
   title: "Business intelligence and CRM at Canucks Sports & Entertainment",
   company: "Canucks Sports & Entertainment",
+  industry: "Pro sports",
   role: "Manager, Business Intelligence",
   period: "2019 to 2023",
   summary:
-    "Built a BI team from scratch, a data warehouse on Microsoft Fabric and the pricing and membership analysis behind revenue growth of 15% and 11% in consecutive seasons ($66M to $84M). Also led the move from HubSpot to Salesforce.",
+    "Built a BI team and warehouse from scratch. Our pricing and membership analysis supported 27% revenue growth.",
   problem: "Sales doesn't trust the CRM",
   status: "shipped",
   stack: ["Salesforce", "HubSpot", "Microsoft Fabric", "Power BI", "SQL", "Python"],
   numbers: [
-    { before: "$66M", value: "$84M", label: "Revenue across two consecutive seasons" },
+    { value: "+27%", label: "Revenue growth over two seasons" },
     { value: "15% · 11%", label: "Growth in each season" },
-    { value: "5 to 6", label: "People on the BI team at its peak, built from zero" },
+    { value: "5 to 6", label: "People on the BI team I built" },
   ],
   order: 3,
 };
 
-## Overview
-
-Canucks Sports & Entertainment runs the Vancouver Canucks (NHL), the Abbotsford Canucks (AHL), the Vancouver Warriors (NLL) and Rogers Arena. That's a lot of products sold to the same fans: memberships, single games, suites and partnerships.
-
-I spent four years there and worked up from the front line. I started as an Account Executive managing more than 800 memberships worth over $2M. Then I moved into business intelligence as an analyst, and finished as the manager who built the BI function.
-
 ## Problem
 
-Revenue decisions on pricing, forecasting and memberships needed better data than the organization had. Fan and sales data was split across ticketing, marketing tools and a HubSpot CRM, and there was no dedicated team or warehouse to bring it together.
+The Canucks, Abbotsford Canucks, Vancouver Warriors and Rogers Arena all sell to the same fans. Pricing and membership decisions needed better data than the organization had. There was no BI team or warehouse to bring it together.
 
-## My role
+## Role
 
-- **Business Analyst, then Manager, Business Intelligence** (Jul 2021 to Dec 2023).
-- Built and led a BI team of five to six at its peak, from the ground up. I did the hiring, coaching, performance management and development.
-- Owned the CRM migration end to end: requirements, vendor negotiation, contract terms and rollout.
-- Managed the vendor relationship with StellarAlgo, the fan data platform, years before I joined StellarAlgo.
+I moved from Account Executive to Business Analyst to Manager, Business Intelligence over four years. As manager, I built the BI team and owned the CRM migration.
 
 ## Solution
 
-- **Revenue analysis.** Pricing, forecasting and membership revenue analysis that business leadership used to make decisions.
-- **A data warehouse on Microsoft Fabric.** Built the organization's warehouse and reporting layer, working directly with Microsoft as an early customer from preview into general availability.
-- **Automated reporting.** Pulled ticketing, pricing and campaign data together and automated recurring reports with SQL, Python and Power BI.
-- **HubSpot to Salesforce.** First ran HubSpot for the Canucks and Warriors (requirements, configuration, pipeline). Then led the move to Salesforce across sales and marketing, rolled out department by department.
+- I built a BI team of five to six from the ground up, from hiring to development.
+- We ran the pricing, forecasting and membership revenue analysis that business leadership used.
+- I built the data warehouse and reporting layer on Microsoft Fabric, as an early customer from preview to launch.
+- We automated recurring reports on ticketing, pricing and campaigns with SQL, Python and Power BI.
+- I led the move from HubSpot to Salesforce: requirements, vendor negotiation, contract terms and a phased rollout.
 
 <Media
   alt="Membership revenue and pricing dashboard"
@@ -47,4 +40,6 @@ Revenue decisions on pricing, forecasting and memberships needed better data tha
 
 ## Outcome
 
-Revenue grew **15%** and then **11%** in consecutive seasons, from **$66M to $84M**, with the BI team's pricing, forecasting and membership analysis behind the decisions. The organization finished with a team, a warehouse and a CRM it didn't have when I started.
+<KeyNumbers numbers={meta.numbers} />
+
+Revenue went from $66M to $84M. The organization also gained a BI team, a warehouse and a new CRM.

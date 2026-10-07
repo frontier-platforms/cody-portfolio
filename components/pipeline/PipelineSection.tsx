@@ -16,7 +16,7 @@ export function PipelineSection({ pipeline, run }: { pipeline: Pipeline; run: Ma
   return (
     <div className="space-y-6">
       {run && (
-        <dl className="grid grid-cols-2 border-l border-t border-line lg:grid-cols-5">
+        <dl className="grid grid-cols-2 border-l border-t border-border lg:grid-cols-5">
           <Cell label="Last production run">
             <FreshnessBadge runAt={run.runAt} slaDays={pipeline.contract.freshnessSlaDays} />
           </Cell>
@@ -32,19 +32,19 @@ export function PipelineSection({ pipeline, run }: { pipeline: Pipeline; run: Ma
       <PipelineExplorer pipeline={pipeline} run={run} />
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <section className="border border-line bg-surface p-5">
+        <section className="border border-border bg-surface p-6 rounded-md">
           <h3 className="font-semibold">Data contract</h3>
-          <p className="mt-1 text-sm text-muted">
-            What consumers of this data can rely on. Enforced by the tests above, not just written down.
+          <p className="mt-1 text-sm text-text-muted">
+            What consumers of this data can rely on. The tests above enforce every line of it.
           </p>
           <dl className="mt-4 grid grid-cols-[8rem_1fr] gap-x-4 gap-y-2 text-sm">
-            <dt className="text-muted">Owner</dt>
+            <dt className="text-text-muted">Owner</dt>
             <dd>{pipeline.contract.owner}</dd>
-            <dt className="text-muted">Refresh</dt>
+            <dt className="text-text-muted">Refresh</dt>
             <dd>{pipeline.contract.cadence}</dd>
-            <dt className="text-muted">Freshness SLA</dt>
+            <dt className="text-text-muted">Freshness SLA</dt>
             <dd>{pipeline.contract.freshnessSlaDays} days</dd>
-            <dt className="text-muted">Keys</dt>
+            <dt className="text-text-muted">Keys</dt>
             <dd className="font-mono text-xs leading-relaxed">
               {Object.entries(pipeline.contract.primaryKeys).map(([t, k]) => (
                 <span key={t} className="block">
@@ -52,14 +52,14 @@ export function PipelineSection({ pipeline, run }: { pipeline: Pipeline; run: Ma
                 </span>
               ))}
             </dd>
-            <dt className="text-muted">Consumers</dt>
+            <dt className="text-text-muted">Consumers</dt>
             <dd>{pipeline.contract.consumers.join(", ")}</dd>
-            <dt className="text-muted">Source</dt>
+            <dt className="text-text-muted">Source</dt>
             <dd>
               <a href={pipeline.source.docs} className="link">
                 {pipeline.source.name}
               </a>
-              <span className="block text-xs text-muted">{pipeline.source.licence}</span>
+              <span className="block text-xs text-text-muted">{pipeline.source.licence}</span>
             </dd>
           </dl>
           <ul className="prose-cc mt-4 text-sm">
@@ -69,30 +69,30 @@ export function PipelineSection({ pipeline, run }: { pipeline: Pipeline; run: Ma
           </ul>
         </section>
 
-        <section className="border border-line bg-surface p-5">
+        <section className="border border-border bg-surface p-6 rounded-md">
           <h3 className="font-semibold">Served files</h3>
-          <p className="mt-1 text-sm text-muted">
+          <p className="mt-1 text-sm text-text-muted">
             Gold models written as Parquet and committed, so a deploy never depends on a third-party API.
           </p>
-          <ul className="mt-4 divide-y divide-line border-y border-line text-sm">
+          <ul className="mt-4 divide-y divide-border border-y border-border text-sm">
             {served.map((o) => (
-              <li key={o.file} className="py-2.5">
+              <li key={o.file} className="py-3">
                 <div className="flex justify-between gap-3">
                   <a href={`/data/${o.file}`} className="link font-mono text-xs">
                     {o.file}
                   </a>
-                  <span className="num text-xs text-muted">
+                  <span className="num text-xs text-text-muted">
                     {o.rows.toLocaleString()} rows ·{" "}
                     {o.bytes >= 1e6 ? `${(o.bytes / 1e6).toFixed(2)} MB` : `${Math.round(o.bytes / 1e3)} KB`}
                   </span>
                 </div>
-                <p className="mt-1 truncate font-mono text-[0.7rem] text-muted" title={o.sha256}>
+                <p className="mt-1 truncate font-mono text-xs text-text-muted" title={o.sha256}>
                   sha256 {o.sha256.slice(0, 16)}…
                 </p>
               </li>
             ))}
           </ul>
-          <ul className="mt-4 space-y-1.5 text-sm">
+          <ul className="mt-4 space-y-2 text-sm">
             <li>
               <a href={`${REPO}/blob/main/lib/pipelines/${pipeline.id}.ts`} className="link">
                 Pipeline definition: models, tests and contract ↗
@@ -117,8 +117,8 @@ export function PipelineSection({ pipeline, run }: { pipeline: Pipeline; run: Ma
 
 function Cell({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="border-b border-r border-line bg-surface p-4">
-      <dt className="text-xs text-muted">{label}</dt>
+    <div className="border-b border-r border-border bg-surface p-4">
+      <dt className="text-xs text-text-muted">{label}</dt>
       <dd className="num mt-1 text-sm">{children}</dd>
     </div>
   );

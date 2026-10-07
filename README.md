@@ -27,6 +27,7 @@ npm run dev
 | `npm run build`        | Production build                                                                                                  |
 | `npm run typecheck`    | `tsc --noEmit`                                                                                                    |
 | `npm run lint`         | ESLint                                                                                                            |
+| `npm run lint:brand`   | Brand check: enforces BRAND.md (tokens, type scale, spacing, copy rules, case study format)                       |
 | `npm run format`       | Prettier                                                                                                          |
 | `npm run data`         | Run every Lab pipeline: extract, build, test, write Parquet                                                       |
 | `npm run data:permits` | City of Calgary building permits only                                                                             |
@@ -119,9 +120,14 @@ Each pipeline is defined once as data in [`lib/pipelines/`](lib/pipelines): raw 
 
 Uses `claude-opus-5` at low effort with server-side refusal fallbacks. **Set a monthly spend limit on the API key** in the Anthropic Console; that's the real cost ceiling.
 
-## Writing rules for site copy
+## Brand
 
-No em dashes. No filler phrasing ("leverage", "seamless", "passionate about"). Short, direct, and tied to outcomes. Use numbers only as given; leave a `<Todo>` rather than inventing one.
+[`BRAND.md`](BRAND.md) is the single source of truth for how the site looks and sounds. Read it before changing copy, styles or components.
+
+- Visual values live only in [`app/tokens.css`](app/tokens.css), generated verbatim from BRAND.md section 10. [`app/globals.css`](app/globals.css) switches off Tailwind's defaults and maps utilities to the tokens, so classes like `bg-bg`, `text-text-muted`, `p-6`, `text-3xl` and `rounded-md` can only produce brand values.
+- `npm run lint:brand` (also in CI) fails on hardcoded colors, one-off sizes, off-scale spacing, extra font weights, shadows, em dashes, banned phrases, and case studies that don't follow Problem, Role, Solution, Outcome with a summary of 140 characters or fewer.
+- When a request conflicts with the guide, follow the request, then update BRAND.md (bump the version, add a changelog line) so the guide stays true.
+- Use numbers only as given; leave a `<Todo>` rather than inventing one.
 
 ## Data sources
 

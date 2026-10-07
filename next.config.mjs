@@ -3,6 +3,10 @@ import createMDX from "@next/mdx";
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   pageExtensions: ["ts", "tsx", "mdx"],
+  async redirects() {
+    // Projects folded into the Work page (BRAND.md v1.3 nav).
+    return [{ source: "/projects", destination: "/work#projects", permanent: true }];
+  },
   async headers() {
     return [
       {

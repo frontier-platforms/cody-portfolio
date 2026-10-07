@@ -1,9 +1,11 @@
 import { ImageResponse } from "next/og";
+import { token } from "@/lib/brand-tokens";
 
-export const alt = "Cody Chandler: data, product and growth";
+export const alt = "Cody Chandler: I build data platforms that change how teams make money.";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
+/** Share image. ImageResponse can't read CSS variables, so colors come from tokens.css at build time. */
 export default function OpengraphImage() {
   return new ImageResponse(
     <div
@@ -13,24 +15,17 @@ export default function OpengraphImage() {
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
-        padding: 72,
-        background: "#faf8f4",
-        color: "#1a1814",
-        fontFamily: "sans-serif",
+        padding: 80,
+        background: token("--color-bg"),
+        color: token("--color-text"),
       }}
     >
-      <div style={{ display: "flex", alignItems: "center", gap: 16, fontSize: 28, color: "#6b655c" }}>
-        <div style={{ width: 18, height: 18, background: "#c2410c" }} />
-        cody chandler · calgary
+      <div style={{ display: "flex", fontSize: 30, fontWeight: 600 }}>Cody Chandler</div>
+      <div style={{ display: "flex", fontSize: 72, lineHeight: 1.1, maxWidth: 1000 }}>
+        I build data platforms that change how teams make money.
       </div>
-      <div style={{ fontSize: 76, fontWeight: 700, lineHeight: 1.05, letterSpacing: -2, maxWidth: 980 }}>
-        I connect the data stack to the revenue it’s meant to drive.
-      </div>
-      <div style={{ display: "flex", gap: 48, fontSize: 28, color: "#6b655c" }}>
-        <span>Data</span>
-        <span>Product</span>
-        <span>Growth</span>
-        <span>AI</span>
+      <div style={{ display: "flex", fontSize: 28, color: token("--color-text-muted") }}>
+        Technology and data leader · Calgary
       </div>
     </div>,
     size,

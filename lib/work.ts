@@ -18,10 +18,13 @@ const NumberSchema = z.object({
 export const WorkMetaSchema = z.object({
   title: z.string(),
   company: z.string(),
+  /** Shown with the company on project cards (BRAND.md section 6). */
+  industry: z.string(),
   role: z.string(),
   /** e.g. "2023 to 2025". Optional until confirmed. */
   period: z.string().optional(),
-  summary: z.string(),
+  /** One line for cards and meta descriptions. BRAND.md section 2: 140 characters or fewer. */
+  summary: z.string().max(140),
   /** Short label used on the home page "problems" list and cards. */
   problem: z.string(),
   status: z.enum(["shipped", "in progress", "side venture"]),

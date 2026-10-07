@@ -1,17 +1,19 @@
 import Link from "next/link";
 import { site } from "@/lib/site";
 
+const linkClass = "inline-flex min-h-11 items-center underline-offset-[3px] hover:text-text hover:underline";
+
 export function Footer() {
   return (
-    <footer className="mt-24 border-t border-line">
-      <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-8 text-sm text-muted sm:flex-row sm:items-center sm:justify-between sm:px-6">
+    <footer className="mt-24 border-t border-border">
+      <div className="mx-auto flex max-w-site flex-col gap-2 px-4 py-8 text-sm text-text-muted sm:flex-row sm:items-center sm:justify-between sm:px-6">
         <p>
           {site.name} · {site.location}
         </p>
-        <ul className="flex flex-wrap gap-x-5 gap-y-2">
+        <ul className="flex flex-wrap gap-x-6">
           <li>
             <a
-              className="hover:text-ink"
+              className={linkClass}
               href={`mailto:${site.email}`}
               data-track="cta_clicked"
               data-track-cta="email"
@@ -20,10 +22,21 @@ export function Footer() {
               Email
             </a>
           </li>
+          <li>
+            <a
+              className={linkClass}
+              href={site.resume}
+              data-track="cta_clicked"
+              data-track-cta="resume"
+              data-track-location="footer"
+            >
+              Resume
+            </a>
+          </li>
           {site.linkedin && (
             <li>
               <a
-                className="hover:text-ink"
+                className={linkClass}
                 href={site.linkedin}
                 rel="me"
                 data-track="cta_clicked"
@@ -36,7 +49,7 @@ export function Footer() {
           )}
           <li>
             <a
-              className="hover:text-ink"
+              className={linkClass}
               href={site.github}
               data-track="cta_clicked"
               data-track-cta="github"
@@ -46,7 +59,7 @@ export function Footer() {
             </a>
           </li>
           <li>
-            <Link className="hover:text-ink" href="/colophon">
+            <Link className={linkClass} href="/colophon">
               How this site is built
             </Link>
           </li>

@@ -20,14 +20,14 @@ export function Media({ src, alt, caption, width = 1600, height = 1000, poster }
   const isVideo = src?.match(/\.(mp4|webm)$/);
 
   return (
-    <figure className="not-prose my-10 md:-mx-12">
-      <div className="overflow-hidden border border-line bg-surface">
+    <figure className="not-prose my-12 lg:-mx-12">
+      <div className="overflow-hidden border border-border bg-surface rounded-md">
         {!src ? (
           <div
-            className="grid place-items-center bg-[repeating-linear-gradient(135deg,transparent_0_10px,var(--line)_10px_11px)] text-center"
+            className="grid place-items-center bg-[repeating-linear-gradient(135deg,transparent_0_10px,var(--color-border)_10px_11px)] text-center"
             style={{ aspectRatio: `${width} / ${height}` }}
           >
-            <span className="label bg-paper px-2 py-1">Media placeholder · {alt}</span>
+            <span className="label bg-bg px-2 py-1">Media placeholder · {alt}</span>
           </div>
         ) : isVideo ? (
           <video
@@ -47,7 +47,7 @@ export function Media({ src, alt, caption, width = 1600, height = 1000, poster }
           <Image src={src} alt={alt} width={width} height={height} className="h-auto w-full" />
         )}
       </div>
-      {caption && <figcaption className="mt-2 text-sm text-muted">{caption}</figcaption>}
+      {caption && <figcaption className="mt-2 text-sm text-text-muted">{caption}</figcaption>}
     </figure>
   );
 }

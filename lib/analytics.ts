@@ -85,7 +85,10 @@ export const trackingPlan = {
   cta_clicked: {
     description: "A contact or hiring call to action is clicked.",
     props: {
-      cta: { type: "string", values: ["email", "resume", "linkedin", "booking", "github", "case_studies"] },
+      cta: {
+        type: "string",
+        values: ["contact", "email", "resume", "linkedin", "booking", "github", "case_studies"],
+      },
       location: { type: "string" },
     },
   },

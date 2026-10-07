@@ -97,7 +97,7 @@ LIMIT 8`;
   // Draw the selected season last so it sits on top.
   const series = [...seasons.map((x) => x.id).filter((s) => s !== season), season].map((s) => ({
     name: s,
-    color: s === season ? "var(--flames)" : "var(--chart-base)",
+    color: s === season ? "var(--color-data-2)" : "var(--color-data-4)",
     width: s === season ? 2.5 : 1,
     points: pace.rows.filter((p) => p.season === s).map((p) => ({ x: num(p, "game"), y: num(p, "points") })),
   }));
@@ -128,9 +128,9 @@ LIMIT 8`;
         />
       </div>
 
-      <dl className="grid grid-cols-2 border-l border-t border-line lg:grid-cols-4">
+      <dl className="grid grid-cols-2 border-l border-t border-border lg:grid-cols-4">
         <Stat label="Record (W-L-OTL)" value={r ? `${num(r, "w")}-${num(r, "l")}-${num(r, "otl")}` : "…"} />
-        <Stat label="Points" value={r ? String(num(r, "pts")) : "…"} accent="var(--flames)" />
+        <Stat label="Points" value={r ? String(num(r, "pts")) : "…"} />
         <Stat label="Goals for" value={r ? String(num(r, "gf")) : "…"} />
         <Stat label="Goals against" value={r ? String(num(r, "ga")) : "…"} />
       </dl>
@@ -168,7 +168,7 @@ LIMIT 8`;
                     cx={num(s, "x")}
                     cy={-num(s, "y")}
                     r={0.55}
-                    fill="var(--muted)"
+                    fill="var(--color-data-4)"
                     fillOpacity={0.28}
                   />
                 ))}
@@ -180,7 +180,7 @@ LIMIT 8`;
                     cx={num(s, "x")}
                     cy={-num(s, "y")}
                     r={0.95}
-                    fill={side === "CGY" ? "var(--flames)" : "var(--ink)"}
+                    fill={side === "CGY" ? "var(--color-data-2)" : "var(--color-data-1)"}
                     fillOpacity={0.85}
                   />
                 ))}
@@ -198,7 +198,7 @@ LIMIT 8`;
         >
           <RankBars
             data={scorers.rows.map((s) => ({ label: String(s.shooter), value: num(s, "goals") }))}
-            color="var(--flames)"
+            color="var(--color-data-2)"
             formatValue={(n) => `${n} G`}
             summary={`Top Flames goal scorers in ${season}.`}
           />

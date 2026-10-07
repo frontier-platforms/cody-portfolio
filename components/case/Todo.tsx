@@ -5,7 +5,7 @@
 export function Todo({ children }: { children: React.ReactNode }) {
   if (process.env.NODE_ENV === "production") return null;
   return (
-    <span className="my-2 block border border-dashed border-accent px-3 py-2 font-mono text-xs text-accent-ink">
+    <span className="my-2 block border border-dashed border-accent px-3 py-2 font-mono text-xs text-accent rounded-md">
       TODO: {children}
     </span>
   );

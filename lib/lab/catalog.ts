@@ -22,7 +22,7 @@ export const labs: LabEntry[] = [
     kicker: "City of Calgary open data",
     title: "Where Calgary is building",
     lede: "Every building permit application since 2015: how many homes were permitted, how long permits took, and which communities are growing.",
-    standout: "Incremental loads that catch status changes, not just new rows",
+    standout: "Incremental loads that catch status changes on old permits as well as new ones",
     points: [
       "Housing units, time to permit and top communities, with a dot map",
       "Live runs pull only what the City changed since the snapshot",

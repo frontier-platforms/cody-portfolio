@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { Todo } from "@/components/case/Todo";
+import Link from "next/link";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "About",
-  description: "Cody Chandler: data, product and growth leader in Calgary. Background, resume and contact.",
+  description:
+    "Cody Chandler: technology and data leader in Calgary. Experience, education and certifications.",
 };
 
 type Role = { title: string; dates: string };
@@ -74,56 +76,54 @@ const certifications: Credential[] = [
 
 export default function AboutPage() {
   return (
-    <div className="mx-auto max-w-6xl px-4 pt-12 sm:px-6 sm:pt-20">
-      <div className="grid gap-12 lg:grid-cols-[1fr_20rem]">
+    <div className="mx-auto max-w-site px-4 pt-12 sm:px-6 sm:pt-20">
+      <div className="grid gap-12 lg:grid-cols-[1fr_18rem]">
         <div>
           <p className="label">About</p>
-          <h1 className="mt-3 max-w-3xl text-balance text-4xl font-semibold tracking-tight sm:text-5xl">
+          <h1 className="mt-3 max-w-measure text-balance text-2xl sm:text-4xl">
             I work where data meets the people who sell, market and decide.
           </h1>
-          <div className="prose-cc mt-8 max-w-2xl">
+          <div className="prose-cc mt-8">
             <p>
-              I’m Cody, a data and product leader in Calgary with more than 10 years across pro sports,
-              fintech, SaaS and city government. I’ve built and led analytics, marketing operations and
-              product teams.
+              I’m Cody, a technology and data leader in Calgary. I’ve spent 10+ years in pro sports, fintech,
+              SaaS and city government. I’ve built and led analytics, marketing operations and product teams.
             </p>
             <p>
-              The common thread is turning data into decisions a business can act on. At StellarAlgo that
-              meant fresh, trusted data for sports clients and the first AI products on top of it. At Neo
-              Financial it meant attribution and customer value models that marketing could plan a budget
-              around. At the Canucks it meant building a BI team from zero and the analysis behind two strong
-              revenue seasons.
+              The common thread is turning data into decisions a business can act on. At StellarAlgo, that
+              meant same-day data for sports clients and our first AI products. At Neo Financial, it meant
+              attribution and customer value models that set the marketing budget. At the Canucks, it meant a
+              BI team built from zero, and the analysis behind two strong revenue seasons.
             </p>
             <p>
-              I started on the business side: city finance, then selling memberships. That’s why I measure
-              data work by what it changes for the people using it.
+              I started on the business side, in city finance and then selling memberships. So I judge data
+              work by what it changes for the people using it.
             </p>
             <p>
-              I still build. Valve, Signl List and the Lab on this site are mine, written in the same stack
-              I’d ask a team to use. It keeps my estimates honest.
+              I still build. Valve, Signl List and the Lab on this site are mine. It keeps my estimates
+              honest.
             </p>
             <p>Outside work, I volunteered with the Canucks Autism Network for five years.</p>
             <Todo>A line about life in Calgary or what you do outside work, if you want one.</Todo>
           </div>
 
-          <h2 id="experience" className="label mt-14 text-ink">
+          <h2 id="experience" className="mt-16 text-2xl sm:text-3xl">
             Experience
           </h2>
-          <ol className="mt-4 border-t border-line">
+          <ol className="mt-6 border-t border-border">
             {experience.map((e) => (
-              <li key={e.org} className="grid gap-3 border-b border-line py-5 sm:grid-cols-[14rem_1fr]">
+              <li key={e.org} className="grid gap-3 border-b border-border py-6 sm:grid-cols-[14rem_1fr]">
                 <div>
-                  <p className="font-semibold">{e.org}</p>
-                  <p className="mt-0.5 font-mono text-xs text-muted">
+                  <h3 className="text-base">{e.org}</h3>
+                  <p className="meta mt-1">
                     {e.years} · {e.place}
                   </p>
-                  <p className="mt-1 text-xs text-muted">{e.about}</p>
+                  <p className="mt-1 text-sm text-text-muted">{e.about}</p>
                 </div>
-                <ul className="space-y-1.5">
+                <ul className="space-y-2">
                   {e.roles.map((r) => (
                     <li key={r.title} className="flex flex-col sm:flex-row sm:justify-between sm:gap-4">
                       <span>{r.title}</span>
-                      <span className="shrink-0 font-mono text-xs text-muted sm:pt-1">{r.dates}</span>
+                      <span className="meta shrink-0 sm:pt-1">{r.dates}</span>
                     </li>
                   ))}
                 </ul>
@@ -135,70 +135,30 @@ export default function AboutPage() {
           <CredentialList title="Certifications" items={certifications} />
         </div>
 
-        <aside id="contact" className="h-fit border border-line bg-surface lg:sticky lg:top-24">
+        <aside className="h-fit lg:sticky lg:top-24">
           <Image
             src="/media/cody.jpg"
-            alt="Cody Chandler"
-            width={640}
-            height={640}
+            alt="Cody Chandler, smiling, in a grey collared shirt against a plain white background"
+            width={576}
+            height={576}
             priority
-            sizes="(min-width: 1024px) 20rem, 100vw"
-            className="aspect-square w-full border-b border-line object-cover"
+            sizes="(min-width: 960px) 18rem, 100vw"
+            className="aspect-square w-full rounded-md border border-border object-cover"
           />
-          <div className="p-6">
-            <p className="label text-accent-ink">Contact</p>
-            <p className="mt-3 text-lg font-semibold tracking-tight">
-              Hiring, or have a problem worth solving?
-            </p>
-            <p className="mt-2 text-sm text-muted">
-              Email is fastest. I read everything and reply to anything specific.
-            </p>
-            <div className="mt-5 flex flex-col gap-2">
-              <a
-                href={`mailto:${site.email}`}
-                className="btn btn-primary justify-center"
-                data-track="cta_clicked"
-                data-track-cta="email"
-                data-track-location="about"
-              >
-                {site.email}
-              </a>
-              {site.booking ? (
-                <a
-                  href={site.booking}
-                  className="btn justify-center"
-                  data-track="cta_clicked"
-                  data-track-cta="booking"
-                  data-track-location="about"
-                >
-                  Book a 30-minute call
-                </a>
-              ) : (
-                <Todo>Booking link for a 30-minute intro call.</Todo>
-              )}
-              <a
-                href={site.resume}
-                className="btn justify-center"
-                data-track="cta_clicked"
-                data-track-cta="resume"
-                data-track-location="about"
-              >
-                Download resume (PDF)
-              </a>
-              {site.linkedin && (
-                <a
-                  href={site.linkedin}
-                  className="btn justify-center"
-                  rel="me"
-                  data-track="cta_clicked"
-                  data-track-cta="linkedin"
-                  data-track-location="about"
-                >
-                  LinkedIn
-                </a>
-              )}
-            </div>
-            <p className="mt-5 text-xs text-muted">{site.location}</p>
+          <p className="mt-4 text-sm text-text-muted">{site.location}</p>
+          <div className="mt-4 flex flex-col gap-2">
+            <Link href="/contact" className="btn btn-primary">
+              Contact
+            </Link>
+            <a
+              href={site.resume}
+              className="btn"
+              data-track="cta_clicked"
+              data-track-cta="resume"
+              data-track-location="about"
+            >
+              Resume (PDF)
+            </a>
           </div>
         </aside>
       </div>
@@ -209,14 +169,17 @@ export default function AboutPage() {
 function CredentialList({ title, items }: { title: string; items: Credential[] }) {
   return (
     <>
-      <h2 className="label mt-14 text-ink">{title}</h2>
-      <ul className="mt-4 border-t border-line">
+      <h2 className="mt-16 text-2xl sm:text-3xl">{title}</h2>
+      <ul className="mt-6 border-t border-border">
         {items.map((c) => (
-          <li key={c.name} className="flex flex-col border-b border-line py-3 sm:flex-row sm:justify-between">
+          <li
+            key={c.name}
+            className="flex flex-col border-b border-border py-3 sm:flex-row sm:justify-between"
+          >
             <span>
-              {c.name} <span className="text-muted">· {c.from}</span>
+              {c.name} <span className="text-text-muted">· {c.from}</span>
             </span>
-            {c.year && <span className="font-mono text-xs text-muted sm:pt-1">{c.year}</span>}
+            {c.year && <span className="meta sm:pt-1">{c.year}</span>}
           </li>
         ))}
       </ul>
