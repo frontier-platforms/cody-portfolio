@@ -7,9 +7,10 @@ import { site } from "@/lib/site";
 /**
  * Contact form. Posts straight to Formspree, which stores each submission and
  * emails it to me. No Formspree script loads; this is a plain fetch.
- * Set NEXT_PUBLIC_FORMSPREE_ID to the form's ID (formspree.io/f/<id>).
+ * The form ID is public by design (it's in every request the browser sends),
+ * so it lives here; NEXT_PUBLIC_FORMSPREE_ID overrides it, e.g. for testing.
  */
-const FORM_ID = process.env.NEXT_PUBLIC_FORMSPREE_ID;
+const FORM_ID = process.env.NEXT_PUBLIC_FORMSPREE_ID || "xaeqejzp";
 
 const REASONS = [
   { value: "hiring", label: "A role I’m hiring for" },
