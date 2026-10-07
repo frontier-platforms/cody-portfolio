@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { Todo } from "@/components/case/Todo";
 import Link from "next/link";
 import { skills } from "@/lib/business";
 import { site } from "@/lib/site";
@@ -109,8 +108,12 @@ export default function AboutPage() {
               I still build. Valve, Signl List and the Lab on this site are mine. It keeps my estimates
               honest.
             </p>
-            <p>Outside work, I volunteered with the Canucks Autism Network for five years.</p>
-            <Todo>A line about life in Calgary or what you do outside work, if you want one.</Todo>
+            <p>
+              Outside work, I volunteered with the Canucks Autism Network for five years. I also volunteered
+              with the Vancouver Whitecaps for several years, helping with event-day activations, programs and
+              accreditation. These days you’ll find me golfing, playing basketball, out for a walk or getting
+              coffee.
+            </p>
           </div>
 
           <h2 id="skills" className="mt-16 text-2xl sm:text-3xl">
