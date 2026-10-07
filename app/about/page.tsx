@@ -45,7 +45,7 @@ const experience: Employer[] = [
   {
     org: "City of Surrey",
     place: "Surrey, BC",
-    years: "2017 to 2022",
+    years: "2017 to 2021",
     about: "Municipal government serving 700,000+ residents",
     roles: [
       { title: "Presiding Election Official (part-time)", dates: "Sep 2018 to Oct 2022" },
