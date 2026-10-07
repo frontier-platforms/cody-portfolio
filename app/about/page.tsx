@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     "Cody Chandler: technology and data leader in Calgary, with a sales, marketing and finance background.",
 };
 
-type Role = { title: string; dates: string; note?: string };
+type Role = { title: string; dates: string; highlights?: string[] };
 type Employer = { org: string; place: string; years: string; about: string; roles: Role[] };
 
 const experience: Employer[] = [
@@ -22,7 +22,15 @@ const experience: Employer[] = [
     about: "Fan data platform for pro sports and entertainment",
     roles: [
       { title: "Director, Product", dates: "Jan 2026 to present" },
-      { title: "Director, Product Innovation & Analytics", dates: "Jan 2025 to Jan 2026" },
+      {
+        title: "Director, Product Innovation & Analytics",
+        dates: "Jan 2025 to Jan 2026",
+        highlights: [
+          "Led PRIME from planning through launch, with a product pod of four.",
+          "Cut client data freshness from 7 days to under 12 hours.",
+          "Shipped our first AI products on top of PRIME.",
+        ],
+      },
     ],
   },
   {
@@ -34,7 +42,11 @@ const experience: Employer[] = [
       {
         title: "Director, Marketing Operations & Analytics",
         dates: "Dec 2023 to Jan 2025",
-        note: "Led four analysts. Owned martech partnerships, the martech budget and vendor renewals.",
+        highlights: [
+          "Led a team of four analysts.",
+          "Built one attribution view across five paid channels, with CAC and LTV models.",
+          "Owned martech partnerships, the martech budget and vendor renewals.",
+        ],
       },
     ],
   },
@@ -47,13 +59,17 @@ const experience: Employer[] = [
       {
         title: "Manager, Business Intelligence",
         dates: "Jul 2022 to Dec 2023",
-        note: "Built the BI team. Led the HubSpot to Salesforce move, including vendor negotiation.",
+        highlights: [
+          "Built a BI team of five to six from zero.",
+          "Led pricing and membership analysis that supported 27% revenue growth over two seasons.",
+          "Led the HubSpot to Salesforce move, including vendor negotiation.",
+        ],
       },
       { title: "Business Analyst, Business Intelligence", dates: "Jul 2021 to Jul 2022" },
       {
         title: "Account Executive, Membership Experience",
         dates: "Aug 2019 to Apr 2020",
-        note: "Managed 800+ memberships worth over $2M.",
+        highlights: ["Managed 800+ memberships worth over $2M."],
       },
     ],
   },
@@ -159,7 +175,13 @@ export default function AboutPage() {
                         <span>{r.title}</span>
                         <span className="meta shrink-0 sm:pt-1">{r.dates}</span>
                       </div>
-                      {r.note && <p className="mt-1 text-sm text-text-muted">{r.note}</p>}
+                      {r.highlights && (
+                        <ul className="prose-cc mt-2 text-sm text-text-muted">
+                          {r.highlights.map((h) => (
+                            <li key={h}>{h}</li>
+                          ))}
+                        </ul>
+                      )}
                     </li>
                   ))}
                 </ul>
