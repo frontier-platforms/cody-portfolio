@@ -60,7 +60,6 @@ export function ContactForm() {
     return (
       <div className="rounded-md border border-border bg-surface p-6" role="status">
         <p className="font-semibold">Thanks, it’s in my inbox.</p>
-        <p className="mt-1 text-text-muted">I read everything and reply to anything specific.</p>
       </div>
     );
 

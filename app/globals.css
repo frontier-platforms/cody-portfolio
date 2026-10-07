@@ -269,4 +269,27 @@ body {
     border-radius: var(--radius-sm);
     padding: 0 var(--space-1);
   }
+
+  /* Case studies: text keeps the reading measure, diagrams use the full width. */
+  .prose-cc.prose-wide {
+    max-width: none;
+  }
+  .prose-cc.prose-wide > :not(.diagram) {
+    max-width: var(--measure);
+  }
+  /* Diagrams inside long-form text set their own lists, without prose bullets. */
+  .prose-cc .diagram ul,
+  .prose-cc .diagram ol {
+    list-style: none;
+    padding-left: 0;
+  }
+  .prose-cc .diagram li {
+    padding-left: 0;
+  }
+  .prose-cc .diagram li + li {
+    margin-top: 0;
+  }
+  .prose-cc .diagram li::before {
+    content: none;
+  }
 }

@@ -1,6 +1,6 @@
 # Brand Guide: Cody Chandler Portfolio
 
-Version 1.7 (2026-10-07). Single source of truth for how the site looks and sounds. Read this before writing any copy, styles, or components.
+Version 1.8 (2026-10-07). Single source of truth for how the site looks and sounds. Read this before writing any copy, styles, or components.
 
 ## How to use this file
 
@@ -179,6 +179,10 @@ Added in 1.5:
 
 - **Capability card:** where (mono meta), area (h3), one or two sentences of fact, and one proof link. Used for the business side on Home.
 
+Added in 1.8:
+
+- **Routing diagram:** a vertical flow (question, agent, a row of model cards, response) with question chips that highlight the route taken. Model cards use a data-color top bar, a grain line in mono and measure chips.
+
 ## 7. Motion
 
 - Current setting: subtle (120ms fast, 200ms base).
@@ -349,3 +353,4 @@ Added in 1.5:
 - 1.5 (2026-10-07): Role line names the sales, marketing and finance background. Added a breadth note to positioning and the capability card component.
 - 1.6 (2026-10-07): New hero and role lines, broader than data platforms: revenue, data and products.
 - 1.7 (2026-10-07): Added Home to the nav at the owner's request, so visitors can always get back to it.
+- 1.8 (2026-10-07): Added the routing diagram component, for the PRIME semantic layer.
