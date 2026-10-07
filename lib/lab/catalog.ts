@@ -124,7 +124,7 @@ export const labs: LabEntry[] = [
     href: "/lab/flames",
     number: "03",
     kicker: "NHL play-by-play",
-    title: "Flames, shot by shot",
+    title: "Calgary Flames shot analysis",
     lede: "Every Flames shot attempt since 2021-22, including this season. Where they shoot from, and where goals come from.",
     standout: "Shot-level goals reconciled to the official score for every game",
     points: [

@@ -3,7 +3,7 @@ import { FlamesDemo } from "@/components/lab/LabDemos";
 import { LabPage } from "@/components/lab/LabPage";
 
 export const metadata: Metadata = {
-  title: "Lab: Calgary Flames",
+  title: "Lab: Calgary Flames shot analysis",
   description:
     "Calgary Flames play-by-play since 2021-22: shot maps, scorers and the points race, with a tested pipeline you can run live in your browser.",
 };
