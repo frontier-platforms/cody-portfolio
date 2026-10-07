@@ -1,6 +1,6 @@
 # Brand Guide: Cody Chandler Portfolio
 
-Version 1.5 (2026-10-07). Single source of truth for how the site looks and sounds. Read this before writing any copy, styles, or components.
+Version 1.6 (2026-10-07). Single source of truth for how the site looks and sounds. Read this before writing any copy, styles, or components.
 
 ## How to use this file
 
@@ -15,9 +15,9 @@ Version 1.5 (2026-10-07). Single source of truth for how the site looks and soun
 
 **Who it's for:** Hiring managers and recruiters (employee track) and prospective clients (consulting track). Both should leave knowing what I do and how to reach me.
 
-**Role line:** Technology and data leader who started in sales, marketing and finance. I turn data platforms and product work into measurable business outcomes.
+**Role line:** Data and product leader who started in sales, marketing and finance. I turn data and product work into measurable revenue.
 
-**Hero line:** I build data platforms that change how teams make money.
+**Hero line:** I help teams grow revenue with better data and products.
 
 **Breadth:** Data and product lead, but the business side (sales, marketing, operations, finance) is shown as real experience, not a footnote.
 
@@ -347,3 +347,4 @@ Added in 1.5:
 - 1.3 (2026-10-07): Nav set to Work, Lab, About, Contact (Resume moves to Contact and About). Dark mode toggle kept. Added `--radius-full` for dots and pills. Added site-specific components to section 6. Added status colors as an open decision.
 - 1.4 (2026-10-07): Section spacing tightened to `--space-16` on desktop at the owner's request (was `--space-20` or more). Added lab header, translation card, decision row, playbook step and architecture diagram components.
 - 1.5 (2026-10-07): Role line names the sales, marketing and finance background. Added a breadth note to positioning and the capability card component.
+- 1.6 (2026-10-07): New hero and role lines, broader than data platforms: revenue, data and products.

@@ -30,10 +30,10 @@ export default async function Home() {
           <p className="label">Calgary, Alberta</p>
         </div>
         <h1 className="mt-6 max-w-measure text-balance text-2xl sm:text-4xl">
-          I build data platforms that change how teams make money.
+          I help teams grow revenue with better data and products.
         </h1>
         <p className="mt-6 max-w-measure text-pretty text-lg text-text-muted">
-          I’m a technology and data leader who started in sales, marketing and finance.
+          I’ve led data, product and marketing operations teams, and I started out in sales and finance.
         </p>
         <div className="mt-8 flex flex-wrap items-center gap-6">
           <Link

@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 import { token } from "@/lib/brand-tokens";
 
-export const alt = "Cody Chandler: I build data platforms that change how teams make money.";
+export const alt = "Cody Chandler: I help teams grow revenue with better data and products.";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -22,7 +22,7 @@ export default function OpengraphImage() {
     >
       <div style={{ display: "flex", fontSize: 30, fontWeight: 600 }}>Cody Chandler</div>
       <div style={{ display: "flex", fontSize: 72, lineHeight: 1.1, maxWidth: 1000 }}>
-        I build data platforms that change how teams make money.
+        I help teams grow revenue with better data and products.
       </div>
       <div style={{ display: "flex", fontSize: 28, color: token("--color-text-muted") }}>
         Technology and data leader · Calgary
