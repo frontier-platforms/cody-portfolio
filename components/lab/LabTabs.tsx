@@ -6,9 +6,9 @@ import { useEffect } from "react";
 import { track } from "@/lib/analytics";
 
 const TABS = [
-  { href: "/lab/calgary", label: "Permits", dataset: "permits" },
-  { href: "/lab/housing", label: "Housing + ML", short: "Housing", dataset: "housing" },
   { href: "/lab/flames", label: "Flames", dataset: "flames" },
+  { href: "/lab/housing", label: "Housing + ML", short: "Housing", dataset: "housing" },
+  { href: "/lab/calgary", label: "Permits", dataset: "permits" },
 ] as const;
 
 /** Route-based tabs: each dataset is its own static page and its own JS chunk. */

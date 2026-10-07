@@ -95,7 +95,7 @@ The schema lives in [`lib/work.ts`](lib/work.ts); a bad field fails the build. A
 
 ## The Lab
 
-Three tabs, `/lab/calgary`, `/lab/housing` and `/lab/flames`, each a small data product: dashboard, "Ask the data", and the pipeline behind both. Housing adds a machine-learning model.
+Three tabs, `/lab/flames`, `/lab/housing` and `/lab/calgary`, each a small data product: dashboard, "Ask the data", and the pipeline behind both. Housing adds a machine-learning model.
 
 ### Pipelines
 
