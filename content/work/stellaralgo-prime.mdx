@@ -5,46 +5,51 @@ export const meta = {
   role: "Director, Product",
   period: "2025 to present",
   summary:
-    "Cut client data freshness from 7 days to under 12 hours with PRIME, then built the first AI products on top.",
+    "Unified every client's data into one governed layer, so teams self-serve and AI answers match the dashboards.",
   problem: "Our data is stale and nobody trusts the numbers",
   status: "shipped",
-  stack: ["Snowflake", "dbt", "Medallion architecture", "AWS Athena", "SQL", "LLMs"],
+  stack: ["Snowflake", "dbt", "Airflow", "AWS", "Medallion architecture", "Semantic layer", "LLMs"],
   numbers: [
-    { before: "7 days", value: "<12 hrs", label: "Data freshness for clients" },
-    { value: "100+", label: "dbt models in production" },
-    { value: "2", label: "AI products built on the platform" },
+    { value: "1", label: "Governed layer for every client's data, replacing a database per client" },
+    { value: "Self-serve", label: "Routine Customer Success questions, without an engineering ticket" },
+    { value: "30 min", label: "To flag a missed refresh, before a client notices" },
   ],
   order: 1,
 };
 
 ## Problem
 
-Client data at StellarAlgo could be up to 7 days old, since a key process ran weekly by hand. For a sports team, a week is a homestand. Data ownership was also spread across teams, with no clear service levels.
+Each client's data lived in its own database. A question across sports properties meant visiting each system in turn. A key refresh ran weekly by hand, so data could be 7 days old. Ownership was split across teams, with no agreed service levels.
 
 ## Role
 
-I led PRIME from planning through launch as Director, Product Innovation & Analytics. I coordinated Product, Data Engineering and Customer Success with a product pod of four.
+As Director, Product Innovation & Analytics, I owned product management for PRIME from planning through general availability. I worked across Data Engineering and Customer Success, with a product pod of four.
 
 ## Solution
 
-- I automated the weekly manual process into a daily run.
-- I rebuilt the models in Snowflake and dbt with bronze, silver and gold layers. More than 100 models are tested and documented.
-- I wrote a data contract that set ownership, service levels and escalation paths for every team.
-- I shipped an internal Customer Success bot on the modelled data. I took Stellar Insights, a client-facing analytics product, to dev stage.
-- I'm now leading the move of analytics workloads from AWS Athena to Snowflake.
+PRIME consolidates every client's data into one governed layer that any approved team or tool can use.
 
-<Media
-  alt="PRIME pipeline: bronze, silver and gold layers"
-  caption="Placeholder: lineage view or architecture diagram."
-/>
+- **One governed layer.** Three source systems feed one Snowflake database through bronze, silver and gold layers. The data is transformed once in dbt, across 100+ tested and documented models.
+- **A contract people can rely on.** I wrote PRIME's data contract. It sets refresh and accuracy targets per data domain, three incident tiers and clear ownership.
+- **Governance by default.** Personal data is masked at the raw layer, and access follows roles. An analyst, a client dashboard and an AI query each see only what they're allowed to.
+- **Daily, not weekly.** Airflow and dbt replaced the manual weekly process. Freshness went from 7 days to under 12 hours.
+- **Problems caught before a client sees them.** Freshness is checked against each client's target every 30 minutes. AI-written digests summarize pipeline errors hourly, and cost is tracked per model.
+
+<MedallionDiagram />
+
+On top of gold, I led discovery for Stellar Insights, which answers plain-English questions over a semantic layer. Each semantic model has one grain, such as property by day or campaign. The bot routes each question to the right one, so its answers match the dashboards. We shipped an internal Customer Success bot on the same layer first.
+
+<InsightsRouting />
+
+I'm now leading the move of the remaining analytics workloads from AWS Athena to Snowflake. Cost visibility and alerts are built in.
 
 ## Outcome
 
 <KeyNumbers numbers={meta.numbers} />
 
-Clients went from week-old data to same-day data, and the platform became the base for our first AI products.
+Customer Success, Product and clients now work from the same numbers, on a schedule they can rely on. Routine questions that once needed an engineering request are now self-serve.
 
 <Todo>
-  Any downstream outcome you can stand behind: support tickets, CS time saved, renewals, client feedback on
-  fresher data.
+  A real number would beat "Self-serve": routine engineering escalations down by some share, or Customer
+  Success hours saved per week.
 </Todo>

@@ -31,6 +31,8 @@ export const WorkMetaSchema = z.object({
   stack: z.array(z.string()),
   numbers: z.array(NumberSchema),
   order: z.number(),
+  /** An earlier role: shown with professional work, but left out of the consulting examples on Home. */
+  compact: z.boolean().optional(),
 });
 
 export type WorkMeta = z.infer<typeof WorkMetaSchema>;
@@ -50,7 +52,12 @@ export async function getWork(slug: string) {
   return { meta: { ...meta, slug } as Work, Content: mod.default as React.ComponentType };
 }
 
-/** Side ventures (Valve, Signl List) are shown apart from professional work. */
+/** Earlier roles, left out of the consulting examples on Home. */
+export function isCompact(work: Work) {
+  return work.compact === true;
+}
+
+/** Side ventures (Signl List, Valve) are shown apart from professional work. */
 export function isSideProject(work: Work) {
   return work.status === "side venture";
 }

@@ -45,7 +45,7 @@ const experience: Employer[] = [
   {
     org: "City of Surrey",
     place: "Surrey, BC",
-    years: "2017 to 2022",
+    years: "2017 to 2021",
     about: "Municipal government serving 700,000+ residents",
     roles: [
       { title: "Presiding Election Official (part-time)", dates: "Sep 2018 to Oct 2022" },
@@ -105,8 +105,15 @@ export default function AboutPage() {
               business.
             </p>
             <p>
-              I still build. Valve, Signl List and the Lab on this site are mine. It keeps my estimates
+              I still build. Signl List, Valve and the Lab on this site are mine. It keeps my estimates
               honest.
+            </p>
+            <p>
+              I’m open to consulting, contract and employment opportunities. Consulting runs through{" "}
+              <a href={site.frontier} className="link">
+                Frontier Platforms
+              </a>
+              , where I build Signl List and Valve.
             </p>
             <p>
               Outside work, I volunteered with the Canucks Autism Network for five years. I also volunteered

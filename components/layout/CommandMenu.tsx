@@ -12,7 +12,7 @@ const TELEMETRY = "#telemetry";
 
 const baseItems: CommandItem[] = [
   ...nav.map((n) => ({ href: n.href, label: n.label })),
-  { href: "/work#side-projects", label: "Side projects", hint: "Valve and Signl List" },
+  { href: "/work#side-projects", label: "Side projects", hint: "Signl List and Valve" },
   { href: "/lab/flames", label: "Calgary Flames shot analysis", hint: "Lab" },
   { href: "/lab/housing", label: "Calgary housing values", hint: "Lab" },
   { href: "/lab/housing#model", label: "Home value predictor", hint: "Lab · ML" },
@@ -83,7 +83,7 @@ export function CommandMenu({ items }: { items: CommandItem[] }) {
         type="button"
         onClick={open}
         aria-label="Open command menu"
-        className="hidden min-h-11 items-center gap-2 rounded-md px-2 font-mono text-xs text-text-muted transition-colors hover:text-text sm:flex"
+        className="hidden min-h-11 items-center gap-2 rounded-md px-2 font-mono text-xs text-on-accent transition-colors hover:bg-accent-hover sm:flex"
       >
         <span aria-hidden>⌘K</span>
         <span className="sr-only">Search pages</span>

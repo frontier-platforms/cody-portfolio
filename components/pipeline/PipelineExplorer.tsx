@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import { testSql } from "@/lib/pipelines/runner";
 import type { ManifestEntry, Pipeline, TestResult } from "@/lib/pipelines/types";
 import type { LiveEvent } from "../lab/live-run";
+import { site } from "@/lib/site";
 
 type NodeStatus = "idle" | "running" | "done" | "failed";
 
@@ -17,7 +18,7 @@ type Node = {
   path?: string;
 };
 
-const REPO = "https://github.com/frontier-platforms/cody-portfolio/blob/main";
+const REPO = `${site.github}/blob/main`;
 
 type LogLine = { t: number; stage: string; message: string; tone?: "muted" | "good" | "warn" | "bad" };
 

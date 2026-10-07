@@ -1,6 +1,6 @@
 # Brand Guide: Cody Chandler Portfolio
 
-Version 1.7 (2026-10-07). Single source of truth for how the site looks and sounds. Read this before writing any copy, styles, or components.
+Version 1.13 (2026-10-07). Single source of truth for how the site looks and sounds. Read this before writing any copy, styles, or components.
 
 ## How to use this file
 
@@ -90,7 +90,7 @@ Light mode is the default. Dark mode follows the system setting.
 Rules:
 
 - MUST meet WCAG AA contrast (4.5:1 for body text, 3:1 for large text and UI elements).
-- MUST use accent for at most one primary action per screen.
+- MUST use accent for at most one primary action per screen. The nav bar background is the one deliberate exception (1.12).
 - PREFER accent at roughly 5% of any screen.
 - AVOID gradients, glows, and shadow-heavy cards.
 - Data colors are for charts only, never UI chrome.
@@ -149,11 +149,11 @@ Rules:
 
 Keep the set small. Add a component here before building it.
 
-- **Nav:** name at left (body face, 600), 5 links at right: Home, Work, Lab, About, Contact. Resume is reached from Contact and About. No hamburger above 640px.
-- **Hero:** one h1 line, one supporting sentence, one primary button (Contact) and one text link (View work).
+- **Nav:** an accent-colored bar with `--color-on-accent` text and icons. Name at left (body face, 600), 5 links at right: Home, Work, Lab, About, Contact. The current page is underlined and semibold. Focus rings in the bar use `--color-on-accent`. Resume is reached from Contact and About. No hamburger above 640px.
+- **Hero:** one h1 line, one supporting sentence, one primary button (Contact) and one secondary button (See my work in action, to the Lab). Both use the large button size; they stack full width on phones. A short availability line sits under the location label: open to consulting, contract and employment opportunities.
 - **Project card:** mono label (industry and company), title, one-line summary, one metric in mono. Whole card is the link. Border, no shadow, `--radius-md`. Border turns accent on hover.
 - **Metric:** large mono number in `--color-text`, small muted label underneath. Accent only for the single most important metric on a page.
-- **Button:** primary (accent background, `--color-on-accent` text) and secondary (border only). `--radius-md`, min height 44px. No icons unless functional.
+- **Button:** primary (accent background, `--color-on-accent` text) and secondary (border only). `--radius-md`, min height 44px. No icons unless functional. A large size (`--space-12` tall, semibold) is for the hero only.
 - **Link:** accent color, underline offset 3px. Always underlined in body text; underline on hover in nav.
 
 Site-specific components (added in 1.3):
@@ -178,6 +178,10 @@ Added in 1.4:
 Added in 1.5:
 
 - **Capability card:** where (mono meta), area (h3), one or two sentences of fact, and one proof link. Used for the business side on Home.
+
+Added in 1.8:
+
+- **Routing diagram:** a vertical flow (question, agent, a row of model cards, response) with question chips that highlight the route taken. Model cards use a data-color top bar, a grain line in mono and measure chips.
 
 ## 7. Motion
 
@@ -349,3 +353,9 @@ Added in 1.5:
 - 1.5 (2026-10-07): Role line names the sales, marketing and finance background. Added a breadth note to positioning and the capability card component.
 - 1.6 (2026-10-07): New hero and role lines, broader than data platforms: revenue, data and products.
 - 1.7 (2026-10-07): Added Home to the nav at the owner's request, so visitors can always get back to it.
+- 1.8 (2026-10-07): Added the routing diagram component, for the PRIME semantic layer.
+- 1.9 (2026-10-07): Consulting is now stated openly, alongside full-time roles. Consulting runs through Frontier Platforms. Added the hero availability line.
+- 1.10 (2026-10-07): Contract roles added to the availability line.
+- 1.11 (2026-10-07): Availability reads consulting, contract and employment. City of Surrey joins Selected work on Home as a full card, making a 2 by 2 grid.
+- 1.12 (2026-10-07): Nav bar uses the accent color at the owner's request, with on-accent text.
+- 1.13 (2026-10-07): Hero's second action is a secondary button to the Lab. Added the large button size.

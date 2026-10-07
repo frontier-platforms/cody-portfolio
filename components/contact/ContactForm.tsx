@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { track } from "@/lib/analytics";
 import { site } from "@/lib/site";
 
@@ -13,8 +13,8 @@ import { site } from "@/lib/site";
 const FORM_ID = process.env.NEXT_PUBLIC_FORMSPREE_ID || "xaeqejzp";
 
 const REASONS = [
-  { value: "hiring", label: "A role I’m hiring for" },
-  { value: "project", label: "A project or a data problem" },
+  { value: "hiring", label: "An employment or contract role" },
+  { value: "project", label: "A consulting project" },
   { value: "other", label: "Something else" },
 ] as const;
 
@@ -22,6 +22,14 @@ type Status = "idle" | "sending" | "sent" | "error";
 
 export function ContactForm() {
   const [status, setStatus] = useState<Status>("idle");
+  const reasonRef = useRef<HTMLSelectElement>(null);
+
+  // Links like /contact?reason=project preselect the topic.
+  useEffect(() => {
+    const wanted = new URLSearchParams(window.location.search).get("reason");
+    const match = REASONS.find((r) => r.value === wanted);
+    if (match && reasonRef.current) reasonRef.current.value = match.value;
+  }, []);
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -60,7 +68,6 @@ export function ContactForm() {
     return (
       <div className="rounded-md border border-border bg-surface p-6" role="status">
         <p className="font-semibold">Thanks, it’s in my inbox.</p>
-        <p className="mt-1 text-text-muted">I read everything and reply to anything specific.</p>
       </div>
     );
 
@@ -79,7 +86,7 @@ export function ContactForm() {
           <input name="company" autoComplete="organization" className="field" />
         </Field>
         <Field label="What’s it about?">
-          <select name="reason" className="field" defaultValue="hiring">
+          <select ref={reasonRef} name="reason" className="field" defaultValue="hiring">
             {REASONS.map((r) => (
               <option key={r.value} value={r.value}>
                 {r.label}

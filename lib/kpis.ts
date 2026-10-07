@@ -14,19 +14,12 @@ export type Kpi = {
   todo?: boolean;
 };
 
+// Newest role first: StellarAlgo, Neo, Canucks, City of Surrey.
 export const kpis: Kpi[] = [
   {
-    area: "BI leadership",
-    value: "+27%",
-    label: "Revenue over two seasons, backed by my BI team’s pricing analysis",
-    source: "Canucks",
-    href: "/work/canucks-bi",
-    key: true,
-  },
-  {
     area: "Data platform",
-    value: "<12 hrs",
-    label: "Data freshness for sports clients, down from 7 days",
+    value: "1",
+    label: "Governed data layer for every client, replacing a database per client",
     source: "StellarAlgo",
     href: "/work/stellaralgo-prime",
   },
@@ -38,11 +31,19 @@ export const kpis: Kpi[] = [
     href: "/work/neo-attribution",
   },
   {
-    area: "Sales",
-    value: "$2M+",
-    label: "Membership book I managed, across 800+ accounts",
+    area: "BI leadership",
+    value: "+27%",
+    label: "Revenue over two seasons, backed by my BI team’s pricing analysis",
     source: "Canucks",
     href: "/work/canucks-bi",
+    key: true,
+  },
+  {
+    area: "Finance",
+    value: "$40M+",
+    label: "Municipal revenue in the 2019 property tax deferment program I ran",
+    source: "City of Surrey",
+    href: "/work/surrey-property-tax",
   },
 ];
 

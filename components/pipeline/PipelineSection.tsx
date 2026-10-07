@@ -1,8 +1,9 @@
 import type { ManifestEntry, Pipeline, RunSummary } from "@/lib/pipelines/types";
 import { PipelineExplorer } from "./PipelineExplorer";
 import { RunHistory, RunSummaryStrip } from "./RunStatus";
+import { site } from "@/lib/site";
 
-const REPO = "https://github.com/frontier-platforms/cody-portfolio";
+const REPO = site.github;
 
 /**
  * The pipeline behind a Lab tab: the latest run (production, or a live run in this tab),

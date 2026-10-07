@@ -7,10 +7,12 @@ export const site = {
   location: "Calgary, Alberta",
   email: "codypchandler@gmail.com",
   linkedin: "https://www.linkedin.com/in/codypchandler/" as string | null,
-  github: "https://github.com/frontier-platforms",
-  // TODO(cody): booking link (Cal.com, Calendly or similar). Until then, email is the fallback.
-  booking: null as string | null,
-  // TODO(cody): drop a general-purpose resume.pdf into /public.
+  // The site's own repo: the only public one, so every GitHub link points here.
+  github: "https://github.com/frontier-platforms/cody-portfolio",
+  // Consulting runs through Frontier Platforms, where Signl List and Valve are built.
+  frontier: "https://www.frontier-platforms.com",
+  // Google Calendar appointment page.
+  booking: "https://calendar.app.google/JwNxKy9XtQ5vicds8" as string | null,
   resume: "/resume.pdf",
   // Set NEXT_PUBLIC_SITE_URL once the custom domain is connected; Vercel's own domain is the fallback.
   url:
@@ -20,7 +22,7 @@ export const site = {
       : "http://localhost:3000"),
 } as const;
 
-/** BRAND.md section 6 (v1.3): Work, Lab, About, Contact. */
+/** BRAND.md section 6: Home, Work, Lab, About, Contact. */
 export const nav = [
   { href: "/", label: "Home" },
   { href: "/work", label: "Work" },

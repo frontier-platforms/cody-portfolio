@@ -22,7 +22,7 @@ export const meta = {
     { value: "Web + mobile", label: "Next.js web app and React Native field app" },
     { value: "0", label: "Paying customers so far" },
   ],
-  order: 4,
+  order: 6,
 };
 
 ## Problem
@@ -40,9 +40,24 @@ I'm co-founding Valve as a side venture. I own product direction and architectur
 - Stripe Connect, so each business is paid directly by its customers.
 - A Claude-powered assistant, plus an MCP server that gives AI tools permissioned access to each business's data.
 
-<Media
-  alt="Valve job board and schedule"
-  caption="Placeholder: screen recording of creating a job, quoting and invoicing."
+<ProductShots
+  shots={[
+    {
+      src: "/media/projects/valve-job.png",
+      alt: "A Valve job from signed quote to paid invoice, with a review request sent automatically.",
+      width: 380,
+      height: 450,
+      label: "One job, start to paid",
+    },
+    {
+      src: "/media/projects/valve-piper.png",
+      alt: "Asking Piper, Valve's assistant, which invoices are overdue.",
+      width: 592,
+      height: 211,
+      label: "Piper, the AI assistant",
+    },
+  ]}
+  caption="A job moves from quote to paid in one place. Piper answers questions about the business in plain English."
 />
 
 ## Outcome

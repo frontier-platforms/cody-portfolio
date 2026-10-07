@@ -42,7 +42,7 @@ export default async function CaseStudyPage({ params }: PageProps<"/work/[slug]"
         </aside>
       </header>
 
-      <div className="prose-cc mt-12 border-t border-border pt-4">
+      <div className="prose-cc prose-wide mt-12 border-t border-border pt-4">
         <Content />
       </div>
 

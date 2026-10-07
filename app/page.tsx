@@ -8,11 +8,14 @@ import { ProjectGrid } from "@/components/work/ProjectCard";
 import { labs } from "@/lib/lab/catalog";
 import { visibleKpis } from "@/lib/kpis";
 import { site } from "@/lib/site";
-import { getAllWork, isSideProject } from "@/lib/work";
+import { getAllWork, isCompact, isSideProject } from "@/lib/work";
 
 export default async function Home() {
   const all = await getAllWork();
-  const work = all.filter((w) => !isSideProject(w));
+  // Selected work: professional work, including the compact City of Surrey card (a 2 by 2 grid).
+  const selected = all.filter((w) => !isSideProject(w));
+  // Consulting examples: the problems a client might bring, so earlier roles are left out.
+  const work = selected.filter((w) => !isCompact(w));
 
   return (
     <>
@@ -27,7 +30,12 @@ export default async function Home() {
             priority
             className="size-12 rounded-full border border-border object-cover"
           />
-          <p className="label">Calgary, Alberta</p>
+          <div>
+            <p className="label">Calgary, Alberta</p>
+            <p className="text-sm text-text-muted">
+              Open to consulting, contract and employment opportunities
+            </p>
+          </div>
         </div>
         <h1 className="mt-6 max-w-measure text-balance text-2xl sm:text-4xl">
           I help teams grow revenue with better data and products.
@@ -35,10 +43,10 @@ export default async function Home() {
         <p className="mt-6 max-w-measure text-pretty text-lg text-text-muted">
           I lead data and product teams, with a background in sales, marketing and finance.
         </p>
-        <div className="mt-8 flex flex-wrap items-center gap-6">
+        <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
           <Link
             href="/contact"
-            className="btn btn-primary"
+            className="btn btn-primary btn-lg"
             data-track="cta_clicked"
             data-track-cta="contact"
             data-track-location="home_hero"
@@ -46,13 +54,16 @@ export default async function Home() {
             Contact
           </Link>
           <Link
-            href="/work"
-            className="link inline-flex min-h-11 items-center"
+            href="/lab"
+            className="btn btn-lg group bg-surface"
             data-track="cta_clicked"
-            data-track-cta="case_studies"
+            data-track-cta="lab"
             data-track-location="home_hero"
           >
-            View work
+            See my work in action
+            <span aria-hidden className="transition-transform group-hover:translate-x-1">
+              →
+            </span>
           </Link>
         </div>
       </section>
@@ -62,10 +73,10 @@ export default async function Home() {
       </section>
 
       <Section index="01" label="Selected work" className="mt-12 sm:mt-16">
-        <ProjectGrid items={work} />
+        <ProjectGrid items={selected} />
         <p className="mt-6">
           <Link href="/work#side-projects" className="link inline-flex min-h-11 items-center">
-            See my side projects: Valve and Signl List
+            See my side projects: Signl List and Valve
           </Link>
         </p>
       </Section>
@@ -89,12 +100,21 @@ export default async function Home() {
       <Section index="04" label="Work with me" className="mt-12 sm:mt-16">
         <div className="grid gap-12 lg:grid-cols-2">
           <div>
-            <h3 className="text-xl">For hiring teams</h3>
+            <h3 className="text-xl">Employment and contract roles</h3>
             <p className="mt-2 max-w-measure text-text-muted">
               I’m looking for senior roles in Calgary across data, product, marketing and business operations.
               I’ve led product, analytics and marketing operations teams, and I still write the SQL.
             </p>
-            <p className="mt-4">
+            <p className="mt-4 flex flex-wrap gap-x-6">
+              <Link
+                href="/contact?reason=hiring"
+                className="link inline-flex min-h-11 items-center"
+                data-track="cta_clicked"
+                data-track-cta="role"
+                data-track-location="home"
+              >
+                Talk about a role
+              </Link>
               <a
                 href={site.resume}
                 className="link inline-flex min-h-11 items-center"
@@ -107,8 +127,11 @@ export default async function Home() {
             </p>
           </div>
           <div>
-            <h3 className="text-xl">For teams with a data problem</h3>
-            <p className="mt-2 max-w-measure text-text-muted">I take on focused projects like these.</p>
+            <h3 className="text-xl">Consulting</h3>
+            <p className="mt-2 max-w-measure text-text-muted">
+              I take on focused data, analytics and product projects through Frontier Platforms. It’s the
+              company where I build Signl List and Valve. Problems like these:
+            </p>
             <ul className="mt-4 border-t border-border">
               {work.map((w) => (
                 <li key={w.slug} className="border-b border-border">
@@ -122,6 +145,37 @@ export default async function Home() {
                 </li>
               ))}
             </ul>
+            <p className="mt-4 flex flex-wrap gap-x-6">
+              <Link
+                href="/contact?reason=project"
+                className="link inline-flex min-h-11 items-center"
+                data-track="cta_clicked"
+                data-track-cta="consulting"
+                data-track-location="home"
+              >
+                Start a project
+              </Link>
+              {site.booking && (
+                <a
+                  href={site.booking}
+                  className="link inline-flex min-h-11 items-center"
+                  data-track="cta_clicked"
+                  data-track-cta="booking"
+                  data-track-location="home"
+                >
+                  Book a call
+                </a>
+              )}
+              <a
+                href={site.frontier}
+                className="link inline-flex min-h-11 items-center"
+                data-track="cta_clicked"
+                data-track-cta="frontier"
+                data-track-location="home"
+              >
+                Frontier Platforms ↗
+              </a>
+            </p>
           </div>
         </div>
       </Section>

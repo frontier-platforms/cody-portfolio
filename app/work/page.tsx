@@ -6,7 +6,7 @@ import { getAllWork, isSideProject } from "@/lib/work";
 export const metadata: Metadata = {
   title: "Work",
   description:
-    "Case studies in data platforms, attribution and BI, plus side projects: Valve and Signl List.",
+    "Case studies in data platforms, attribution and BI, plus side projects: Signl List and Valve.",
 };
 
 export default async function WorkIndex() {

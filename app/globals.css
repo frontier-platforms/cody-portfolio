@@ -129,6 +129,10 @@ body {
   box-shadow: var(--focus-ring);
   border-radius: var(--radius-sm);
 }
+/* On the accent nav bar the accent focus ring would vanish, so it uses the on-accent color. */
+.site-header :focus-visible {
+  box-shadow: 0 0 0 3px var(--color-on-accent);
+}
 
 @layer components {
   /* Small mono label. Keep uppercase labels to three words or fewer. */
@@ -186,6 +190,12 @@ body {
   .btn:hover {
     border-color: var(--color-accent);
     color: var(--color-accent);
+  }
+  /* Hero-size buttons: a little taller and heavier. */
+  .btn-lg {
+    min-height: var(--space-12);
+    padding: var(--space-3) var(--space-6);
+    font-weight: var(--weight-semibold);
   }
   .btn-primary {
     border-color: var(--color-accent);
@@ -268,5 +278,28 @@ body {
     background: var(--color-accent-subtle);
     border-radius: var(--radius-sm);
     padding: 0 var(--space-1);
+  }
+
+  /* Case studies: text keeps the reading measure, diagrams use the full width. */
+  .prose-cc.prose-wide {
+    max-width: none;
+  }
+  .prose-cc.prose-wide > :not(.diagram) {
+    max-width: var(--measure);
+  }
+  /* Diagrams inside long-form text set their own lists, without prose bullets. */
+  .prose-cc .diagram ul,
+  .prose-cc .diagram ol {
+    list-style: none;
+    padding-left: 0;
+  }
+  .prose-cc .diagram li {
+    padding-left: 0;
+  }
+  .prose-cc .diagram li + li {
+    margin-top: 0;
+  }
+  .prose-cc .diagram li::before {
+    content: none;
   }
 }

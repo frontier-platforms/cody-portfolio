@@ -21,7 +21,7 @@ export const business: Capability[] = [
   {
     area: "Marketing",
     where: "Neo Financial",
-    body: "I ran marketing operations: four analysts, the martech stack and its budget. My degree is in marketing.",
+    body: "I ran marketing operations: a team of analysts, the martech stack and its budget. My degree is in marketing.",
     proof: { href: "/work/neo-attribution", label: "Attribution across five channels" },
   },
   {
