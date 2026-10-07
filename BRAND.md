@@ -1,6 +1,6 @@
 # Brand Guide: Cody Chandler Portfolio
 
-Version 1.6 (2026-10-07). Single source of truth for how the site looks and sounds. Read this before writing any copy, styles, or components.
+Version 1.7 (2026-10-07). Single source of truth for how the site looks and sounds. Read this before writing any copy, styles, or components.
 
 ## How to use this file
 
@@ -149,7 +149,7 @@ Rules:
 
 Keep the set small. Add a component here before building it.
 
-- **Nav:** name at left (body face, 600), 4 links at right: Work, Lab, About, Contact. Resume is reached from Contact and About. No hamburger above 640px.
+- **Nav:** name at left (body face, 600), 5 links at right: Home, Work, Lab, About, Contact. Resume is reached from Contact and About. No hamburger above 640px.
 - **Hero:** one h1 line, one supporting sentence, one primary button (Contact) and one text link (View work).
 - **Project card:** mono label (industry and company), title, one-line summary, one metric in mono. Whole card is the link. Border, no shadow, `--radius-md`. Border turns accent on hover.
 - **Metric:** large mono number in `--color-text`, small muted label underneath. Accent only for the single most important metric on a page.
@@ -348,3 +348,4 @@ Added in 1.5:
 - 1.4 (2026-10-07): Section spacing tightened to `--space-16` on desktop at the owner's request (was `--space-20` or more). Added lab header, translation card, decision row, playbook step and architecture diagram components.
 - 1.5 (2026-10-07): Role line names the sales, marketing and finance background. Added a breadth note to positioning and the capability card component.
 - 1.6 (2026-10-07): New hero and role lines, broader than data platforms: revenue, data and products.
+- 1.7 (2026-10-07): Added Home to the nav at the owner's request, so visitors can always get back to it.

@@ -3,7 +3,7 @@ export const site = {
   name: "Cody Chandler",
   title: "Cody Chandler · Technology and data leader",
   description:
-    "Technology and data leader in Calgary. I turn data platforms and product work into measurable business outcomes.",
+    "Data and product leader in Calgary, with a background in sales, marketing and finance. I help teams grow revenue with better data and products.",
   location: "Calgary, Alberta",
   email: "codypchandler@gmail.com",
   linkedin: "https://www.linkedin.com/in/codypchandler/" as string | null,
@@ -22,6 +22,7 @@ export const site = {
 
 /** BRAND.md section 6 (v1.3): Work, Lab, About, Contact. */
 export const nav = [
+  { href: "/", label: "Home" },
   { href: "/work", label: "Work" },
   { href: "/lab", label: "Lab" },
   { href: "/about", label: "About" },

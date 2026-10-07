@@ -226,10 +226,13 @@ export function PipelineExplorer({ pipeline, run }: { pipeline: Pipeline; run: M
 
         <div className="border-t border-border px-4 py-4 sm:px-6">
           <div className="flex flex-wrap items-baseline justify-between gap-2">
-            <p className="font-mono text-sm">
+            <p className="min-w-0 font-mono text-sm">
               {node.label}
               {node.path && (
-                <a href={`${REPO}/${node.path}`} className="link ml-3 font-body text-xs">
+                <a
+                  href={`${REPO}/${node.path}`}
+                  className="link block break-all font-body text-xs sm:ml-3 sm:inline"
+                >
                   {node.path}
                 </a>
               )}
@@ -315,11 +318,11 @@ export function PipelineExplorer({ pipeline, run }: { pipeline: Pipeline; run: M
             return (
               <li key={test.name}>
                 <details className="group">
-                  <summary className="grid cursor-pointer list-none grid-cols-[4.5rem_1fr_auto] items-baseline gap-3 px-4 py-3 text-sm sm:px-6">
+                  <summary className="grid cursor-pointer list-none grid-cols-[4.5rem_minmax(0,1fr)_auto] items-baseline gap-3 px-4 py-3 text-sm sm:px-6">
                     <TestPill status={r?.status} />
                     <span>
                       {test.name}
-                      <span className="ml-2 font-mono text-xs text-text-muted">
+                      <span className="ml-2 break-all font-mono text-xs text-text-muted">
                         {test.kind} · {test.model}
                       </span>
                     </span>

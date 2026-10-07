@@ -11,7 +11,6 @@ export type CommandItem = { href: string; label: string; hint?: string };
 const TELEMETRY = "#telemetry";
 
 const baseItems: CommandItem[] = [
-  { href: "/", label: "Home" },
   ...nav.map((n) => ({ href: n.href, label: n.label })),
   { href: "/work#side-projects", label: "Side projects", hint: "Valve and Signl List" },
   { href: "/lab/flames", label: "Calgary Flames shot analysis", hint: "Lab" },

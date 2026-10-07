@@ -5,7 +5,7 @@ import { NavLinks } from "./NavLinks";
 import { ThemeToggle } from "./ThemeToggle";
 
 /**
- * BRAND.md section 6: name at left in the body face, four links at right, no
+ * BRAND.md section 6: name at left in the body face, five links at right, no
  * hamburger above 640px. Below 640px the links drop to a second row so
  * nothing scrolls sideways at 360px.
  */
