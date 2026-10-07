@@ -1,6 +1,6 @@
 # Brand Guide: Cody Chandler Portfolio
 
-Version 1.8 (2026-10-07). Single source of truth for how the site looks and sounds. Read this before writing any copy, styles, or components.
+Version 1.9 (2026-10-07). Single source of truth for how the site looks and sounds. Read this before writing any copy, styles, or components.
 
 ## How to use this file
 
@@ -150,7 +150,7 @@ Rules:
 Keep the set small. Add a component here before building it.
 
 - **Nav:** name at left (body face, 600), 5 links at right: Home, Work, Lab, About, Contact. Resume is reached from Contact and About. No hamburger above 640px.
-- **Hero:** one h1 line, one supporting sentence, one primary button (Contact) and one text link (View work).
+- **Hero:** one h1 line, one supporting sentence, one primary button (Contact) and one text link (View work). A short availability line sits under the location label: open to full-time roles and consulting.
 - **Project card:** mono label (industry and company), title, one-line summary, one metric in mono. Whole card is the link. Border, no shadow, `--radius-md`. Border turns accent on hover.
 - **Metric:** large mono number in `--color-text`, small muted label underneath. Accent only for the single most important metric on a page.
 - **Button:** primary (accent background, `--color-on-accent` text) and secondary (border only). `--radius-md`, min height 44px. No icons unless functional.
@@ -354,3 +354,4 @@ Added in 1.8:
 - 1.6 (2026-10-07): New hero and role lines, broader than data platforms: revenue, data and products.
 - 1.7 (2026-10-07): Added Home to the nav at the owner's request, so visitors can always get back to it.
 - 1.8 (2026-10-07): Added the routing diagram component, for the PRIME semantic layer.
+- 1.9 (2026-10-07): Consulting is now stated openly, alongside full-time roles. Consulting runs through Frontier Platforms. Added the hero availability line.

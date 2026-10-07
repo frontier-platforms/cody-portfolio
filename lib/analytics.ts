@@ -94,7 +94,18 @@ export const trackingPlan = {
     props: {
       cta: {
         type: "string",
-        values: ["contact", "email", "resume", "linkedin", "booking", "github", "case_studies"],
+        values: [
+          "contact",
+          "email",
+          "resume",
+          "linkedin",
+          "booking",
+          "github",
+          "case_studies",
+          "role",
+          "consulting",
+          "frontier",
+        ],
       },
       location: { type: "string" },
     },

@@ -27,7 +27,10 @@ export default async function Home() {
             priority
             className="size-12 rounded-full border border-border object-cover"
           />
-          <p className="label">Calgary, Alberta</p>
+          <div>
+            <p className="label">Calgary, Alberta</p>
+            <p className="text-sm text-text-muted">Open to full-time roles and consulting</p>
+          </div>
         </div>
         <h1 className="mt-6 max-w-measure text-balance text-2xl sm:text-4xl">
           I help teams grow revenue with better data and products.
@@ -89,12 +92,21 @@ export default async function Home() {
       <Section index="04" label="Work with me" className="mt-12 sm:mt-16">
         <div className="grid gap-12 lg:grid-cols-2">
           <div>
-            <h3 className="text-xl">For hiring teams</h3>
+            <h3 className="text-xl">Full-time roles</h3>
             <p className="mt-2 max-w-measure text-text-muted">
               I’m looking for senior roles in Calgary across data, product, marketing and business operations.
               I’ve led product, analytics and marketing operations teams, and I still write the SQL.
             </p>
-            <p className="mt-4">
+            <p className="mt-4 flex flex-wrap gap-x-6">
+              <Link
+                href="/contact?reason=hiring"
+                className="link inline-flex min-h-11 items-center"
+                data-track="cta_clicked"
+                data-track-cta="role"
+                data-track-location="home"
+              >
+                Talk about a role
+              </Link>
               <a
                 href={site.resume}
                 className="link inline-flex min-h-11 items-center"
@@ -107,8 +119,11 @@ export default async function Home() {
             </p>
           </div>
           <div>
-            <h3 className="text-xl">For teams with a data problem</h3>
-            <p className="mt-2 max-w-measure text-text-muted">I take on focused projects like these.</p>
+            <h3 className="text-xl">Consulting</h3>
+            <p className="mt-2 max-w-measure text-text-muted">
+              I take on focused data, analytics and product projects through Frontier Platforms. It’s the
+              company where I build Valve and Signl List. Problems like these:
+            </p>
             <ul className="mt-4 border-t border-border">
               {work.map((w) => (
                 <li key={w.slug} className="border-b border-border">
@@ -122,6 +137,26 @@ export default async function Home() {
                 </li>
               ))}
             </ul>
+            <p className="mt-4 flex flex-wrap gap-x-6">
+              <Link
+                href="/contact?reason=project"
+                className="link inline-flex min-h-11 items-center"
+                data-track="cta_clicked"
+                data-track-cta="consulting"
+                data-track-location="home"
+              >
+                Start a project
+              </Link>
+              <a
+                href={site.frontier}
+                className="link inline-flex min-h-11 items-center"
+                data-track="cta_clicked"
+                data-track-cta="frontier"
+                data-track-location="home"
+              >
+                Frontier Platforms ↗
+              </a>
+            </p>
           </div>
         </div>
       </Section>

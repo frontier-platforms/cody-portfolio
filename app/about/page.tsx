@@ -109,6 +109,13 @@ export default function AboutPage() {
               honest.
             </p>
             <p>
+              I’m open to senior full-time roles and to consulting. Consulting runs through{" "}
+              <a href={site.frontier} className="link">
+                Frontier Platforms
+              </a>
+              , where I build Valve and Signl List.
+            </p>
+            <p>
               Outside work, I volunteered with the Canucks Autism Network for five years. I also volunteered
               with the Vancouver Whitecaps for several years, helping with event-day activations, programs and
               accreditation. These days you’ll find me golfing, playing basketball, out for a walk or getting
