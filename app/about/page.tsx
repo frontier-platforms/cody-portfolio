@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     "Cody Chandler: technology and data leader in Calgary, with a sales, marketing and finance background.",
 };
 
-type Role = { title: string; dates: string; highlights?: string[] };
+type Role = { title: string; dates: string };
 type Employer = { org: string; place: string; years: string; about: string; roles: Role[] };
 
 const experience: Employer[] = [
@@ -22,15 +22,7 @@ const experience: Employer[] = [
     about: "Fan data platform for pro sports and entertainment",
     roles: [
       { title: "Director, Product", dates: "Jan 2026 to present" },
-      {
-        title: "Director, Product Innovation & Analytics",
-        dates: "Jan 2025 to Jan 2026",
-        highlights: [
-          "Led PRIME from planning through launch, with a product pod of four.",
-          "Cut client data freshness from 7 days to under 12 hours.",
-          "Shipped our first AI products on top of PRIME.",
-        ],
-      },
+      { title: "Director, Product Innovation & Analytics", dates: "Jan 2025 to Jan 2026" },
     ],
   },
   {
@@ -38,17 +30,7 @@ const experience: Employer[] = [
     place: "Calgary",
     years: "2023 to 2025",
     about: "Digital banking, credit and rewards",
-    roles: [
-      {
-        title: "Director, Marketing Operations & Analytics",
-        dates: "Dec 2023 to Jan 2025",
-        highlights: [
-          "Led a team of four analysts.",
-          "Built one attribution view across five paid channels, with CAC and LTV models.",
-          "Owned martech partnerships, the martech budget and vendor renewals.",
-        ],
-      },
-    ],
+    roles: [{ title: "Director, Marketing Operations & Analytics", dates: "Dec 2023 to Jan 2025" }],
   },
   {
     org: "Canucks Sports & Entertainment",
@@ -56,21 +38,9 @@ const experience: Employer[] = [
     years: "2019 to 2023",
     about: "Canucks (NHL), Abbotsford Canucks (AHL), Warriors (NLL), Rogers Arena",
     roles: [
-      {
-        title: "Manager, Business Intelligence",
-        dates: "Jul 2022 to Dec 2023",
-        highlights: [
-          "Built a BI team of five to six from zero.",
-          "Led pricing and membership analysis that supported 27% revenue growth over two seasons.",
-          "Led the HubSpot to Salesforce move, including vendor negotiation.",
-        ],
-      },
+      { title: "Manager, Business Intelligence", dates: "Jul 2022 to Dec 2023" },
       { title: "Business Analyst, Business Intelligence", dates: "Jul 2021 to Jul 2022" },
-      {
-        title: "Account Executive, Membership Experience",
-        dates: "Aug 2019 to Apr 2020",
-        highlights: ["Managed 800+ memberships worth over $2M."],
-      },
+      { title: "Account Executive, Membership Experience", dates: "Aug 2019 to Apr 2020" },
     ],
   },
   {
@@ -158,6 +128,17 @@ export default function AboutPage() {
           <h2 id="experience" className="mt-16 text-2xl sm:text-3xl">
             Experience
           </h2>
+          <p className="mt-2 max-w-measure text-text-muted">
+            The detail is on{" "}
+            <a href={site.linkedin ?? "#"} className="link">
+              LinkedIn
+            </a>{" "}
+            and in my{" "}
+            <a href={site.resume} className="link">
+              resume
+            </a>
+            .
+          </p>
           <ol className="mt-6 border-t border-border">
             {experience.map((e) => (
               <li key={e.org} className="grid gap-3 border-b border-border py-6 sm:grid-cols-[14rem_1fr]">
@@ -168,20 +149,11 @@ export default function AboutPage() {
                   </p>
                   <p className="mt-1 text-sm text-text-muted">{e.about}</p>
                 </div>
-                <ul className="space-y-3">
+                <ul className="space-y-2">
                   {e.roles.map((r) => (
-                    <li key={r.title}>
-                      <div className="flex flex-col sm:flex-row sm:justify-between sm:gap-4">
-                        <span>{r.title}</span>
-                        <span className="meta shrink-0 sm:pt-1">{r.dates}</span>
-                      </div>
-                      {r.highlights && (
-                        <ul className="prose-cc mt-2 text-sm text-text-muted">
-                          {r.highlights.map((h) => (
-                            <li key={h}>{h}</li>
-                          ))}
-                        </ul>
-                      )}
+                    <li key={r.title} className="flex flex-col sm:flex-row sm:justify-between sm:gap-4">
+                      <span>{r.title}</span>
+                      <span className="meta shrink-0 sm:pt-1">{r.dates}</span>
                     </li>
                   ))}
                 </ul>
