@@ -7,7 +7,8 @@ export const site = {
   location: "Calgary, Alberta",
   email: "codypchandler@gmail.com",
   linkedin: "https://www.linkedin.com/in/codypchandler/" as string | null,
-  github: "https://github.com/frontier-platforms",
+  // The site's own repo: the only public one, so every GitHub link points here.
+  github: "https://github.com/frontier-platforms/cody-portfolio",
   // Consulting runs through Frontier Platforms, where Valve and Signl List are built.
   frontier: "https://www.frontier-platforms.com",
   // TODO(cody): booking link (Cal.com, Calendly or similar). Until then, email is the fallback.

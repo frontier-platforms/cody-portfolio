@@ -7,6 +7,7 @@ import { runQuery } from "@/components/lab/db";
 import { track } from "@/lib/analytics";
 import { estimate, FEATURE_LABELS, type HomeInput, type HousingModel } from "@/lib/ml/housing";
 import { telemetry } from "@/lib/telemetry";
+import { site } from "@/lib/site";
 
 const MODEL_URL = "/data/housing-model.json";
 
@@ -274,7 +275,7 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   );
 }
 
-const REPO = "https://github.com/frontier-platforms/cody-portfolio";
+const REPO = site.github;
 
 const GLOSSARY: [string, string][] = [
   ["Holdout", "Homes the model never saw while training. Every number in this table comes from them."],

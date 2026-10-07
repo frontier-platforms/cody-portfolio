@@ -1,4 +1,5 @@
-const REPO = "https://github.com/frontier-platforms/cody-portfolio";
+import { site } from "@/lib/site";
+const REPO = site.github;
 
 type Stage = {
   name: string;

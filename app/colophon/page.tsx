@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { trackingPlan } from "@/lib/analytics";
+import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "How this site is built",
@@ -8,7 +9,7 @@ export const metadata: Metadata = {
     "The stack, data pipelines, observability, analytics tracking plan, AI guardrails and design decisions behind this site.",
 };
 
-const REPO = "https://github.com/frontier-platforms/cody-portfolio";
+const REPO = site.github;
 
 const sections = [
   {
