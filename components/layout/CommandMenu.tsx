@@ -12,7 +12,7 @@ const TELEMETRY = "#telemetry";
 
 const baseItems: CommandItem[] = [
   ...nav.map((n) => ({ href: n.href, label: n.label })),
-  { href: "/work#side-projects", label: "Side projects", hint: "Valve and Signl List" },
+  { href: "/work#side-projects", label: "Side projects", hint: "Signl List and Valve" },
   { href: "/lab/flames", label: "Calgary Flames shot analysis", hint: "Lab" },
   { href: "/lab/housing", label: "Calgary housing values", hint: "Lab" },
   { href: "/lab/housing#model", label: "Home value predictor", hint: "Lab · ML" },

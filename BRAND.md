@@ -178,7 +178,6 @@ Added in 1.4:
 Added in 1.5:
 
 - **Capability card:** where (mono meta), area (h3), one or two sentences of fact, and one proof link. Used for the business side on Home.
-- **Compact work card:** an earlier role on one row: mono meta, title, summary, and one metric at the right. Border, no shadow, `--radius-md`. Used under professional work.
 
 Added in 1.8:
 
@@ -356,6 +355,6 @@ Added in 1.8:
 - 1.7 (2026-10-07): Added Home to the nav at the owner's request, so visitors can always get back to it.
 - 1.8 (2026-10-07): Added the routing diagram component, for the PRIME semantic layer.
 - 1.9 (2026-10-07): Consulting is now stated openly, alongside full-time roles. Consulting runs through Frontier Platforms. Added the hero availability line.
-- 1.10 (2026-10-07): Contract roles added to the availability line. Added the compact work card for earlier roles.
+- 1.10 (2026-10-07): Contract roles added to the availability line.
 - 1.11 (2026-10-07): Availability reads consulting, contract and employment. City of Surrey joins Selected work on Home as a full card, making a 2 by 2 grid.
 - 1.12 (2026-10-07): Nav bar uses the accent color at the owner's request, with on-accent text.

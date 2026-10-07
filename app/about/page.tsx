@@ -105,7 +105,7 @@ export default function AboutPage() {
               business.
             </p>
             <p>
-              I still build. Valve, Signl List and the Lab on this site are mine. It keeps my estimates
+              I still build. Signl List, Valve and the Lab on this site are mine. It keeps my estimates
               honest.
             </p>
             <p>
@@ -113,7 +113,7 @@ export default function AboutPage() {
               <a href={site.frontier} className="link">
                 Frontier Platforms
               </a>
-              , where I build Valve and Signl List.
+              , where I build Signl List and Valve.
             </p>
             <p>
               Outside work, I volunteered with the Canucks Autism Network for five years. I also volunteered

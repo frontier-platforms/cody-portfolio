@@ -73,7 +73,7 @@ export default async function Home() {
         <ProjectGrid items={selected} />
         <p className="mt-6">
           <Link href="/work#side-projects" className="link inline-flex min-h-11 items-center">
-            See my side projects: Valve and Signl List
+            See my side projects: Signl List and Valve
           </Link>
         </p>
       </Section>
@@ -127,7 +127,7 @@ export default async function Home() {
             <h3 className="text-xl">Consulting</h3>
             <p className="mt-2 max-w-measure text-text-muted">
               I take on focused data, analytics and product projects through Frontier Platforms. It’s the
-              company where I build Valve and Signl List. Problems like these:
+              company where I build Signl List and Valve. Problems like these:
             </p>
             <ul className="mt-4 border-t border-border">
               {work.map((w) => (
