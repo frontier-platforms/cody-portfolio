@@ -191,6 +191,12 @@ body {
     border-color: var(--color-accent);
     color: var(--color-accent);
   }
+  /* Hero-size buttons: a little taller and heavier. */
+  .btn-lg {
+    min-height: var(--space-12);
+    padding: var(--space-3) var(--space-6);
+    font-weight: var(--weight-semibold);
+  }
   .btn-primary {
     border-color: var(--color-accent);
     background: var(--color-accent);

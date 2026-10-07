@@ -1,6 +1,6 @@
 # Brand Guide: Cody Chandler Portfolio
 
-Version 1.12 (2026-10-07). Single source of truth for how the site looks and sounds. Read this before writing any copy, styles, or components.
+Version 1.13 (2026-10-07). Single source of truth for how the site looks and sounds. Read this before writing any copy, styles, or components.
 
 ## How to use this file
 
@@ -150,10 +150,10 @@ Rules:
 Keep the set small. Add a component here before building it.
 
 - **Nav:** an accent-colored bar with `--color-on-accent` text and icons. Name at left (body face, 600), 5 links at right: Home, Work, Lab, About, Contact. The current page is underlined and semibold. Focus rings in the bar use `--color-on-accent`. Resume is reached from Contact and About. No hamburger above 640px.
-- **Hero:** one h1 line, one supporting sentence, one primary button (Contact) and one text link (View work). A short availability line sits under the location label: open to consulting, contract and employment opportunities.
+- **Hero:** one h1 line, one supporting sentence, one primary button (Contact) and one secondary button (See my work in action, to the Lab). Both use the large button size; they stack full width on phones. A short availability line sits under the location label: open to consulting, contract and employment opportunities.
 - **Project card:** mono label (industry and company), title, one-line summary, one metric in mono. Whole card is the link. Border, no shadow, `--radius-md`. Border turns accent on hover.
 - **Metric:** large mono number in `--color-text`, small muted label underneath. Accent only for the single most important metric on a page.
-- **Button:** primary (accent background, `--color-on-accent` text) and secondary (border only). `--radius-md`, min height 44px. No icons unless functional.
+- **Button:** primary (accent background, `--color-on-accent` text) and secondary (border only). `--radius-md`, min height 44px. No icons unless functional. A large size (`--space-12` tall, semibold) is for the hero only.
 - **Link:** accent color, underline offset 3px. Always underlined in body text; underline on hover in nav.
 
 Site-specific components (added in 1.3):
@@ -358,3 +358,4 @@ Added in 1.8:
 - 1.10 (2026-10-07): Contract roles added to the availability line.
 - 1.11 (2026-10-07): Availability reads consulting, contract and employment. City of Surrey joins Selected work on Home as a full card, making a 2 by 2 grid.
 - 1.12 (2026-10-07): Nav bar uses the accent color at the owner's request, with on-accent text.
+- 1.13 (2026-10-07): Hero's second action is a secondary button to the Lab. Added the large button size.

@@ -102,6 +102,7 @@ export const trackingPlan = {
           "booking",
           "github",
           "case_studies",
+          "lab",
           "role",
           "consulting",
           "frontier",

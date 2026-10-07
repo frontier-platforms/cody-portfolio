@@ -43,10 +43,10 @@ export default async function Home() {
         <p className="mt-6 max-w-measure text-pretty text-lg text-text-muted">
           I lead data and product teams, with a background in sales, marketing and finance.
         </p>
-        <div className="mt-8 flex flex-wrap items-center gap-6">
+        <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
           <Link
             href="/contact"
-            className="btn btn-primary"
+            className="btn btn-primary btn-lg"
             data-track="cta_clicked"
             data-track-cta="contact"
             data-track-location="home_hero"
@@ -54,13 +54,16 @@ export default async function Home() {
             Contact
           </Link>
           <Link
-            href="/work"
-            className="link inline-flex min-h-11 items-center"
+            href="/lab"
+            className="btn btn-lg group bg-surface"
             data-track="cta_clicked"
-            data-track-cta="case_studies"
+            data-track-cta="lab"
             data-track-location="home_hero"
           >
-            View work
+            See my work in action
+            <span aria-hidden className="transition-transform group-hover:translate-x-1">
+              →
+            </span>
           </Link>
         </div>
       </section>
