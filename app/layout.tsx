@@ -18,14 +18,12 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: token("--color-bg") },
-    { media: "(prefers-color-scheme: dark)", color: token("--color-bg", "dark") },
-  ],
+  // Light by default, whatever the system setting.
+  themeColor: token("--color-bg"),
 };
 
-// Applies a saved theme choice before paint. With no choice saved, tokens.css
-// follows the system setting on its own.
+// The page renders with data-theme="light", so it opens in light mode even when
+// the system is dark. A saved choice from the toggle is applied before paint.
 const themeScript = `(()=>{try{const t=localStorage.getItem("theme");if(t==="dark"||t==="light")document.documentElement.dataset.theme=t}catch(e){}})()`;
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {
@@ -33,7 +31,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
   const commandItems = work.map((w) => ({ href: `/work/${w.slug}`, label: w.title, hint: w.company }));
 
   return (
-    <html lang="en-CA" suppressHydrationWarning>
+    <html lang="en-CA" data-theme="light" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         <link rel="preconnect" href="https://fonts.googleapis.com" />

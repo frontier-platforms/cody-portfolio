@@ -1,7 +1,6 @@
 /**
  * Home page proof points. Each names its source and links to the evidence.
- * BRAND.md: percentages over raw dollars, and accent on only the single most
- * important metric (`key`).
+ * BRAND.md 1.16: all four numbers use the accent color, centred.
  */
 export type Kpi = {
   /** The kind of work this proves, shown with the source: BI, data platform, marketing, sales. */
@@ -14,36 +13,35 @@ export type Kpi = {
   todo?: boolean;
 };
 
-// Newest role first: StellarAlgo, Neo, Canucks, City of Surrey.
+// The first proof a visitor sees: range, platform depth, business result, and the Lab on this site.
 export const kpis: Kpi[] = [
   {
+    area: "Experience",
+    value: "10+",
+    label: "Years across pro sports, fintech, SaaS and government",
+    source: "Four industries",
+    href: "/about#experience",
+  },
+  {
     area: "Data platform",
-    value: "1",
-    label: "Governed data layer for every client, replacing a database per client",
+    value: "100+",
+    label: "Tested dbt models behind one governed data platform",
     source: "StellarAlgo",
     href: "/work/stellaralgo-prime",
   },
   {
-    area: "Marketing analytics",
-    value: "5",
-    label: "Paid channels in one attribution model, with CAC and LTV",
-    source: "Neo Financial",
-    href: "/work/neo-attribution",
-  },
-  {
     area: "BI leadership",
     value: "+27%",
-    label: "Revenue over two seasons, backed by my BI team’s pricing analysis",
+    label: "Revenue growth over two seasons, backed by my BI team’s pricing analysis",
     source: "Canucks",
     href: "/work/canucks-bi",
-    key: true,
   },
   {
-    area: "Finance",
-    value: "100%",
-    label: "Success rate on the 2020 property tax sale I oversaw",
-    source: "City of Surrey",
-    href: "/work/surrey-property-tax",
+    area: "The Lab",
+    value: "3",
+    label: "Live data products on this site, with pipelines you can run",
+    source: "This site",
+    href: "/lab",
   },
 ];
 

@@ -85,7 +85,7 @@ export const trackingPlan = {
   contact_submitted: {
     description: "The contact form is sent. The message itself is never tracked.",
     props: {
-      reason: { type: "string", values: ["hiring", "project", "other"] },
+      reason: { type: "string", values: ["hiring", "other"] },
       outcome: { type: "string", values: ["sent", "error"] },
     },
   },
@@ -104,7 +104,6 @@ export const trackingPlan = {
           "case_studies",
           "lab",
           "role",
-          "consulting",
           "frontier",
         ],
       },

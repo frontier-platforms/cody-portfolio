@@ -31,7 +31,7 @@ export const WorkMetaSchema = z.object({
   stack: z.array(z.string()),
   numbers: z.array(NumberSchema),
   order: z.number(),
-  /** An earlier role: shown with professional work, but left out of the consulting examples on Home. */
+  /** An earlier role: shown with professional work, but left out of the problems list on Home. */
   compact: z.boolean().optional(),
 });
 
@@ -52,7 +52,7 @@ export async function getWork(slug: string) {
   return { meta: { ...meta, slug } as Work, Content: mod.default as React.ComponentType };
 }
 
-/** Earlier roles, left out of the consulting examples on Home. */
+/** Earlier roles, left out of the problems list on Home. */
 export function isCompact(work: Work) {
   return work.compact === true;
 }

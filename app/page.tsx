@@ -14,7 +14,7 @@ export default async function Home() {
   const all = await getAllWork();
   // Selected work: professional work, including the compact City of Surrey card (a 2 by 2 grid).
   const selected = all.filter((w) => !isSideProject(w));
-  // Consulting examples: the problems a client might bring, so earlier roles are left out.
+  // Problems I've solved: recent work, so earlier roles are left out.
   const work = selected.filter((w) => !isCompact(w));
 
   return (
@@ -32,9 +32,7 @@ export default async function Home() {
           />
           <div>
             <p className="label">Calgary, Alberta</p>
-            <p className="text-sm text-text-muted">
-              Open to consulting, contract and employment opportunities
-            </p>
+            <p className="text-sm text-text-muted">Open to employment and contract opportunities</p>
           </div>
         </div>
         <h1 className="mt-6 max-w-measure text-balance text-2xl sm:text-4xl">
@@ -153,10 +151,9 @@ export default async function Home() {
             </p>
           </div>
           <div>
-            <h3 className="text-xl">Consulting</h3>
+            <h3 className="text-xl">Problems I’ve solved</h3>
             <p className="mt-2 max-w-measure text-text-muted">
-              I take on focused data, analytics and product projects through Frontier Platforms. It’s the
-              company where I build Signl List and Valve. Problems like these:
+              The kind of problem I’m good at. Each links to the work.
             </p>
             <ul className="mt-4 border-t border-border">
               {work.map((w) => (
@@ -171,37 +168,6 @@ export default async function Home() {
                 </li>
               ))}
             </ul>
-            <p className="mt-4 flex flex-wrap gap-x-6">
-              <Link
-                href="/contact?reason=project"
-                className="link inline-flex min-h-11 items-center"
-                data-track="cta_clicked"
-                data-track-cta="consulting"
-                data-track-location="home"
-              >
-                Start a project
-              </Link>
-              {site.booking && (
-                <a
-                  href={site.booking}
-                  className="link inline-flex min-h-11 items-center"
-                  data-track="cta_clicked"
-                  data-track-cta="booking"
-                  data-track-location="home"
-                >
-                  Book a call
-                </a>
-              )}
-              <a
-                href={site.frontier}
-                className="link inline-flex min-h-11 items-center"
-                data-track="cta_clicked"
-                data-track-cta="frontier"
-                data-track-location="home"
-              >
-                Frontier Platforms ↗
-              </a>
-            </p>
           </div>
         </div>
       </Section>

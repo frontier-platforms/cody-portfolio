@@ -1,14 +1,13 @@
 "use client";
 
 /**
- * BRAND.md section 11: the toggle stays. The site follows the system until the
- * visitor chooses; the choice is saved and applied before paint by layout.tsx.
+ * BRAND.md section 11: the toggle stays. The site opens in light mode; a visitor
+ * can switch to dark, and the choice is saved and applied before paint by layout.tsx.
  */
 export function ThemeToggle() {
   function toggle() {
     const root = document.documentElement;
-    const current =
-      root.dataset.theme ?? (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    const current = root.dataset.theme === "dark" ? "dark" : "light";
     const next = current === "dark" ? "light" : "dark";
     root.dataset.theme = next;
     try {
