@@ -20,6 +20,12 @@ export const maxDuration = 30;
 
 const MODEL = "claude-opus-5";
 
+/** The key from the environment, minus stray whitespace or quotes from a copy-paste. */
+const apiKey = () =>
+  process.env.ANTHROPIC_API_KEY?.trim()
+    .replace(/^["']+|["']+$/g, "")
+    .trim() || undefined;
+
 const Body = z.object({
   dataset: z.enum(["permits", "housing", "flames"]),
   question: z.string().trim().min(3).max(300),
@@ -89,7 +95,7 @@ function parseJson(text: string): unknown {
 }
 
 export async function POST(request: Request) {
-  if (!process.env.ANTHROPIC_API_KEY) {
+  if (!apiKey()) {
     return Response.json({ error: "The AI feature isn't configured on this deployment." }, { status: 503 });
   }
 
@@ -107,7 +113,7 @@ export async function POST(request: Request) {
   }
 
   const { dataset, question } = parsed.data;
-  client ??= new Anthropic();
+  client ??= new Anthropic({ apiKey: apiKey() });
 
   try {
     const response = await client.beta.messages.create({
