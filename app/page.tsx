@@ -90,8 +90,7 @@ export default async function Home() {
 
       <Section index="03" label="How I help teams" className="mt-12 sm:mt-16">
         <p className="mb-6 max-w-measure text-text-muted">
-          Four things I do on every data team. Each links to where I’ve done it, and to a lab where you can
-          see it run.
+          Four things I do on every data team. Each one links to the work that shows it.
         </p>
         <Playbook />
       </Section>
