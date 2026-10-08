@@ -19,58 +19,61 @@ export default async function Home() {
 
   return (
     <>
-      {/* BRAND.md section 6, hero: one h1, one sentence, one primary button, one text link. */}
-      <section className="mx-auto max-w-site px-4 pb-12 pt-12 sm:px-6 sm:pb-16 sm:pt-16">
-        <div className="flex items-center gap-3">
-          <Image
-            src="/media/cody.jpg"
-            alt="Cody Chandler"
-            width={48}
-            height={48}
-            priority
-            className="size-12 rounded-full border border-border object-cover"
-          />
-          <div>
-            <p className="label">Calgary, Alberta</p>
-            <p className="text-sm text-text-muted">Open to employment and contract opportunities</p>
+      {/* Hero and metrics share the first screen: centred in the window on tall monitors, compact on laptops. */}
+      <div className="flex flex-col justify-center py-8" style={{ minHeight: "calc(100svh - 3.5rem)" }}>
+        {/* BRAND.md section 6, hero: one h1, one sentence, one primary button, one secondary button. */}
+        <section className="mx-auto w-full max-w-site px-4 pb-8 sm:px-6">
+          <div className="flex items-center gap-3">
+            <Image
+              src="/media/cody.jpg"
+              alt="Cody Chandler"
+              width={48}
+              height={48}
+              priority
+              className="size-12 rounded-full border border-border object-cover"
+            />
+            <div>
+              <p className="label">Calgary, Alberta</p>
+              <p className="text-sm text-text-muted">Open to employment and contract opportunities</p>
+            </div>
           </div>
-        </div>
-        <h1 className="mt-6 max-w-measure text-balance text-2xl sm:text-4xl">
-          I help teams grow revenue with better data and products.
-        </h1>
-        <p className="mt-6 max-w-measure text-pretty text-lg text-text-muted">
-          I lead data and product teams, with a background in sales, marketing and finance.
-        </p>
-        <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
-          <Link
-            href="/contact"
-            className="btn btn-primary btn-lg"
-            data-track="cta_clicked"
-            data-track-cta="contact"
-            data-track-location="home_hero"
-          >
-            Contact
-          </Link>
-          <Link
-            href="/lab"
-            className="btn btn-lg group bg-surface"
-            data-track="cta_clicked"
-            data-track-cta="lab"
-            data-track-location="home_hero"
-          >
-            See my work in action
-            <span aria-hidden className="transition-transform group-hover:translate-x-1">
-              →
-            </span>
-          </Link>
-        </div>
-      </section>
+          <h1 className="mt-4 max-w-measure text-balance text-2xl sm:mt-6 sm:text-4xl">
+            I help teams grow revenue with better data and products.
+          </h1>
+          <p className="mt-4 max-w-measure text-pretty text-lg text-text-muted">
+            I lead data and product teams, with a background in sales, marketing and finance.
+          </p>
+          <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
+            <Link
+              href="/contact"
+              className="btn btn-primary btn-lg"
+              data-track="cta_clicked"
+              data-track-cta="contact"
+              data-track-location="home_hero"
+            >
+              Contact
+            </Link>
+            <Link
+              href="/lab"
+              className="btn btn-lg group bg-surface"
+              data-track="cta_clicked"
+              data-track-cta="lab"
+              data-track-location="home_hero"
+            >
+              See my work in action
+              <span aria-hidden className="transition-transform group-hover:translate-x-1">
+                →
+              </span>
+            </Link>
+          </div>
+        </section>
 
-      <section aria-label="Results" className="mx-auto max-w-site px-4 sm:px-6">
-        <KpiStrip items={visibleKpis()} />
-      </section>
+        <section aria-label="Results" className="mx-auto w-full max-w-site px-4 sm:px-6">
+          <KpiStrip items={visibleKpis()} />
+        </section>
+      </div>
 
-      <Section index="01" label="Selected work" className="mt-12 sm:mt-16">
+      <Section index="01" label="Selected work" className="mt-4 sm:mt-6">
         {/* The metric cards above already carry these numbers. */}
         <ProjectGrid items={selected} showMetric={false} />
         <p className="mt-6">

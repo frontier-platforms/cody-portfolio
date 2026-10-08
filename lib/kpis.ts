@@ -32,7 +32,7 @@ export const kpis: Kpi[] = [
   {
     area: "BI leadership",
     value: "+27%",
-    label: "Revenue growth over two seasons, backed by my BI team’s pricing analysis",
+    label: "Revenue growth over two seasons, backed by my BI team’s analysis",
     source: "Canucks",
     href: "/work/canucks-bi",
   },
