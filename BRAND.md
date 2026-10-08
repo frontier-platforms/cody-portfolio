@@ -1,6 +1,6 @@
 # Brand Guide: Cody Chandler Portfolio
 
-Version 1.14 (2026-10-08). Single source of truth for how the site looks and sounds. Read this before writing any copy, styles, or components.
+Version 1.15 (2026-10-08). Single source of truth for how the site looks and sounds. Read this before writing any copy, styles, or components.
 
 ## How to use this file
 
@@ -69,7 +69,7 @@ Each case study also gets a one-line summary (max 140 characters) for cards and 
 
 ## 3. Color
 
-Light mode is the default. Dark mode follows the system setting.
+Light mode is the default for every visitor, whatever their system setting. Dark mode is available through the toggle, and the choice is remembered.
 
 | Token | Light | Dark | Role |
 |---|---|---|---|
@@ -340,7 +340,7 @@ Added in 1.8:
 
 - [ ] Accent color: cobalt or another hue
 - [ ] Logo or wordmark (currently plain name)
-- [x] Dark mode: keep the toggle. The site follows the system until the visitor chooses. (Decided 2026-10-07.)
+- [x] Dark mode: keep the toggle. The site opens in light mode; dark is the visitor's choice. (Decided 2026-10-07, light default 2026-10-08.)
 - [ ] Domain and contact email
 - [ ] Status colors for pass, warn and fail. Until decided, status uses symbols and words only.
 
@@ -360,3 +360,4 @@ Added in 1.8:
 - 1.12 (2026-10-07): Nav bar uses the accent color at the owner's request, with on-accent text.
 - 1.13 (2026-10-07): Hero's second action is a secondary button to the Lab. Added the large button size.
 - 1.14 (2026-10-08): Ask the data moves below the dashboard on each lab.
+- 1.15 (2026-10-08): Light mode by default, even when the system is dark. Dark stays available through the toggle.
