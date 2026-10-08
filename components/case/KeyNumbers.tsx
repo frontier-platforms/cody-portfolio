@@ -4,7 +4,7 @@ import type { KeyNumber } from "@/lib/work";
 export function KeyNumbers({ numbers }: { numbers: KeyNumber[] }) {
   if (numbers.length === 0) return null;
   return (
-    <dl className="grid grid-cols-1 border-t border-border sm:grid-cols-2 lg:grid-cols-[repeat(auto-fit,minmax(12rem,1fr))]">
+    <dl className="diagram grid grid-cols-1 border-t border-border sm:grid-cols-2 lg:grid-cols-[repeat(auto-fit,minmax(12rem,1fr))]">
       {numbers.map((n) => (
         <div key={n.label} className="border-b border-border py-6 sm:pr-6">
           <dt className="sr-only">{n.label}</dt>

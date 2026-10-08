@@ -290,19 +290,21 @@ def publish_all(
             **({"model": model_summary} if pid == "housing" and model_summary else {}),
         }
         site_manifest["pipelines"][pid] = entry
+        # Run history records production runs only; a local run updates the snapshot but isn't logged.
         history = site_manifest.setdefault("history", {}).get(pid, [])
-        history.insert(
-            0,
-            {
-                "runAt": run_at,
-                "trigger": trigger,
-                "durationMs": entry["durationMs"],
-                "rows": entry["extract"]["rows"],
-                "passed": sum(t["status"] == "pass" for t in test_results),
-                "warned": sum(t["status"] == "warn" for t in test_results),
-                "failed": sum(t["status"] == "fail" for t in test_results),
-            },
-        )
+        if trigger == "github-actions":
+            history.insert(
+                0,
+                {
+                    "runAt": run_at,
+                    "trigger": trigger,
+                    "durationMs": entry["durationMs"],
+                    "rows": entry["extract"]["rows"],
+                    "passed": sum(t["status"] == "pass" for t in test_results),
+                    "warned": sum(t["status"] == "warn" for t in test_results),
+                    "failed": sum(t["status"] == "fail" for t in test_results),
+                },
+            )
         site_manifest["history"][pid] = history[:12]
 
     con.close()

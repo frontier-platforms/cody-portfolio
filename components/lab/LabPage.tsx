@@ -4,15 +4,17 @@ import { labFor } from "@/lib/lab/catalog";
 import { datasets, type DatasetKey } from "@/lib/lab/datasets";
 import { pipelines } from "@/lib/pipelines/index";
 import { manifest } from "@/lib/pipelines/manifest";
+import Link from "next/link";
+import { AskDemo } from "./LabDemos";
 import { LabHero } from "./LabHero";
 import { WhyItMatters } from "./WhyItMatters";
 
 type Extra = { id: string; label: string; intro: React.ReactNode; content: React.ReactNode };
 
 /**
- * Shared shell for a lab: a header with this dataset's findings and question
- * bar, then the dashboard, any extra sections (housing adds its model), why it
- * matters to a business, and the pipeline behind all of it.
+ * Shared shell for a lab: a header with this dataset's findings, then the
+ * dashboard, a question bar for this dataset, any extra sections (housing adds
+ * its model), why it matters to a business, and the pipeline behind it all.
  */
 export function LabPage({
   dataset,
@@ -39,6 +41,20 @@ export function LabPage({
         </>
       ),
       content: dashboard,
+    },
+    {
+      id: "ask",
+      label: lab.askLabel,
+      intro: (
+        <p>
+          Ask a question in plain English. Claude writes the SQL and your browser runs it.{" "}
+          <Link href="/colophon#ai" className="link">
+            See the guardrails
+          </Link>
+          .
+        </p>
+      ),
+      content: <AskDemo dataset={dataset} />,
     },
     ...extras,
     {

@@ -18,7 +18,8 @@ import { clientIp, createRateLimiter } from "@/lib/lab/rate-limit";
  */
 export const maxDuration = 30;
 
-const MODEL = "claude-opus-5";
+// Writing one read-only SQL query against a known schema is light work, so the smallest model does it.
+const MODEL = "claude-haiku-4-5";
 
 /** The key from the environment, minus stray whitespace or quotes from a copy-paste. */
 const apiKey = () =>
@@ -116,13 +117,10 @@ export async function POST(request: Request) {
   client ??= new Anthropic({ apiKey: apiKey() });
 
   try {
-    const response = await client.beta.messages.create({
+    const response = await client.messages.create({
       model: MODEL,
-      max_tokens: 8000,
-      betas: ["server-side-fallback-2026-07-01"],
-      fallbacks: "default",
-      thinking: { type: "adaptive" },
-      output_config: { effort: "low", format: { type: "json_schema", schema: answerSchema } },
+      max_tokens: 1024,
+      output_config: { format: { type: "json_schema", schema: answerSchema } },
       system: [{ type: "text", text: SYSTEM, cache_control: { type: "ephemeral" } }],
       messages: [
         {

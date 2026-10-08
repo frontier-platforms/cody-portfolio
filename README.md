@@ -132,7 +132,7 @@ In the browser, [`lib/ml/gbm.ts`](lib/ml/gbm.ts) scores and explains estimates f
 4. Structured JSON output, then a SQL check ([`checkSql`](lib/lab/datasets.ts)) on the server and again in the browser
 5. Queries run in the visitor's browser against public data, wrapped in a 200-row limit
 
-Uses `claude-opus-5` at low effort with server-side refusal fallbacks. **Set a monthly spend limit on the API key** in the Anthropic Console; that's the real cost ceiling.
+Uses `claude-haiku-4-5`, the smallest current model: writing one SQL query against a known schema is light work. **Set a monthly spend limit on the API key** in the Anthropic Console; that's the real cost ceiling.
 
 ## Brand
 

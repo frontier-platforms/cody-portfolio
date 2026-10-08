@@ -15,7 +15,7 @@ export const business: Capability[] = [
   {
     area: "Sales",
     where: "Canucks Sports & Entertainment",
-    body: "I started in sales, managing 800+ memberships worth over $2M. I know what a rep needs from the CRM.",
+    body: "I started in sales, managing a book of 800+ member accounts. I know what a rep needs from the CRM.",
     proof: { href: "/work/canucks-bi", label: "From sales to running BI" },
   },
   {
@@ -33,7 +33,7 @@ export const business: Capability[] = [
   {
     area: "Finance",
     where: "City of Surrey",
-    body: "I worked in municipal finance and accounting, including a property tax program worth $40M+ in revenue.",
+    body: "I worked in municipal finance, running a property tax deferment program and overseeing a tax sale.",
     proof: { href: "/about#experience", label: "City of Surrey roles" },
   },
 ];

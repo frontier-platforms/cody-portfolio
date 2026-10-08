@@ -91,29 +91,23 @@ export default function AboutPage() {
             <p>
               The common thread is turning data into decisions a business can act on. At StellarAlgo, that
               meant same-day data for sports clients and our first AI products. At Neo Financial, it meant
-              attribution and customer value models that set the marketing budget. At the Canucks, it meant a
-              BI team built from zero, and the analysis behind two strong revenue seasons.
+              attribution and customer value models that guided the marketing budget. At the Canucks, it meant
+              a BI team built from zero, and the analysis behind two strong revenue seasons.
             </p>
             <p>
               I started on the business side, and I’ve never left it. I worked in municipal finance at the
-              City of Surrey. I sold memberships at the Canucks, managing 800+ accounts worth over $2M. At
+              City of Surrey. I sold memberships at the Canucks, managing a book of 800+ member accounts. At
               Neo, I ran marketing operations: the analysts, the martech stack, its budget and the vendor
-              contracts. My degree is in marketing.
+              contracts. My degree is in marketing. So I judge data work by what it changes for the people
+              selling, marketing and running the business.
             </p>
             <p>
-              So I judge data work by what it changes for the people selling, marketing and running the
-              business.
-            </p>
-            <p>
-              I still build. Signl List, Valve and the Lab on this site are mine. It keeps my estimates
-              honest.
-            </p>
-            <p>
-              I’m open to consulting, contract and employment opportunities. Consulting runs through{" "}
+              I still build. Signl List and Valve come out of{" "}
               <a href={site.frontier} className="link">
                 Frontier Platforms
               </a>
-              , where I build Signl List and Valve.
+              , which is also where my consulting work runs, and the Lab is on this site. I’m open to
+              consulting, contract and employment opportunities.
             </p>
             <p>
               Outside work, I volunteered with the Canucks Autism Network for five years. I also volunteered

@@ -73,7 +73,8 @@ export default async function Home() {
       </section>
 
       <Section index="01" label="Selected work" className="mt-12 sm:mt-16">
-        <ProjectGrid items={selected} />
+        {/* The metric cards above already carry these numbers. */}
+        <ProjectGrid items={selected} showMetric={false} />
         <p className="mt-6">
           <Link href="/work#side-projects" className="link inline-flex min-h-11 items-center">
             See my side projects: Signl List and Valve
@@ -97,7 +98,32 @@ export default async function Home() {
         <Playbook />
       </Section>
 
-      <Section index="04" label="Work with me" className="mt-12 sm:mt-16">
+      <Section index="04" label="The Lab" className="mt-12 sm:mt-16">
+        <p className="mb-8 max-w-measure text-text-muted">
+          Three small data products on Calgary data. Each one has a tested pipeline you can run live in your
+          browser.
+        </p>
+        <ul className="grid gap-4 lg:grid-cols-3">
+          {labs.map((lab) => (
+            <li key={lab.href}>
+              <Link
+                href={lab.href}
+                className="flex h-full flex-col rounded-md border border-border p-6 transition-colors hover:border-accent"
+              >
+                <span className="meta">{lab.kicker}</span>
+                <span className="mt-3 text-xl font-semibold leading-snug">{lab.title}</span>
+                <span className="mt-2 text-text-muted">{lab.lede}</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+        <p className="mt-6">
+          <Link href="/lab" className="link inline-flex min-h-11 items-center">
+            See all three labs and how they’re built
+          </Link>
+        </p>
+      </Section>
+      <Section index="05" label="Work with me" className="mt-12 sm:mt-16">
         <div className="grid gap-12 lg:grid-cols-2">
           <div>
             <h3 className="text-xl">Employment and contract roles</h3>
@@ -178,32 +204,6 @@ export default async function Home() {
             </p>
           </div>
         </div>
-      </Section>
-
-      <Section index="05" label="The Lab" className="mt-12 sm:mt-16">
-        <p className="mb-8 max-w-measure text-text-muted">
-          Three small data products on Calgary data. Each one has a tested pipeline you can run live in your
-          browser.
-        </p>
-        <ul className="grid gap-4 lg:grid-cols-3">
-          {labs.map((lab) => (
-            <li key={lab.href}>
-              <Link
-                href={lab.href}
-                className="flex h-full flex-col rounded-md border border-border p-6 transition-colors hover:border-accent"
-              >
-                <span className="meta">{lab.kicker}</span>
-                <span className="mt-3 text-xl font-semibold leading-snug">{lab.title}</span>
-                <span className="mt-2 text-text-muted">{lab.lede}</span>
-              </Link>
-            </li>
-          ))}
-        </ul>
-        <p className="mt-6">
-          <Link href="/lab" className="link inline-flex min-h-11 items-center">
-            See all three labs and how they’re built
-          </Link>
-        </p>
       </Section>
     </>
   );

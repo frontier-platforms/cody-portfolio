@@ -44,7 +44,7 @@ function niceMax(v: number) {
 
 type Datum = { label: string; value: number };
 
-/** Vertical bars. Hover a bar to read its value. */
+/** Vertical bars. Hover a bar to read its value. Optionally falls back to ranked bars when labels won't fit. */
 export function BarChart({
   data,
   height = 220,
@@ -52,6 +52,7 @@ export function BarChart({
   highlight,
   summary,
   formatValue = formatNumber,
+  rankIfCrowded = false,
 }: {
   data: Datum[];
   height?: number;
@@ -59,6 +60,8 @@ export function BarChart({
   highlight?: (d: Datum) => boolean;
   summary: string;
   formatValue?: (n: number) => string;
+  /** For arbitrary results: switch to ranked horizontal bars when labels won't fit under the bars. */
+  rankIfCrowded?: boolean;
 }) {
   const [hover, setHover] = useState<number | null>(null);
   const [ref, W] = useWidth<HTMLElement>();
@@ -68,6 +71,16 @@ export function BarChart({
   const y = (v: number) => pad.t + (height - pad.t - pad.b) * (1 - v / max);
   const labelEvery = Math.ceil(data.length / Math.max(4, Math.floor(W / 52)));
   const active = hover != null ? data[hover] : null;
+
+  // Names and other long labels collide under narrow bars, so rank them horizontally instead.
+  const longest = Math.max(...data.map((d) => d.label.length), 0);
+  if (rankIfCrowded && longest * 7.5 > bw * labelEvery - 8) {
+    return (
+      <div ref={ref as React.RefObject<HTMLDivElement>}>
+        <RankBars data={data} color={color} formatValue={formatValue} summary={summary} />
+      </div>
+    );
+  }
 
   return (
     <figure ref={ref} className="relative">

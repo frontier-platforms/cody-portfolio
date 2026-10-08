@@ -7,8 +7,8 @@ import { visibleNumbers } from "@/lib/work";
  * one-line summary, one metric in mono. The whole card is the link. Border,
  * no shadow, --radius-md, border turns accent on hover.
  */
-export function ProjectCard({ work }: { work: Work }) {
-  const metric = visibleNumbers(work.numbers)[0];
+export function ProjectCard({ work, showMetric = true }: { work: Work; showMetric?: boolean }) {
+  const metric = showMetric ? visibleNumbers(work.numbers)[0] : undefined;
   return (
     <Link
       href={`/work/${work.slug}`}
@@ -32,12 +32,12 @@ export function ProjectCard({ work }: { work: Work }) {
   );
 }
 
-export function ProjectGrid({ items }: { items: Work[] }) {
+export function ProjectGrid({ items, showMetric = true }: { items: Work[]; showMetric?: boolean }) {
   return (
     <ul className="grid gap-4 lg:grid-cols-2">
       {items.map((w) => (
         <li key={w.slug}>
-          <ProjectCard work={w} />
+          <ProjectCard work={w} showMetric={showMetric} />
         </li>
       ))}
     </ul>

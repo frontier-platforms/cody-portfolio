@@ -5,8 +5,8 @@ import { useWidth } from "./useWidth";
 /**
  * Canucks Sports & Entertainment: how the BI team turned four properties'
  * data into pricing, forecasting and membership decisions, and the revenue
- * seasons it supported. Revenue figures are from the resume: $66M, then 15%
- * and 11% growth to $84M. The middle season is derived from those figures.
+ * seasons it supported, shown as growth only: 15%, then 11%, 27% in all.
+ * Bars are indexed to the starting season.
  */
 const flow = [
   {
@@ -32,9 +32,9 @@ const flow = [
 ];
 
 const seasons = [
-  { label: "Starting season", value: 66, text: "$66M", growth: null },
-  { label: "Next season", value: 75.9, text: "~$76M", growth: "+15%" },
-  { label: "Season after", value: 84, text: "$84M", growth: "+11%" },
+  { label: "Starting season", value: 100, text: "Baseline", growth: null },
+  { label: "Next season", value: 115, text: "+15%", growth: null },
+  { label: "Season after", value: 127, text: "+27%", growth: "+11%" },
 ];
 
 const PAD = { t: 28, b: 44 };
@@ -43,7 +43,7 @@ function RevenueChart() {
   const [box, W] = useWidth<HTMLDivElement>(520);
   const H = 240;
   const BAR = Math.min(120, Math.round(W / 5));
-  const scale = (v: number) => (v / 90) * (H - PAD.t - PAD.b);
+  const scale = (v: number) => (v / 135) * (H - PAD.t - PAD.b);
   const gap = (W - BAR * seasons.length) / (seasons.length + 1);
   return (
     <div className="rounded-md border border-border bg-surface p-4 sm:p-6">
@@ -55,7 +55,7 @@ function RevenueChart() {
           viewBox={`0 0 ${W} ${H}`}
           className="block"
           role="img"
-          aria-label="Revenue grew from $66M to about $76M, up 15%, then to $84M, up 11%."
+          aria-label="Revenue grew 15% in the first season and 11% in the next, 27% above the starting season."
         >
           <line x1={0} x2={W} y1={H - PAD.b} y2={H - PAD.b} stroke="var(--color-border)" />
           {seasons.map((s, i) => {
@@ -99,9 +99,9 @@ function RevenueChart() {
         </svg>
       </div>
       <p className="mt-2 text-sm text-text-muted">
-        +27% across two seasons. The BI team’s pricing, forecasting and membership analysis supported it.
+        Up 15% in the first season and 11% in the next: 27% above the start. The BI team’s pricing,
+        forecasting and membership analysis supported it.
       </p>
-      <p className="meta mt-2">The middle season is derived from the two growth rates.</p>
     </div>
   );
 }

@@ -40,8 +40,8 @@ export const kpis: Kpi[] = [
   },
   {
     area: "Finance",
-    value: "$40M+",
-    label: "Municipal revenue in the 2019 property tax deferment program I ran",
+    value: "100%",
+    label: "Success rate on the 2020 property tax sale I oversaw",
     source: "City of Surrey",
     href: "/work/surrey-property-tax",
   },
