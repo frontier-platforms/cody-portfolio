@@ -20,6 +20,12 @@ export const maxDuration = 30;
 
 const MODEL = "claude-opus-5";
 
+/** The key from the environment, minus stray whitespace or quotes from a copy-paste. */
+const apiKey = () =>
+  process.env.ANTHROPIC_API_KEY?.trim()
+    .replace(/^["']+|["']+$/g, "")
+    .trim() || undefined;
+
 const Body = z.object({
   dataset: z.enum(["permits", "housing", "flames"]),
   question: z.string().trim().min(3).max(300),
@@ -89,7 +95,7 @@ function parseJson(text: string): unknown {
 }
 
 export async function POST(request: Request) {
-  if (!process.env.ANTHROPIC_API_KEY) {
+  if (!apiKey()) {
     return Response.json({ error: "The AI feature isn't configured on this deployment." }, { status: 503 });
   }
 
@@ -107,7 +113,7 @@ export async function POST(request: Request) {
   }
 
   const { dataset, question } = parsed.data;
-  client ??= new Anthropic();
+  client ??= new Anthropic({ apiKey: apiKey() });
 
   try {
     const response = await client.beta.messages.create({
@@ -156,8 +162,13 @@ export async function POST(request: Request) {
       return Response.json({ error: "The AI service is busy. Try again shortly." }, { status: 429 });
     }
     if (error instanceof Anthropic.APIError) {
-      console.error("Anthropic API error", error.status, error.message);
-      return Response.json({ error: "The AI service returned an error." }, { status: 502 });
+      // Full detail goes to the server log (Vercel → Logs). Visitors get the status code only,
+      // which is enough to tell a bad key (401), no credits (400) or no access (403/404) apart.
+      console.error("Anthropic API error", error.status, error.requestID ?? "", error.message);
+      return Response.json(
+        { error: `The AI service returned an error (${error.status ?? "no status"}).` },
+        { status: 502 },
+      );
     }
     throw error;
   }
