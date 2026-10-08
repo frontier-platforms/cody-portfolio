@@ -9,7 +9,7 @@ export const site = {
   linkedin: "https://www.linkedin.com/in/codypchandler/" as string | null,
   // The site's own repo: the only public one, so every GitHub link points here.
   github: "https://github.com/frontier-platforms/cody-portfolio",
-  // Consulting runs through Frontier Platforms, where Signl List and Valve are built.
+  // Frontier Platforms, where Signl List and Valve are built.
   frontier: "https://www.frontier-platforms.com",
   // Google Calendar appointment page.
   booking: "https://calendar.app.google/JwNxKy9XtQ5vicds8" as string | null,

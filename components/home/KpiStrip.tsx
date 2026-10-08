@@ -13,9 +13,9 @@ export function KpiStrip({ items }: { items: Kpi[] }) {
         <li key={k.label}>
           <Link
             href={k.href}
-            className="flex h-full flex-col rounded-md border border-border p-6 transition-colors hover:border-accent"
+            className="flex h-full flex-col items-center rounded-md border border-border p-6 text-center transition-colors hover:border-accent"
           >
-            <span className={`num text-3xl ${k.key ? "text-accent" : ""}`}>{k.value}</span>
+            <span className="num text-4xl text-accent">{k.value}</span>
             <span className="mt-2 text-sm text-text-muted">{k.label}</span>
             <span className="meta mt-auto pt-4">
               {k.area} · {k.source}
