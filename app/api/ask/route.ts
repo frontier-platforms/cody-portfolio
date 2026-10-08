@@ -156,8 +156,13 @@ export async function POST(request: Request) {
       return Response.json({ error: "The AI service is busy. Try again shortly." }, { status: 429 });
     }
     if (error instanceof Anthropic.APIError) {
-      console.error("Anthropic API error", error.status, error.message);
-      return Response.json({ error: "The AI service returned an error." }, { status: 502 });
+      // Full detail goes to the server log (Vercel → Logs). Visitors get the status code only,
+      // which is enough to tell a bad key (401), no credits (400) or no access (403/404) apart.
+      console.error("Anthropic API error", error.status, error.requestID ?? "", error.message);
+      return Response.json(
+        { error: `The AI service returned an error (${error.status ?? "no status"}).` },
+        { status: 502 },
+      );
     }
     throw error;
   }
