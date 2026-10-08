@@ -176,8 +176,9 @@ const sections = [
     body: (
       <>
         <p>
-          “Ask the data” sends your question to Claude through a small server route. Claude replies in a fixed
-          JSON shape with one SQL query, a short explanation and a chart suggestion. The guardrails, in order:
+          “Ask the data” sends your question to Claude Haiku, the smallest current model, through a small
+          server route. It replies in a fixed JSON shape with one SQL query, a short explanation and a chart
+          suggestion. The guardrails, in order:
         </p>
         <ul>
           <li>
@@ -223,8 +224,8 @@ const sections = [
       <>
         <p>
           A written brand guide in the repo sets every visual and writing rule. Fraunces for headings, Geist
-          for text and Geist Mono for numbers. One deep teal accent marks links, the main action and the key
-          metric. Charts use a separate four-color data palette.
+          for text and Geist Mono for numbers. One deep teal accent marks the menu bar, links, the main action
+          and the headline numbers. Charts use a separate four-color data palette.
         </p>
         <p>
           Every color, size, space and radius comes from one tokens file. The styling layer can only produce
@@ -233,8 +234,8 @@ const sections = [
         </p>
         <p>
           Charts are hand-written SVG and canvas, not a charting library. Motion is limited to hover and
-          focus, and turns off when your system asks for reduced motion. Light and dark themes follow your
-          system until you pick one.
+          focus, and turns off when your system asks for reduced motion. The site opens in light mode, and the
+          toggle switches to dark.
         </p>
       </>
     ),

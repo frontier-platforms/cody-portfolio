@@ -177,7 +177,7 @@ Added in 1.4:
 
 Added in 1.5:
 
-- **Capability card:** where (mono meta), area (h3), one or two sentences of fact, and one proof link. Used for the business side on Home.
+- **Capability card:** area (h3) first, one or two sentences of fact, then the company (mono meta) and one proof link at the foot. Used for the business side on Home.
 
 Added in 1.8:
 

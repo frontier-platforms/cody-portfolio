@@ -104,7 +104,6 @@ export const trackingPlan = {
           "case_studies",
           "lab",
           "role",
-          "frontier",
         ],
       },
       location: { type: "string" },

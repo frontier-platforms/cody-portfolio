@@ -1,7 +1,7 @@
 /** Single source for names, links and navigation used across the site. */
 export const site = {
   name: "Cody Chandler",
-  title: "Cody Chandler · Technology and data leader",
+  title: "Cody Chandler · Data and product leader",
   description:
     "Data and product leader in Calgary, with a background in sales, marketing and finance. I help teams grow revenue with better data and products.",
   location: "Calgary, Alberta",

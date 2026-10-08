@@ -14,7 +14,7 @@ export type Capability = {
 export const business: Capability[] = [
   {
     area: "Sales",
-    where: "Canucks Sports & Entertainment",
+    where: "Canucks",
     body: "I started in sales, managing a book of 800+ member accounts. I know what a rep needs from the CRM.",
     proof: { href: "/work/canucks-bi", label: "From sales to running BI" },
   },
@@ -22,11 +22,11 @@ export const business: Capability[] = [
     area: "Marketing",
     where: "Neo Financial",
     body: "I ran marketing operations: a team of analysts, the martech stack and its budget. My degree is in marketing.",
-    proof: { href: "/work/neo-attribution", label: "Attribution across five channels" },
+    proof: { href: "/work/neo-attribution", label: "The attribution work" },
   },
   {
     area: "Business operations",
-    where: "Canucks and Neo Financial",
+    where: "Canucks and Neo",
     body: "I led a HubSpot to Salesforce move, including vendor negotiation. At Neo, I checked vendor contracts against usage before renewals.",
     proof: { href: "/work/canucks-bi", label: "The CRM migration" },
   },

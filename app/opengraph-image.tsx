@@ -14,18 +14,41 @@ export default function OpengraphImage() {
         height: "100%",
         display: "flex",
         flexDirection: "column",
-        justifyContent: "space-between",
-        padding: 80,
         background: token("--color-bg"),
         color: token("--color-text"),
       }}
     >
-      <div style={{ display: "flex", fontSize: 30, fontWeight: 600 }}>Cody Chandler</div>
-      <div style={{ display: "flex", fontSize: 72, lineHeight: 1.1, maxWidth: 1000 }}>
-        I help teams grow revenue with better data and products.
+      {/* The accent bar matches the site's menu bar. */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "28px 80px",
+          background: token("--color-accent"),
+          color: token("--color-on-accent"),
+          fontSize: 30,
+          fontWeight: 600,
+        }}
+      >
+        <span>Cody Chandler</span>
+        <span style={{ fontSize: 24, fontWeight: 400 }}>Calgary</span>
       </div>
-      <div style={{ display: "flex", fontSize: 28, color: token("--color-text-muted") }}>
-        Technology and data leader · Calgary
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+          flex: 1,
+          padding: "64px 80px 72px",
+        }}
+      >
+        <div style={{ display: "flex", fontSize: 72, lineHeight: 1.1, maxWidth: 1000 }}>
+          I help teams grow revenue with better data and products.
+        </div>
+        <div style={{ display: "flex", fontSize: 28, color: token("--color-text-muted") }}>
+          Data and product leader · Open to employment and contract roles
+        </div>
       </div>
     </div>,
     size,
