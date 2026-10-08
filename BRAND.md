@@ -172,7 +172,7 @@ Added in 1.4:
 - **Lab header:** h1, one-line lede and three findings computed by the pipeline (mono value, muted label). Each lab opens on its own numbers. The question bar is its own section, after the dashboard.
 - **Translation card:** a technique (mono label) and what it does for a sales or marketing team (one sentence).
 - **Decision row:** a decision in semibold, then "Why" and "Trade-off" lines. Used to show judgment, not only output.
-- **Playbook step:** number, h3, two sentences, and links to proof (a case study and a lab).
+- **Playbook step:** number, title, two sentences, and one proof label. The whole card links to that one page, like a project card.
 - **Architecture diagram:** bordered stage cards with a small data-color marker, left to right on desktop, stacked on phones.
 
 Added in 1.5:

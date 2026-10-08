@@ -1,24 +1,26 @@
 import Link from "next/link";
 import { playbook } from "@/lib/playbook";
 
-/** Four steps, each with proof from a case study and a lab. */
+/** Four steps. Each whole card links to the one page that proves it. */
 export function Playbook() {
   return (
     <ol className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
       {playbook.map((step, i) => (
-        <li key={step.title} className="flex flex-col rounded-md border border-border p-6">
-          <p className="num text-sm text-text-muted">{String(i + 1).padStart(2, "0")}</p>
-          <h3 className="mt-2 text-xl">{step.title}</h3>
-          <p className="mt-2 text-text-muted">{step.body}</p>
-          <ul className="mt-auto pt-4">
-            {step.proof.map((p) => (
-              <li key={p.href + p.label}>
-                <Link href={p.href} className="link inline-flex min-h-11 items-center text-sm">
-                  {p.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
+        <li key={step.title}>
+          <Link
+            href={step.link.href}
+            className="group flex h-full flex-col rounded-md border border-border p-6 transition-colors hover:border-accent"
+          >
+            <span className="num text-sm text-text-muted">{String(i + 1).padStart(2, "0")}</span>
+            <span className="mt-2 text-xl font-semibold leading-snug">{step.title}</span>
+            <span className="mt-2 text-text-muted">{step.body}</span>
+            <span className="mt-auto pt-6 text-sm text-accent group-hover:underline">
+              {step.link.label}{" "}
+              <span aria-hidden className="inline-block transition-transform group-hover:translate-x-1">
+                →
+              </span>
+            </span>
+          </Link>
         </li>
       ))}
     </ol>
