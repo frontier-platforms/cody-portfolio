@@ -183,6 +183,7 @@ function ResultView({ result, answer }: { result: Result; answer: Answer }) {
         <BarChart
           data={rows.map((r) => ({ label: String(r[x]), value: Number(r[y!] ?? 0) }))}
           summary={`Bar chart of ${y} by ${x}.`}
+          rankIfCrowded
         />
       )}
       {answer.chart === "line" && x && numeric && rows.length > 1 && (

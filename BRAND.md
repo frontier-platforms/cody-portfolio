@@ -1,6 +1,6 @@
 # Brand Guide: Cody Chandler Portfolio
 
-Version 1.13 (2026-10-07). Single source of truth for how the site looks and sounds. Read this before writing any copy, styles, or components.
+Version 1.14 (2026-10-08). Single source of truth for how the site looks and sounds. Read this before writing any copy, styles, or components.
 
 ## How to use this file
 
@@ -169,7 +169,7 @@ Site-specific components (added in 1.3):
 
 Added in 1.4:
 
-- **Lab header:** h1, one-line lede, three findings computed by the pipeline (mono value, muted label), then the dataset's question bar. Each lab opens on its own numbers.
+- **Lab header:** h1, one-line lede and three findings computed by the pipeline (mono value, muted label). Each lab opens on its own numbers. The question bar is its own section, after the dashboard.
 - **Translation card:** a technique (mono label) and what it does for a sales or marketing team (one sentence).
 - **Decision row:** a decision in semibold, then "Why" and "Trade-off" lines. Used to show judgment, not only output.
 - **Playbook step:** number, h3, two sentences, and links to proof (a case study and a lab).
@@ -359,3 +359,4 @@ Added in 1.8:
 - 1.11 (2026-10-07): Availability reads consulting, contract and employment. City of Surrey joins Selected work on Home as a full card, making a 2 by 2 grid.
 - 1.12 (2026-10-07): Nav bar uses the accent color at the owner's request, with on-accent text.
 - 1.13 (2026-10-07): Hero's second action is a secondary button to the Lab. Added the large button size.
+- 1.14 (2026-10-08): Ask the data moves below the dashboard on each lab.
