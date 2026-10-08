@@ -13,12 +13,12 @@ export const metadata: Metadata = {
 
 const anatomy = [
   {
-    title: "Ask the data",
-    body: "Plain-English questions. Claude writes the SQL, the site checks it, your browser runs it.",
-  },
-  {
     title: "Dashboard",
     body: "Charts that are SQL queries running in DuckDB in your browser. Every one shows its query.",
+  },
+  {
+    title: "Ask the data",
+    body: "Plain-English questions. Claude writes the SQL, the site checks it, your browser runs it.",
   },
   {
     title: "Tested pipeline",
@@ -91,13 +91,13 @@ function stats(lab: LabEntry): { value: string; label: string }[] {
   const run = manifest.pipelines[lab.dataset];
   if (!run) return [];
   const rows = run.outputs[0]?.rows ?? 0;
-  // Strictly passing; warnings are real source issues and are shown inside each lab.
-  const tests = `${run.tests.filter((t) => t.status === "pass").length}/${run.tests.length}`;
+  // How many data tests guard the pipeline. Passes and warnings are shown inside each lab.
+  const tests = String(run.tests.length);
   if (lab.dataset === "housing" && run.model) {
     return [
       { value: `${Math.round(rows / 1000)}K`, label: "homes" },
       { value: `${(run.model.metrics.model.mdape * 100).toFixed(1)}%`, label: "median error" },
-      { value: tests, label: "tests pass" },
+      { value: tests, label: "data tests" },
     ];
   }
   if (lab.dataset === "flames") {
@@ -105,12 +105,12 @@ function stats(lab: LabEntry): { value: string; label: string }[] {
     return [
       { value: rows.toLocaleString(), label: "games" },
       { value: `${Math.round(shots / 1000)}K`, label: "shot attempts" },
-      { value: tests, label: "tests pass" },
+      { value: tests, label: "data tests" },
     ];
   }
   return [
     { value: `${Math.round(rows / 1000)}K`, label: "permits" },
-    { value: tests, label: "tests pass" },
+    { value: tests, label: "data tests" },
     { value: "Weekly", label: "refresh" },
   ];
 }
