@@ -15,25 +15,21 @@ const stages: Stage[] = [
     name: "Sources",
     where: "Public APIs",
     marker: "bg-data-4",
-    items: ["City of Calgary: permits, assessments, use codes", "NHL: schedules and play-by-play"],
+    items: ["City of Calgary open data", "NHL play-by-play"],
     link: { href: `${REPO}/tree/main/ingest`, label: "Python extract code" },
   },
   {
     name: "Weekly run",
-    where: "Airflow on GitHub Actions",
+    where: "Airflow",
     marker: "bg-data-1",
-    items: [
-      "dbt on DuckDB builds raw, cleaned and business-ready layers",
-      "dbt tests and contracts gate the run",
-      "XGBoost retrains the value model after tests pass",
-    ],
+    items: ["dbt builds every layer", "Tests and contracts gate the run", "XGBoost retrains the model"],
     link: { href: `${REPO}/blob/main/airflow/dags/lab_refresh.py`, label: "Airflow DAG" },
   },
   {
     name: "Published",
-    where: "Repo and CDN",
+    where: "Static files",
     marker: "bg-data-3",
-    items: ["Parquet files and the model, committed", "A manifest of every run", "dbt docs with lineage"],
+    items: ["Parquet files and the model", "A manifest of every run", "dbt docs with lineage"],
     link: { href: "/dbt-docs/index.html", label: "dbt docs" },
   },
   {
@@ -41,10 +37,10 @@ const stages: Stage[] = [
     where: "DuckDB-WASM",
     marker: "bg-data-2",
     items: [
-      "Loads only the tables a page needs",
-      "Runs every chart query locally",
-      "Live runs of dbt’s compiled SQL",
-      "Model training in Python, through Pyodide",
+      "Loads only what a page needs",
+      "Runs every query locally",
+      "Live pipeline runs",
+      "Model training in Python",
     ],
     link: { href: `${REPO}/blob/main/lib/pipelines/runner.ts`, label: "Browser runner" },
   },
@@ -66,12 +62,14 @@ export function Architecture() {
       <ol className="grid gap-4 lg:grid-cols-4">
         {stages.map((s, i) => (
           <li key={s.name} className="relative flex flex-col rounded-md border border-border bg-surface p-4">
-            <span aria-hidden className={`h-1 w-8 rounded-full ${s.marker}`} />
-            <p className="meta mt-3">
+            <h3 className="flex items-center gap-2 text-base">
+              <span aria-hidden className={`size-2 shrink-0 rounded-full ${s.marker}`} />
+              {s.name}
+            </h3>
+            <p className="meta mt-1">
               {String(i + 1).padStart(2, "0")} · {s.where}
             </p>
-            <h3 className="mt-1 text-base">{s.name}</h3>
-            <ul className="prose-cc mt-2 text-sm">
+            <ul className="mt-2 space-y-1 text-sm text-text-muted">
               {s.items.map((it) => (
                 <li key={it}>{it}</li>
               ))}
@@ -80,7 +78,7 @@ export function Architecture() {
               {s.link.label}
             </a>
             {i < stages.length - 1 && (
-              <span aria-hidden className="absolute -right-3 top-6 hidden text-text-muted lg:block">
+              <span aria-hidden className="absolute -right-3 top-4 hidden text-text-muted lg:block">
                 →
               </span>
             )}
