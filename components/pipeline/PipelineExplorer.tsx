@@ -37,6 +37,16 @@ const toneClass = {
   bad: "font-semibold",
 };
 
+/** What the live run does for each pipeline, shown under the lineage heading. */
+const LIVE_NOTE: Record<Pipeline["id"], string> = {
+  permits: "Run pipeline live pulls permits changed since the snapshot from data.calgary.ca.",
+  housing: "Run pipeline live pulls homes changed since the snapshot from data.calgary.ca.",
+  flames: "Run pipeline live checks the NHL for games newer than the snapshot.",
+};
+
+/** Lets long table names wrap after underscores instead of being cut off. */
+const wrapAt = (label: string) => label.replace(/_/g, "_\u200b");
+
 export function PipelineExplorer({ pipeline, run }: { pipeline: Pipeline; run: ManifestEntry | undefined }) {
   const columns: { title: string; nodes: Node[] }[] = [
     {
@@ -162,26 +172,21 @@ export function PipelineExplorer({ pipeline, run }: { pipeline: Pipeline; run: M
     <div className="space-y-4">
       <section className="border border-border bg-surface rounded-md">
         <header className="flex flex-col gap-3 border-b border-border px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
-          <div>
+          <div className="min-w-0">
             <h3 className="font-semibold">Lineage</h3>
-            <p className="text-sm text-text-muted">Click a node for its SQL, schema and row counts.</p>
+            <p className="text-sm text-text-muted">
+              Click a node for its SQL, schema and row counts. {LIVE_NOTE[pipeline.id]} Changes stay in this
+              tab.
+            </p>
           </div>
-          <div className="flex flex-col items-start gap-1 sm:items-end">
-            <button
-              type="button"
-              onClick={runLive}
-              disabled={running}
-              className="btn btn-primary disabled:opacity-60"
-            >
-              {running ? "Running…" : "Run pipeline live"}
-            </button>
-            <span className="text-xs text-text-muted">
-              {pipeline.id === "permits"
-                ? "Pulls changes from data.calgary.ca right now."
-                : "Checks the NHL for games newer than the snapshot."}{" "}
-              Changes stay in this tab.
-            </span>
-          </div>
+          <button
+            type="button"
+            onClick={runLive}
+            disabled={running}
+            className="btn btn-primary shrink-0 self-start px-4 text-sm disabled:opacity-60 sm:self-center"
+          >
+            {running ? "Running…" : "Run pipeline live"}
+          </button>
         </header>
 
         <ol className="grid gap-3 overflow-x-auto p-4 sm:p-6 lg:grid-flow-col lg:auto-cols-fr">
@@ -204,10 +209,11 @@ export function PipelineExplorer({ pipeline, run }: { pipeline: Pipeline; run: M
                         type="button"
                         onClick={() => setSelected(n.id)}
                         aria-pressed={selected === n.id}
-                        className={`w-full border bg-bg px-3 py-2 text-left transition-colors hover:border-text aria-pressed:bg-accent-subtle ${statusRing[s]}`}
+                        title={n.label}
+                        className={`w-full rounded-md border bg-bg px-3 py-2 text-left transition-colors hover:border-text aria-pressed:bg-accent-subtle ${statusRing[s]}`}
                       >
-                        <span className="flex items-center justify-between gap-2">
-                          <span className="truncate font-mono text-xs">{n.label}</span>
+                        <span className="flex items-start justify-between gap-2">
+                          <span className="min-w-0 font-mono text-xs">{wrapAt(n.label)}</span>
                           <StatusDot status={s} />
                         </span>
                         <span className="text-xs text-text-muted">{n.kind}</span>
@@ -217,7 +223,7 @@ export function PipelineExplorer({ pipeline, run }: { pipeline: Pipeline; run: M
                 })}
               </ul>
               {i < columns.length - 1 && (
-                <span aria-hidden className="absolute -right-2.5 top-9 hidden text-text-muted lg:block">
+                <span aria-hidden className="absolute -right-2.5 top-12 hidden text-text-muted lg:block">
                   →
                 </span>
               )}
