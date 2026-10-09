@@ -91,8 +91,8 @@ export default function AboutPage() {
             <p>
               The common thread is turning data into decisions a business can act on. At StellarAlgo, that
               meant same-day data for sports clients and our first AI products. At Neo Financial, it meant
-              attribution and customer value models that guided the marketing budget. At the Canucks, it meant
-              a BI team built from zero, and the analysis behind two strong revenue seasons.
+              attribution and acquisition cost reporting that guided the marketing budget. At the Canucks, it
+              meant pricing and sales calls that ran on data, and two strong revenue seasons.
             </p>
             <p>
               I started on the business side, and I’ve never left it. I worked in municipal finance at the

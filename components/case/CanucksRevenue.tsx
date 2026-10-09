@@ -4,7 +4,7 @@ import { useWidth } from "./useWidth";
 
 /**
  * Canucks Sports & Entertainment: how the BI team turned four properties'
- * data into pricing, forecasting and membership decisions, and the revenue
+ * data into sales, pricing and timing decisions, and the revenue
  * seasons it supported, shown as growth only: 15%, then 11%, 27% in all.
  * Bars are indexed to the starting season.
  */
@@ -22,12 +22,12 @@ const flow = [
   {
     name: "Reporting",
     marker: "bg-data-3",
-    lines: ["Power BI", "Recurring reports automated with SQL and Python"],
+    lines: ["Automated reports in Power BI", "Machine learning models", "SQL and Python"],
   },
   {
     name: "Decisions",
     marker: "bg-data-1",
-    lines: ["Dynamic pricing", "Sales forecasting", "Membership revenue"],
+    lines: ["Who to call, and when", "How to price", "When to react"],
   },
 ];
 

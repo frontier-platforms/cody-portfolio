@@ -5,20 +5,20 @@ export const meta = {
   role: "Director, Marketing Operations & Analytics",
   period: "Dec 2023 to Jan 2025",
   summary:
-    "Built one attribution view across five paid channels, with CAC and LTV models that guided where the budget went.",
+    "Put UTM tracking everywhere, then built attribution with CAC and PAC reporting that guided where the budget went.",
   problem: "We can't tell which marketing is working",
   status: "shipped",
-  stack: ["Databricks", "dbt", "GitHub", "Hightouch", "Snowflake"],
+  stack: ["Databricks", "dbt", "Airflow", "UTM tracking", "Hightouch", "Snowflake"],
   numbers: [
-    { value: "5", label: "Paid channels in one attribution data mart" },
-    { value: "CAC + LTV", label: "Models used to guide budget and judge return" },
+    { value: "CAC + PAC", label: "What it cost to win a customer, and each product they opened" },
+    { value: "Every channel", label: "Tracked with UTMs and rolled into one attribution view" },
   ],
   order: 2,
 };
 
 ## Problem
 
-Neo spent across search, social, video, audio and affiliate channels. Each platform reported its own results. There was no shared view of what a customer cost to acquire or was worth.
+Neo spent across search, social, video, audio, affiliates and more. Each platform reported its own results. There was no shared view of what a customer, or each product, cost to acquire.
 
 ## Role
 
@@ -26,11 +26,11 @@ As Director, Marketing Operations & Analytics, I led a team of analysts. I also 
 
 ## Solution
 
-- I directed a marketing analytics data mart for attribution and paid media across all five channels.
-- I built CAC and LTV models to guide budget allocation and judge return on spend.
-- We modelled in dbt on Databricks, with a GitHub review on every logic change.
-- Hightouch synced results back into marketing tools, so insights showed up where decisions were made.
-- I reviewed vendor contracts against actual usage before each renewal.
+- **UTMs everywhere.** We embedded UTM tracking in every campaign link, so each new customer traced back to a channel.
+- **One attribution view.** I directed a marketing analytics data mart in Databricks and dbt, run by Airflow, across every paid channel.
+- **CAC and PAC.** We measured customer acquisition cost, and product acquisition cost for each product, like credit and bank accounts. With LTV models, that showed which spend paid back.
+- **Reporting people used.** Reporting showed what each channel cost and returned. Hightouch synced the results back into marketing tools.
+- **Vendor discipline.** I reviewed vendor contracts against actual usage before each renewal.
 
 <NeoAttribution />
 
@@ -38,7 +38,7 @@ As Director, Marketing Operations & Analytics, I led a team of analysts. I also 
 
 <KeyNumbers numbers={meta.numbers} />
 
-Marketing planned its budget against one shared view of channel performance, instead of five platform reports. Knowing CAC by channel and segment let us tailor outreach and invest in the channels that paid back.
+Marketing planned its budget against one view of channel performance. Knowing CAC and PAC by channel and product let us tailor outreach and invest where it paid back.
 
 <Todo>
   Any result you can share: budget reallocated, cost per acquisition change, or reporting time saved.
