@@ -24,8 +24,8 @@ export const kpis: Kpi[] = [
   },
   {
     area: "Data platform",
-    value: "100+",
-    label: "Tested dbt models behind one governed data platform",
+    value: "1",
+    label: "Data layer for ticketing, CRM, email and fan data",
     source: "StellarAlgo",
     href: "/work/stellaralgo-prime",
   },

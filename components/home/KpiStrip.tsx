@@ -17,10 +17,7 @@ export function KpiStrip({ items }: { items: Kpi[] }) {
           >
             <span className="num text-3xl text-accent sm:text-4xl">{k.value}</span>
             <span className="mt-2 text-sm text-text-muted">{k.label}</span>
-            <span className="meta mt-auto pt-3">
-              <span className="hidden sm:inline">{k.area} · </span>
-              {k.source}
-            </span>
+            <span className="meta mt-auto pt-3">{k.source}</span>
           </Link>
         </li>
       ))}

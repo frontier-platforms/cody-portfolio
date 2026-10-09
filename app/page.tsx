@@ -12,7 +12,7 @@ import { getAllWork, isCompact, isSideProject } from "@/lib/work";
 
 export default async function Home() {
   const all = await getAllWork();
-  // Selected work: professional work, including the compact City of Surrey card (a 2 by 2 grid).
+  // Work: professional work, including City of Surrey (a 2 by 2 grid).
   const selected = all.filter((w) => !isSideProject(w));
   // Problems I've solved: recent work, so earlier roles are left out.
   const work = selected.filter((w) => !isCompact(w));
@@ -73,7 +73,7 @@ export default async function Home() {
         </section>
       </div>
 
-      <Section index="01" label="Selected work" className="mt-4 sm:mt-6">
+      <Section index="01" label="Work" className="mt-4 sm:mt-6">
         {/* The metric cards above already carry these numbers. */}
         <ProjectGrid items={selected} showMetric={false} />
         <p className="mt-6">
