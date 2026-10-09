@@ -62,17 +62,33 @@ function Band({ title, children }: { title: string; children: React.ReactNode })
   );
 }
 
-function Hop({ label }: { label: string }) {
+/**
+ * Arrow between stages. On desktop every arrow sits at the same height, level with
+ * the layer titles. The outer arrows sit beside a band heading, so they get an
+ * invisible spacer the same size as that heading.
+ */
+function Hop({ label, outer = false }: { label: string; outer?: boolean }) {
   return (
-    <span className="flex items-center justify-center gap-1 py-1 text-xs text-text-muted lg:flex-col lg:py-0">
-      <span aria-hidden className="lg:hidden">
-        ↓
+    <div className="flex flex-col">
+      {outer && (
+        <p aria-hidden className="invisible hidden rounded-md border px-4 py-2 font-semibold lg:block">
+          &nbsp;
+        </p>
+      )}
+      <span
+        className={`flex items-center justify-center gap-1 py-1 text-xs text-text-muted lg:flex-col lg:py-0 lg:pt-8 ${
+          outer ? "lg:mt-3" : ""
+        }`}
+      >
+        <span aria-hidden className="lg:hidden">
+          ↓
+        </span>
+        <span aria-hidden className="hidden lg:inline">
+          →
+        </span>
+        {label}
       </span>
-      <span aria-hidden className="hidden lg:inline">
-        →
-      </span>
-      {label}
-    </span>
+    </div>
   );
 }
 
@@ -88,7 +104,7 @@ export function MedallionDiagram() {
           </ul>
         </Band>
 
-        <Hop label="Airflow" />
+        <Hop label="Airflow" outer />
 
         <Band title="PRIME process, in Snowflake">
           <ol className="grid h-full gap-3 lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)_auto_minmax(0,1fr)]">
@@ -115,7 +131,7 @@ export function MedallionDiagram() {
           </ol>
         </Band>
 
-        <Hop label="Serve" />
+        <Hop label="Serve" outer />
 
         <Band title="Consume">
           <ul className="h-full space-y-2 rounded-md border border-border bg-surface p-4 text-sm">
