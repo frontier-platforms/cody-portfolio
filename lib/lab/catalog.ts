@@ -57,19 +57,19 @@ export const labs: LabEntry[] = [
     ],
     decisions: [
       {
-        decision: "Flatten JSON in Python, keep business rules in dbt",
-        why: "Rules like power play and shot direction stay readable and tested in one place.",
-        tradeoff: "Two languages in the pipeline, with a clear line between them.",
+        decision: "Keep the hockey rules in one place",
+        why: "Rules like what counts as a power play live in one tested spot, so every chart agrees.",
+        tradeoff: "The raw NHL data needs a separate clean-up step first.",
       },
       {
-        decision: "Proxy exactly two NHL URL shapes",
-        why: "The NHL API blocks browsers, and an open proxy would be abused.",
-        tradeoff: "A new endpoint needs a code change. That’s the point.",
+        decision: "Only allow the two NHL requests the site needs",
+        why: "The NHL blocks direct browser access, so the site relays requests. Locking it down stops misuse.",
+        tradeoff: "Adding a new kind of NHL data takes a small code change.",
       },
       {
-        decision: "Cache finished games forever",
-        why: "A finished game rarely changes, so each one is fetched once.",
-        tradeoff: "A late correction by the NHL wouldn’t be picked up without clearing the cache.",
+        decision: "Download each finished game once",
+        why: "Final results don’t change, so there’s no need to fetch them again.",
+        tradeoff: "If the NHL corrects an old game, the fix needs a manual refresh.",
       },
     ],
   },
@@ -105,14 +105,14 @@ export const labs: LabEntry[] = [
     ],
     decisions: [
       {
-        decision: "Train in Python with XGBoost, score in TypeScript",
-        why: "One Python file trains weekly and in your browser. Scoring needs no Python download.",
-        tradeoff: "Two languages to keep in step. A parity test checks they agree.",
+        decision: "Train the model in Python, run it in the browser",
+        why: "Python is the standard for machine learning. Estimates still appear instantly, with nothing to install.",
+        tradeoff: "Two languages to keep in step, so an automated test checks they agree.",
       },
       {
-        decision: "Encode community and zoning out of fold",
-        why: "A home’s own value can’t leak into its features.",
-        tradeoff: "Training is slower. Without it, the accuracy numbers would be inflated.",
+        decision: "Never let a home’s own value leak into its inputs",
+        why: "Otherwise the model would look more accurate than it really is.",
+        tradeoff: "Training takes longer. Honest accuracy numbers are worth it.",
       },
       {
         decision: "Predict the assessed value, and say so plainly",
@@ -152,18 +152,18 @@ export const labs: LabEntry[] = [
     ],
     decisions: [
       {
-        decision: "Watermark on the City’s update time, merge on permit number",
-        why: "Status changes on old permits are caught, not only new applications.",
-        tradeoff: "Each run pulls more rows than “new since yesterday”. Correct counts are worth it.",
+        decision: "Catch updates to old permits as well as new ones",
+        why: "Permits change status over time, so each refresh looks for anything that changed.",
+        tradeoff: "Each refresh pulls more data. Correct counts are worth it.",
       },
       {
-        decision: "Commit the Parquet files to the repo",
-        why: "A deploy never depends on the City’s API being up.",
-        tradeoff: "Git history grows a few MB a week. I’d move to object storage past about 100 MB.",
+        decision: "Keep a copy of the data with the site",
+        why: "The site never breaks because the City’s data service is down.",
+        tradeoff: "Storage grows a little each week. I’d move it to cloud storage if it got large.",
       },
       {
         decision: "Warnings never block a refresh. Errors always do.",
-        why: "Real source issues stay visible without stopping fresh data.",
+        why: "Known data quirks stay visible without holding back fresh data.",
         tradeoff: "Someone has to read the warnings, so the page shows them to everyone.",
       },
     ],

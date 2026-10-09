@@ -30,6 +30,8 @@ const apiKey = () =>
 const Body = z.object({
   dataset: z.enum(["permits", "housing", "flames"]),
   question: z.string().trim().min(3).max(300),
+  /** One automatic retry: the SQL that failed in the browser and DuckDB's error. */
+  retry: z.object({ sql: z.string().max(4000), error: z.string().max(400) }).optional(),
 });
 
 const Answer = z.object({
@@ -71,6 +73,7 @@ Rules for the SQL:
 - No file, network or settings functions (read_parquet, read_csv, httpfs, ATTACH, COPY, SET, PRAGMA).
 - Return at most 50 rows unless the question clearly needs more; never more than 200.
 - DuckDB has no initcap(); leave text casing as stored.
+- The query runs in DuckDB-WASM with no extensions loaded. Use core SQL only: aggregates, CASE, CAST, date_trunc, extract, string functions and window functions. Avoid time zone conversions, regex flags, lambda or list functions, and statistical or approximate functions.
 - Use short snake_case aliases. Round averages and percentages to one decimal place.
 - Order results so they read naturally: time ascending, rankings descending.
 
@@ -113,7 +116,11 @@ export async function POST(request: Request) {
     );
   }
 
-  const { dataset, question } = parsed.data;
+  const { dataset, question, retry } = parsed.data;
+  const clean = (text: string) => text.replace(/[<>]/g, "");
+  const retryNote = retry
+    ? `\n<failed_sql>${clean(retry.sql)}</failed_sql>\n<error>${clean(retry.error)}</error>\nThat query failed when it ran in DuckDB-WASM in the browser. Write a corrected query for the same question that avoids the cause.`
+    : "";
   client ??= new Anthropic({ apiKey: apiKey() });
 
   try {
@@ -125,7 +132,7 @@ export async function POST(request: Request) {
       messages: [
         {
           role: "user",
-          content: `Dataset: ${datasets[dataset].label}\n<question>${question.replace(/[<>]/g, "")}</question>`,
+          content: `Dataset: ${datasets[dataset].label}\n<question>${clean(question)}</question>${retryNote}`,
         },
       ],
     });

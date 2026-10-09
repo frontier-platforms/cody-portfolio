@@ -20,29 +20,44 @@ export function AskData({ dataset }: { dataset: DatasetKey }) {
   const [answer, setAnswer] = useState<Answer | null>(null);
   const [sql, setSql] = useState("");
   const [result, setResult] = useState<Result | null>(null);
-  const [status, setStatus] = useState<"idle" | "thinking" | "running">("idle");
+  const [status, setStatus] = useState<"idle" | "thinking" | "fixing" | "running">("idle");
   const [error, setError] = useState<string | null>(null);
+  /** The raw database error, kept out of the way under "Details". */
+  const [detail, setDetail] = useState<string | null>(null);
 
-  /** Runs SQL in the browser. Returns false if it was rejected or failed. */
-  async function execute(query: string) {
+  /** Runs SQL in the browser. Returns the database error if it was rejected or failed. */
+  async function execute(query: string): Promise<{ ok: true } | { ok: false; error: string }> {
     const check = checkSql(query);
-    if (!check.ok) {
-      setError(check.reason);
-      return false;
-    }
+    if (!check.ok) return { ok: false, error: check.reason };
     setStatus("running");
     setError(null);
+    setDetail(null);
     try {
       // The outer LIMIT is a hard cap regardless of what the query asks for.
       setResult(await runQuery(`SELECT * FROM (${check.sql}) LIMIT 200`, `ask: ${dataset}`));
-      return true;
+      return { ok: true };
     } catch (e) {
       setResult(null);
-      setError((e as Error).message);
-      return false;
+      return { ok: false, error: (e as Error).message };
     } finally {
       setStatus("idle");
     }
+  }
+
+  function showFailure(raw: string) {
+    setError("Couldn’t run that one. Try rephrasing, or edit the SQL below.");
+    setDetail(raw);
+  }
+
+  async function requestSql(body: Record<string, unknown>) {
+    const res = await fetch("/api/ask", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error ?? "Something went wrong.");
+    return data as Answer & { sql: string };
   }
 
   async function ask(q: string, source: "typed" | "example") {
@@ -54,23 +69,37 @@ export function AskData({ dataset }: { dataset: DatasetKey }) {
     setQuestion(q);
     setStatus("thinking");
     setError(null);
+    setDetail(null);
     setAnswer(null);
     setResult(null);
     try {
-      const res = await fetch("/api/ask", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ dataset, question: q }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? "Something went wrong.");
+      let data = await requestSql({ dataset, question: q });
       setAnswer(data);
-      if (data.sql) {
-        setSql(data.sql);
-        done((await execute(data.sql)) ? "answered" : "error");
-      } else {
+      if (!data.sql) {
         setStatus("idle");
         done("declined");
+        return;
+      }
+      setSql(data.sql);
+      let run = await execute(data.sql);
+      if (!run.ok) {
+        // One automatic retry: Claude sees the error and writes a corrected query.
+        setStatus("fixing");
+        data = await requestSql({
+          dataset,
+          question: q,
+          retry: { sql: data.sql, error: run.error.slice(0, 400) },
+        });
+        if (data.sql) {
+          setAnswer(data);
+          setSql(data.sql);
+          run = await execute(data.sql);
+        }
+      }
+      if (run.ok) done("answered");
+      else {
+        showFailure(run.error);
+        done("error");
       }
     } catch (e) {
       setError((e as Error).message);
@@ -107,7 +136,13 @@ export function AskData({ dataset }: { dataset: DatasetKey }) {
             disabled={status !== "idle"}
             className="btn btn-primary justify-center disabled:opacity-60"
           >
-            {status === "thinking" ? "Writing SQL…" : status === "running" ? "Running…" : "Ask"}
+            {status === "thinking"
+              ? "Writing SQL…"
+              : status === "fixing"
+                ? "Fixing the SQL…"
+                : status === "running"
+                  ? "Running…"
+                  : "Ask"}
           </button>
         </form>
         <ul className="flex flex-wrap gap-2" aria-label="Example questions">
@@ -127,7 +162,17 @@ export function AskData({ dataset }: { dataset: DatasetKey }) {
       </div>
 
       <div aria-live="polite" className="border-t border-border">
-        {error && <p className="px-4 py-3 font-mono text-sm text-accent sm:px-6">{error}</p>}
+        {error && (
+          <div className="px-4 py-3 text-sm sm:px-6">
+            <p>{error}</p>
+            {detail && (
+              <details className="mt-1 text-xs text-text-muted">
+                <summary className="cursor-pointer">Details</summary>
+                <p className="mt-1 font-mono">{detail}</p>
+              </details>
+            )}
+          </div>
+        )}
         {answer && <p className="px-4 pt-4 text-base sm:px-6">{answer.explanation}</p>}
         {result && answer && <ResultView result={result} answer={answer} />}
       </div>
@@ -154,7 +199,9 @@ export function AskData({ dataset }: { dataset: DatasetKey }) {
               type="button"
               onClick={() => {
                 track("ask_sql_rerun", { dataset });
-                execute(sql);
+                execute(sql).then((run) => {
+                  if (!run.ok) showFailure(run.error);
+                });
               }}
               disabled={status !== "idle"}
               className="btn text-sm"
