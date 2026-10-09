@@ -4,42 +4,31 @@ import { useState } from "react";
 import { useWidth } from "./useWidth";
 
 /**
- * Neo Financial attribution: how one attribution model replaced five
- * platform reports, and what CAC and LTV visibility changed. The chart is
+ * Neo Financial attribution: how UTM tracking and one attribution model
+ * replaced each platform's own report, and what CAC and PAC visibility changed. The chart is
  * illustrative: generic channels and made-up numbers that show the pattern,
  * not Neo's data. BRAND.md section 6, architecture diagram and data panel.
  */
 const flow = [
   {
-    name: "Five platform reports",
+    name: "Platform reports",
     marker: "bg-data-4",
-    lines: ["Search, social, video, audio and affiliates", "Each platform credits itself"],
+    lines: ["Search, social, video, audio, affiliates", "Each platform credits itself"],
+  },
+  {
+    name: "UTMs everywhere",
+    marker: "bg-data-2",
+    lines: ["Every campaign link tagged", "Each customer traced to a channel"],
   },
   {
     name: "One attribution model",
-    marker: "bg-data-2",
+    marker: "bg-data-3",
     lines: ["Databricks and dbt, run by Airflow", "One definition of a conversion"],
   },
   {
-    name: "CAC and LTV",
+    name: "CAC, PAC and LTV",
     marker: "bg-data-1",
-    lines: ["By channel and by segment", "What a customer costs, and what they're worth"],
-  },
-  {
-    name: "Back in the tools",
-    marker: "bg-data-3",
-    lines: ["Synced to ad platforms and the CRM", "Answers where decisions get made"],
-  },
-];
-
-const decisions = [
-  {
-    title: "Invest in the right channels",
-    body: "Budget moved toward channels whose customers paid back, not the ones that reported best.",
-  },
-  {
-    title: "Tailor outreach",
-    body: "Knowing CAC by segment showed who was worth reaching, where, and how often.",
+    lines: ["By channel and by product", "Synced back to ad tools and the CRM"],
   },
 ];
 
@@ -96,7 +85,7 @@ function Chart() {
           viewBox={`0 0 ${W} ${H}`}
           className="block"
           role="img"
-          aria-label={`Illustrative chart of customer acquisition cost against lifetime value for five channels, ${
+          aria-label={`Illustrative chart of customer acquisition cost against lifetime value for five illustrative channels, ${
             view === "platform" ? "as each platform reports them" : "under one attribution model"
           }.`}
         >
@@ -206,15 +195,6 @@ export function NeoAttribution() {
           </li>
         ))}
       </ol>
-      <div className="grid gap-4 sm:grid-cols-2">
-        {decisions.map((d) => (
-          <div key={d.title} className="rounded-md border border-dashed border-border p-4">
-            <p className="meta">What it changed</p>
-            <p className="mt-1 font-semibold">{d.title}</p>
-            <p className="mt-1 text-sm text-text-muted">{d.body}</p>
-          </div>
-        ))}
-      </div>
       <Chart />
     </figure>
   );

@@ -1,6 +1,7 @@
 "use client";
 
 import type { ManifestEntry, Pipeline } from "@/lib/pipelines/types";
+import { formatRunDate } from "@/lib/format";
 import { useLiveResults } from "./live-results";
 
 /** The lab header's three findings: from the production run, or recomputed by a live run in this tab. */
@@ -27,7 +28,7 @@ export function Findings({ pipeline, run }: { pipeline: Pipeline["id"]; run: Man
         <p className="meta mt-4" aria-live="polite">
           {live
             ? "Recomputed by your live run, just now."
-            : `Computed by the pipeline on ${new Date(run!.runAt).toLocaleDateString("en-CA", { dateStyle: "medium" })}.`}{" "}
+            : `Computed by the pipeline on ${formatRunDate(run!.runAt)}.`}{" "}
           <a href="#pipeline" className="link">
             See how
           </a>

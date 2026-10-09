@@ -1,6 +1,7 @@
 "use client";
 
 import { useLiveResults } from "@/components/lab/live-results";
+import { formatRunTime } from "@/lib/format";
 import type { ManifestEntry, Pipeline, RunSummary } from "@/lib/pipelines/types";
 import { FreshnessBadge } from "./FreshnessBadge";
 
@@ -55,8 +56,7 @@ export function RunSummaryStrip({ pipeline, run }: { pipeline: Pipeline; run: Ma
       </dl>
       {live && run && (
         <p className="meta mt-2">
-          Your live run, in this tab only. The production snapshot is from{" "}
-          {new Date(run.runAt).toLocaleString("en-CA", { dateStyle: "medium", timeStyle: "short" })}.
+          Your live run, in this tab only. The production snapshot is from {formatRunTime(run.runAt)}.
         </p>
       )}
     </div>
@@ -133,9 +133,7 @@ export function RunHistory({ pipeline, history }: { pipeline: Pipeline["id"]; hi
           <tbody className="num">
             {rows.map((h) => (
               <tr key={h.key} className="border-t border-border">
-                <td className="whitespace-nowrap px-4 py-2 sm:px-6">
-                  {new Date(h.runAt).toLocaleString("en-CA", { dateStyle: "medium", timeStyle: "short" })}
-                </td>
+                <td className="whitespace-nowrap px-4 py-2 sm:px-6">{formatRunTime(h.runAt)}</td>
                 <td className="whitespace-nowrap px-4 py-2 font-body">{h.trigger}</td>
                 <td className="px-4 py-2 text-right">{h.rows.toLocaleString("en-CA")}</td>
                 <td className="px-4 py-2 text-right">{(h.durationMs / 1000).toFixed(1)} s</td>
