@@ -85,26 +85,16 @@ export const trackingPlan = {
   contact_submitted: {
     description: "The contact form is sent. The message itself is never tracked.",
     props: {
-      reason: { type: "string", values: ["hiring", "other"] },
+      reason: { type: "string", values: ["question", "opportunity", "other"] },
       outcome: { type: "string", values: ["sent", "error"] },
     },
   },
   cta_clicked: {
-    description: "A contact or hiring call to action is clicked.",
+    description: "A contact call to action is clicked.",
     props: {
       cta: {
         type: "string",
-        values: [
-          "contact",
-          "email",
-          "resume",
-          "linkedin",
-          "booking",
-          "github",
-          "case_studies",
-          "lab",
-          "role",
-        ],
+        values: ["contact", "email", "resume", "linkedin", "booking", "github", "case_studies", "lab"],
       },
       location: { type: "string" },
     },

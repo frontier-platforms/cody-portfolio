@@ -32,7 +32,6 @@ export default function OpengraphImage() {
         }}
       >
         <span>Cody Chandler</span>
-        <span style={{ fontSize: 24, fontWeight: 400 }}>Calgary</span>
       </div>
       <div
         style={{
@@ -47,7 +46,7 @@ export default function OpengraphImage() {
           I help teams grow revenue with better data and products.
         </div>
         <div style={{ display: "flex", fontSize: 28, color: token("--color-text-muted") }}>
-          Data and product leader · Open to employment and contract roles
+          Data and product leader · Calgary
         </div>
       </div>
     </div>,

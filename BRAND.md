@@ -1,6 +1,6 @@
 # Brand Guide: Cody Chandler Portfolio
 
-Version 1.16 (2026-10-08). Single source of truth for how the site looks and sounds. Read this before writing any copy, styles, or components.
+Version 1.17 (2026-10-13). Single source of truth for how the site looks and sounds. Read this before writing any copy, styles, or components.
 
 ## How to use this file
 
@@ -13,7 +13,7 @@ Version 1.16 (2026-10-08). Single source of truth for how the site looks and sou
 
 ## 1. Positioning
 
-**Who it's for:** Hiring managers and recruiters, for employment and contract roles. They should leave knowing what I do and how to reach me. Consulting will have its own site, so this one doesn't sell it.
+**Who it's for:** Anyone curious about the work: hiring managers, peers, people with a question or an idea. They should leave knowing what I do and how to reach me. The tone invites contact without pitching for jobs. Consulting will have its own site, so this one doesn't sell it.
 
 **Role line:** Data and product leader who started in sales, marketing and finance. I turn data and product work into measurable revenue.
 
@@ -150,7 +150,7 @@ Rules:
 Keep the set small. Add a component here before building it.
 
 - **Nav:** an accent-colored bar with `--color-on-accent` text and icons. Name at left (body face, 600), 5 links at right: Home, Work, Lab, About, Contact. The current page is underlined and semibold. Focus rings in the bar use `--color-on-accent`. Resume is reached from Contact and About. No hamburger above 640px.
-- **Hero:** one h1 line, one supporting sentence, one primary button (Contact) and one secondary button (See my work in action, to the Lab). Both use the large button size; they stack full width on phones. A short availability line sits under the location label: open to employment and contract opportunities.
+- **Hero:** one h1 line, one supporting sentence, one primary button (Contact) and one secondary button (See my work in action, to the Lab). Both use the large button size; they stack full width on phones.
 - **Project card:** mono label (industry and company), title, one-line summary, one metric in mono. Whole card is the link. Border, no shadow, `--radius-md`. Border turns accent on hover.
 - **Metric:** large mono number, small muted label underneath. In the home metric strip all four numbers use the accent color and are centred; elsewhere, accent only for the single most important metric.
 - **Button:** primary (accent background, `--color-on-accent` text) and secondary (border only). `--radius-md`, min height 44px. No icons unless functional. A large size (`--space-12` tall, semibold) is for the hero only.
@@ -362,3 +362,4 @@ Added in 1.8:
 - 1.14 (2026-10-08): Ask the data moves below the dashboard on each lab.
 - 1.15 (2026-10-08): Light mode by default, even when the system is dark. Dark stays available through the toggle.
 - 1.16 (2026-10-08): Consulting comes off this site (it gets its own later). Home metric strip is centred and all accent, with a new set: experience, platform, revenue, the Lab.
+- 1.17 (2026-10-13): Less pushy about jobs. No availability line; Get in touch replaces Work with me; contact invites questions, ideas or opportunities.

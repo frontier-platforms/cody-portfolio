@@ -32,10 +32,7 @@ export default async function Home() {
               priority
               className="size-12 rounded-full border border-border object-cover"
             />
-            <div>
-              <p className="label">Calgary, Alberta</p>
-              <p className="text-sm text-text-muted">Open to employment and contract opportunities</p>
-            </div>
+            <p className="label">Calgary, Alberta</p>
           </div>
           <h1 className="mt-4 max-w-measure text-balance text-2xl sm:mt-6 sm:text-4xl">
             I help teams grow revenue with better data and products.
@@ -123,23 +120,23 @@ export default async function Home() {
           </Link>
         </p>
       </Section>
-      <Section index="05" label="Work with me" className="mt-12 sm:mt-16">
+      <Section index="05" label="Get in touch" className="mt-12 sm:mt-16">
         <div className="grid gap-12 lg:grid-cols-2">
           <div>
-            <h3 className="text-xl">Employment and contract roles</h3>
+            <h3 className="text-xl">Say hello</h3>
             <p className="mt-2 max-w-measure text-text-muted">
-              I’m looking for senior roles in Calgary across data, product, marketing and business operations.
-              I’ve led product, analytics and marketing operations teams, and I still write the SQL.
+              A question about something here, an idea to trade, or an opportunity you think I’d like. I’m
+              always happy to hear from people.
             </p>
             <p className="mt-4 flex flex-wrap gap-x-6">
               <Link
-                href="/contact?reason=hiring"
+                href="/contact"
                 className="link inline-flex min-h-11 items-center"
                 data-track="cta_clicked"
-                data-track-cta="role"
+                data-track-cta="contact"
                 data-track-location="home"
               >
-                Talk about a role
+                Get in touch
               </Link>
               <a
                 href={site.resume}
