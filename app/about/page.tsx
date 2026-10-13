@@ -106,7 +106,7 @@ export default function AboutPage() {
               <a href={site.frontier} className="link">
                 Frontier Platforms
               </a>
-              , and the Lab is on this site. I’m open to employment and contract opportunities.
+              , and the Lab is on this site. If something here sparks a question or an idea, get in touch.
             </p>
             <p>
               Outside work, I volunteered with the Canucks Autism Network for five years. I also volunteered

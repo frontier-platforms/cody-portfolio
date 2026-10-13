@@ -13,7 +13,8 @@ import { site } from "@/lib/site";
 const FORM_ID = process.env.NEXT_PUBLIC_FORMSPREE_ID || "xaeqejzp";
 
 const REASONS = [
-  { value: "hiring", label: "An employment or contract role" },
+  { value: "question", label: "A question or idea" },
+  { value: "opportunity", label: "An opportunity" },
   { value: "other", label: "Something else" },
 ] as const;
 
@@ -85,7 +86,7 @@ export function ContactForm() {
           <input name="company" autoComplete="organization" className="field" />
         </Field>
         <Field label="What’s it about?">
-          <select ref={reasonRef} name="reason" className="field" defaultValue="hiring">
+          <select ref={reasonRef} name="reason" className="field" defaultValue="question">
             {REASONS.map((r) => (
               <option key={r.value} value={r.value}>
                 {r.label}
