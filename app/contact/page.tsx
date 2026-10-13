@@ -5,16 +5,17 @@ import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Contact",
-  description: "Get in touch with Cody Chandler: questions, ideas or opportunities.",
+  description: "Get in touch with Cody Chandler about a role, a project or a question about the work.",
 };
 
 export default function ContactPage() {
   return (
     <div className="mx-auto max-w-site px-4 pt-12 sm:px-6 sm:pt-16">
       <p className="label">Contact</p>
-      <h1 className="mt-3 max-w-measure text-balance text-2xl sm:text-4xl">Say hello.</h1>
+      <h1 className="mt-3 max-w-measure text-balance text-2xl sm:text-4xl">Bring me a hard problem.</h1>
       <p className="mt-6 max-w-measure text-lg text-text-muted">
-        Questions, ideas or opportunities. I read everything and reply to anything specific.
+        A role, a project, or a question about something here. I read everything and reply to anything
+        specific.
       </p>
 
       <div className="mt-12 grid gap-12 lg:grid-cols-[1fr_18rem]">
