@@ -362,4 +362,4 @@ Added in 1.8:
 - 1.14 (2026-10-08): Ask the data moves below the dashboard on each lab.
 - 1.15 (2026-10-08): Light mode by default, even when the system is dark. Dark stays available through the toggle.
 - 1.16 (2026-10-08): Consulting comes off this site (it gets its own later). Home metric strip is centred and all accent, with a new set: experience, platform, revenue, the Lab.
-- 1.17 (2026-10-13): Less pushy about jobs. No availability line; Get in touch replaces Work with me; contact leads with 'Bring me a hard problem.' and invites a role, a project or a question.
+- 1.17 (2026-10-13): Less pushy about jobs. No availability line; Get in touch replaces Work with me; contact reads 'Get in touch.' and welcomes questions, ideas or working together.

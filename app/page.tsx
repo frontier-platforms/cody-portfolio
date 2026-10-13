@@ -123,10 +123,10 @@ export default async function Home() {
       <Section index="05" label="Get in touch" className="mt-12 sm:mt-16">
         <div className="grid gap-12 lg:grid-cols-2">
           <div>
-            <h3 className="text-xl">Bring me a hard problem</h3>
+            <h3 className="text-xl">Always glad to talk</h3>
             <p className="mt-2 max-w-measure text-text-muted">
-              A role, a project, or a question about something here. I read everything and reply to anything
-              specific.
+              Questions about this site, ideas, or working together are all welcome. I read everything and
+              reply to anything specific.
             </p>
             <p className="mt-4 flex flex-wrap gap-x-6">
               <Link
