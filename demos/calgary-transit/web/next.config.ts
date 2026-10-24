@@ -6,7 +6,11 @@ const nextConfig: NextConfig = {
   basePath: BASE_PATH,
   cacheComponents: true,
   partialPrefetching: true,
+  // This app sits inside the portfolio repo, which has its own lockfile and postcss config.
+  // Pin the root here so the build never picks up the portfolio's files.
+  outputFileTracingRoot: __dirname,
   turbopack: {
+    root: __dirname,
     rules: {
       "*.css": {
         loaders: ["@tailwindcss/turbopack"],
