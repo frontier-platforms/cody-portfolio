@@ -1,9 +1,9 @@
 {
-  "generated_at": "2026-10-24T04:46:33+00:00",
+  "generated_at": "2026-10-24T14:22:23+00:00",
   "last_loaded": {
-    "ridership_monthly": "2026-10-24T04:37:21Z",
-    "service_hours_monthly": "2026-10-24T04:37:22Z",
-    "service_requests_311": "2026-10-24T04:45:17Z"
+    "ridership_monthly": "2026-10-24T14:16:25Z",
+    "service_hours_monthly": "2026-10-24T14:16:26Z",
+    "service_requests_311": "2026-10-24T14:19:38Z"
   },
   "tables": [
     {
