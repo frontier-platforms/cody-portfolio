@@ -1,0 +1,71 @@
+@import "tailwindcss";
+
+/* City of Calgary palette, taken from calgary.ca stylesheets. */
+:root {
+  --cgy-red: #c8102e;
+  --cgy-red-dark: #a6192e;
+  --cgy-navy: #041e42;
+  --cgy-charcoal: #4b4f55;
+  --cgy-grey: #6f7277;
+  --cgy-silver: #b7b9bb;
+  --cgy-line: #dbdcdd;
+  --cgy-mist: #ededee;
+  --cgy-paper: #f6f6f6;
+  --cgy-teal: #005670;
+  --cgy-blue: #0057b8;
+  --cgy-green: #4c8c2b;
+  --cgy-orange: #dc4405;
+  --cgy-gold: #f2a900;
+  --cgy-plum: #642f6c;
+  color-scheme: light;
+}
+
+@theme inline {
+  --color-cgy-red: var(--cgy-red);
+  --color-cgy-red-dark: var(--cgy-red-dark);
+  --color-cgy-navy: var(--cgy-navy);
+  --color-cgy-charcoal: var(--cgy-charcoal);
+  --color-cgy-grey: var(--cgy-grey);
+  --color-cgy-silver: var(--cgy-silver);
+  --color-cgy-line: var(--cgy-line);
+  --color-cgy-mist: var(--cgy-mist);
+  --color-cgy-paper: var(--cgy-paper);
+  --color-cgy-teal: var(--cgy-teal);
+  --color-cgy-blue: var(--cgy-blue);
+  --color-cgy-green: var(--cgy-green);
+  --color-cgy-orange: var(--cgy-orange);
+  --color-cgy-gold: var(--cgy-gold);
+  --color-cgy-plum: var(--cgy-plum);
+  --font-sans: var(--font-open-sans);
+  --font-mono: var(--font-mono-face);
+}
+
+@layer base {
+  body {
+    background: #ffffff;
+    color: var(--cgy-charcoal);
+    font-family: var(--font-open-sans), Helvetica, Arial, sans-serif;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    color: var(--cgy-navy);
+    letter-spacing: -0.01em;
+  }
+
+  ::selection {
+    background: var(--cgy-red);
+    color: #ffffff;
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--cgy-blue);
+    outline-offset: 2px;
+  }
+}
+
+@utility tabular {
+  font-variant-numeric: tabular-nums;
+}

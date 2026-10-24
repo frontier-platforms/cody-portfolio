@@ -1,0 +1,340 @@
+{
+  "generated_at": "2026-10-24T04:46:33+00:00",
+  "last_loaded": {
+    "ridership_monthly": "2026-10-24T04:37:21Z",
+    "service_hours_monthly": "2026-10-24T04:37:22Z",
+    "service_requests_311": "2026-10-24T04:45:17Z"
+  },
+  "tables": [
+    {
+      "name": "data_contract_status",
+      "file": "data_contract_status.parquet",
+      "description": "Grain: one row per data domain. The data contract (owner, cadence, freshness target, incident tier, accuracy rule) joined to the latest load and the newest data actually present. Use for questions about how current or trustworthy the data is.",
+      "row_count": 3,
+      "columns": [
+        {
+          "name": "domain",
+          "type": "VARCHAR",
+          "description": ""
+        },
+        {
+          "name": "source_dataset_id",
+          "type": "VARCHAR",
+          "description": ""
+        },
+        {
+          "name": "data_owner",
+          "type": "VARCHAR",
+          "description": ""
+        },
+        {
+          "name": "publish_cadence",
+          "type": "VARCHAR",
+          "description": ""
+        },
+        {
+          "name": "incident_tier",
+          "type": "VARCHAR",
+          "description": ""
+        },
+        {
+          "name": "accuracy_rule",
+          "type": "VARCHAR",
+          "description": ""
+        },
+        {
+          "name": "freshness_target_days",
+          "type": "INTEGER",
+          "description": ""
+        },
+        {
+          "name": "latest_data_date",
+          "type": "DATE",
+          "description": ""
+        },
+        {
+          "name": "days_since_latest_data",
+          "type": "BIGINT",
+          "description": ""
+        },
+        {
+          "name": "last_loaded_at_utc",
+          "type": "TIMESTAMP",
+          "description": ""
+        },
+        {
+          "name": "last_load_mode",
+          "type": "VARCHAR",
+          "description": ""
+        },
+        {
+          "name": "last_rows_loaded",
+          "type": "INTEGER",
+          "description": ""
+        },
+        {
+          "name": "freshness_status",
+          "type": "VARCHAR",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "ridership_by_fare_product",
+      "file": "ridership_by_fare_product.parquet",
+      "description": "Grain: one row per month x rider group x fare product, from 2007-01. Use for questions about fare products, passes, rider groups (adult, youth, seniors, U-Pass, low income) or share of riders. Rows with is_unallocated = true carry the gap between published totals and their breakdown; summing all rows for a month equals transit_monthly_kpis.trips. Product-level detail is complete from 2014.",
+      "row_count": 3334,
+      "columns": [
+        {
+          "name": "month",
+          "type": "DATE",
+          "description": ""
+        },
+        {
+          "name": "year",
+          "type": "BIGINT",
+          "description": ""
+        },
+        {
+          "name": "rider_group",
+          "type": "VARCHAR",
+          "description": ""
+        },
+        {
+          "name": "fare_product",
+          "type": "VARCHAR",
+          "description": ""
+        },
+        {
+          "name": "is_unallocated",
+          "type": "BOOLEAN",
+          "description": "True for reconciliation rows (not broken out / not attributed). Negative values flag months where the City's breakdown exceeds its own total."
+        },
+        {
+          "name": "trips",
+          "type": "BIGINT",
+          "description": "Trips for this fare product in the month."
+        },
+        {
+          "name": "pct_of_month_trips",
+          "type": "DOUBLE",
+          "description": "Share of the month's total trips."
+        }
+      ]
+    },
+    {
+      "name": "service_requests_by_community",
+      "file": "service_requests_by_community.parquet",
+      "description": "Grain: one row per year x community x service category. Calgary Transit public requests that have a community recorded (about 27% of requests have no community and are excluded). Use for questions about where requests come from. Latitude and longitude are the community centre point.",
+      "row_count": 21217,
+      "columns": [
+        {
+          "name": "year",
+          "type": "BIGINT",
+          "description": ""
+        },
+        {
+          "name": "community_code",
+          "type": "VARCHAR",
+          "description": ""
+        },
+        {
+          "name": "community_name",
+          "type": "VARCHAR",
+          "description": ""
+        },
+        {
+          "name": "service_category",
+          "type": "VARCHAR",
+          "description": ""
+        },
+        {
+          "name": "requests",
+          "type": "BIGINT",
+          "description": ""
+        },
+        {
+          "name": "latitude",
+          "type": "DOUBLE",
+          "description": ""
+        },
+        {
+          "name": "longitude",
+          "type": "DOUBLE",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "service_requests_monthly",
+      "file": "service_requests_monthly.parquet",
+      "description": "Grain: one row per month x department x program x service category, from 2010. Public 311 requests only. Use for questions about request volumes, categories of complaints, or how fast requests are closed. Do not sum median or percentage columns across rows; re-aggregate requests instead.",
+      "row_count": 2174,
+      "columns": [
+        {
+          "name": "month",
+          "type": "DATE",
+          "description": ""
+        },
+        {
+          "name": "year",
+          "type": "BIGINT",
+          "description": ""
+        },
+        {
+          "name": "department",
+          "type": "VARCHAR",
+          "description": "Calgary Transit or Transit Capital Projects (Green Line and other major project inquiries)."
+        },
+        {
+          "name": "program",
+          "type": "VARCHAR",
+          "description": "Calgary Transit, Calgary Transit Access (accessible transit) or Transit Capital Projects."
+        },
+        {
+          "name": "service_category",
+          "type": "VARCHAR",
+          "description": ""
+        },
+        {
+          "name": "comparable_across_years",
+          "type": "BOOLEAN",
+          "description": "False for Lost Property, which only moved into 311 in 2021. Filter to true when comparing years."
+        },
+        {
+          "name": "requests",
+          "type": "BIGINT",
+          "description": ""
+        },
+        {
+          "name": "open_requests",
+          "type": "BIGINT",
+          "description": ""
+        },
+        {
+          "name": "closed_requests",
+          "type": "BIGINT",
+          "description": ""
+        },
+        {
+          "name": "median_days_to_close",
+          "type": "DOUBLE",
+          "description": "Median days from request to close for requests in this cell."
+        },
+        {
+          "name": "p90_days_to_close",
+          "type": "DOUBLE",
+          "description": ""
+        },
+        {
+          "name": "pct_closed_within_7_days",
+          "type": "DOUBLE",
+          "description": "Share of closed requests that were closed within 7 days."
+        }
+      ]
+    },
+    {
+      "name": "transit_monthly_kpis",
+      "file": "transit_monthly_kpis.parquet",
+      "description": "Grain: one row per month, from 2012-01. System-level Calgary Transit KPIs combining ridership, service hours and customer 311 requests. Use for any question about overall trends, totals by year, or efficiency. Ridership and service hours are null for months the City has not yet published.",
+      "row_count": 178,
+      "columns": [
+        {
+          "name": "month",
+          "type": "DATE",
+          "description": "First day of the month."
+        },
+        {
+          "name": "year",
+          "type": "BIGINT",
+          "description": ""
+        },
+        {
+          "name": "quarter",
+          "type": "BIGINT",
+          "description": ""
+        },
+        {
+          "name": "month_name",
+          "type": "VARCHAR",
+          "description": ""
+        },
+        {
+          "name": "trips",
+          "type": "BIGINT",
+          "description": "Journeys taken (official ridership). A trip with a transfer counts once."
+        },
+        {
+          "name": "boardings",
+          "type": "BIGINT",
+          "description": "Every vehicle boarded. Always higher than trips; never sum with trips."
+        },
+        {
+          "name": "bus_boardings",
+          "type": "BIGINT",
+          "description": ""
+        },
+        {
+          "name": "ctrain_boardings",
+          "type": "BIGINT",
+          "description": ""
+        },
+        {
+          "name": "boardings_per_trip",
+          "type": "DOUBLE",
+          "description": "Average boardings per journey, roughly how often riders transfer."
+        },
+        {
+          "name": "service_hours",
+          "type": "BIGINT",
+          "description": "Total operating hours across bus, CTrain and community shuttle."
+        },
+        {
+          "name": "bus_service_hours",
+          "type": "BIGINT",
+          "description": ""
+        },
+        {
+          "name": "ctrain_service_hours",
+          "type": "BIGINT",
+          "description": ""
+        },
+        {
+          "name": "shuttle_service_hours",
+          "type": "BIGINT",
+          "description": ""
+        },
+        {
+          "name": "trips_per_service_hour",
+          "type": "DOUBLE",
+          "description": "Trips divided by service hours. Productivity of the service delivered."
+        },
+        {
+          "name": "customer_requests_311",
+          "type": "BIGINT",
+          "description": "Public 311 requests owned by Calgary Transit (internal activity reports excluded)."
+        },
+        {
+          "name": "requests_per_100k_trips",
+          "type": "DOUBLE",
+          "description": "Customer 311 requests per 100,000 trips, all categories. Not comparable across 2021 because Lost Property moved into 311 that year."
+        },
+        {
+          "name": "rider_feedback_311",
+          "type": "BIGINT",
+          "description": "Customer 311 requests in categories that exist in every year (excludes Lost Property, which moved into 311 in 2021). Use this for trends across years."
+        },
+        {
+          "name": "rider_feedback_per_100k_trips",
+          "type": "DOUBLE",
+          "description": "rider_feedback_311 per 100,000 trips. The like-for-like measure of rider feedback relative to ridership."
+        },
+        {
+          "name": "has_ridership_data",
+          "type": "BOOLEAN",
+          "description": "False for months where the City has not published ridership yet."
+        }
+      ]
+    }
+  ]
+}

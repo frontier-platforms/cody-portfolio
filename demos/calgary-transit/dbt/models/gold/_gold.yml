@@ -1,0 +1,95 @@
+models:
+  - name: transit_monthly_kpis
+    description: >
+      Grain: one row per month, from 2012-01. System-level Calgary Transit KPIs combining ridership,
+      service hours and customer 311 requests. Use for any question about overall trends, totals by
+      year, or efficiency. Ridership and service hours are null for months the City has not yet published.
+    columns:
+      - name: month
+        description: First day of the month.
+        data_tests: [unique, not_null]
+      - name: trips
+        description: Journeys taken (official ridership). A trip with a transfer counts once.
+      - name: boardings
+        description: Every vehicle boarded. Always higher than trips; never sum with trips.
+      - name: boardings_per_trip
+        description: Average boardings per journey, roughly how often riders transfer.
+      - name: service_hours
+        description: Total operating hours across bus, CTrain and community shuttle.
+      - name: trips_per_service_hour
+        description: Trips divided by service hours. Productivity of the service delivered.
+      - name: customer_requests_311
+        description: Public 311 requests owned by Calgary Transit (internal activity reports excluded).
+      - name: requests_per_100k_trips
+        description: Customer 311 requests per 100,000 trips, all categories. Not comparable across 2021 because Lost Property moved into 311 that year.
+      - name: rider_feedback_311
+        description: Customer 311 requests in categories that exist in every year (excludes Lost Property, which moved into 311 in 2021). Use this for trends across years.
+      - name: rider_feedback_per_100k_trips
+        description: rider_feedback_311 per 100,000 trips. The like-for-like measure of rider feedback relative to ridership.
+      - name: has_ridership_data
+        description: False for months where the City has not published ridership yet.
+
+  - name: ridership_by_fare_product
+    description: >
+      Grain: one row per month x rider group x fare product, from 2007-01. Use for questions about
+      fare products, passes, rider groups (adult, youth, seniors, U-Pass, low income) or share of riders.
+      Rows with is_unallocated = true carry the gap between published totals and their breakdown;
+      summing all rows for a month equals transit_monthly_kpis.trips. Product-level detail is complete from 2014.
+    columns:
+      - name: trips
+        description: Trips for this fare product in the month.
+      - name: pct_of_month_trips
+        description: Share of the month's total trips.
+      - name: is_unallocated
+        description: True for reconciliation rows (not broken out / not attributed). Negative values flag months where the City's breakdown exceeds its own total.
+      - name: rider_group
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["Adult", "Youth", "Seniors", "Post-secondary", "Free fare zone", "Other", "Unallocated"]
+
+  - name: service_requests_monthly
+    description: >
+      Grain: one row per month x department x program x service category, from 2010. Public 311 requests only.
+      Use for questions about request volumes, categories of complaints, or how fast requests are closed.
+      Do not sum median or percentage columns across rows; re-aggregate requests instead.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [month, department, program, service_category]
+    columns:
+      - name: department
+        description: Calgary Transit or Transit Capital Projects (Green Line and other major project inquiries).
+      - name: program
+        description: Calgary Transit, Calgary Transit Access (accessible transit) or Transit Capital Projects.
+      - name: comparable_across_years
+        description: False for Lost Property, which only moved into 311 in 2021. Filter to true when comparing years.
+        data_tests: [not_null]
+      - name: median_days_to_close
+        description: Median days from request to close for requests in this cell.
+      - name: pct_closed_within_7_days
+        description: Share of closed requests that were closed within 7 days.
+
+  - name: service_requests_by_community
+    description: >
+      Grain: one row per year x community x service category. Calgary Transit public requests that have
+      a community recorded (about 27% of requests have no community and are excluded). Use for questions
+      about where requests come from. Latitude and longitude are the community centre point.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [year, community_code, service_category]
+
+  - name: data_contract_status
+    description: >
+      Grain: one row per data domain. The data contract (owner, cadence, freshness target, incident tier,
+      accuracy rule) joined to the latest load and the newest data actually present. Use for questions
+      about how current or trustworthy the data is.
+    columns:
+      - name: domain
+        data_tests: [unique, not_null]
+      - name: freshness_status
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["Meeting target", "Behind target"]

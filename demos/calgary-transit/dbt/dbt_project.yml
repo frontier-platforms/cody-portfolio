@@ -1,0 +1,33 @@
+name: calgary_transit
+version: "1.0.0"
+profile: calgary_transit
+
+model-paths: ["models"]
+seed-paths: ["seeds"]
+test-paths: ["tests"]
+macro-paths: ["macros"]
+target-path: "target"
+clean-targets: ["target", "dbt_packages"]
+
+seeds:
+  calgary_transit:
+    +schema: reference
+    # Reference tables are tiny; rebuilding them every run means adding a column never breaks a cached warehouse.
+    +full_refresh: true
+    service_category_map:
+      +column_types:
+        is_retired: boolean
+        is_internal: boolean
+        comparable_across_years: boolean
+    data_contract:
+      +column_types:
+        freshness_target_days: integer
+
+models:
+  calgary_transit:
+    silver:
+      +schema: silver
+      +materialized: table
+    gold:
+      +schema: gold
+      +materialized: table

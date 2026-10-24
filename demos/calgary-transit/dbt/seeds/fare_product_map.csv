@@ -1,0 +1,21 @@
+source_column,rider_group,fare_product,level
+ridership,All riders,All fare products,system_total
+adult_ridership,Adult,All adult fares,group_total
+youth_ridership,Youth,All youth fares,group_total
+seniors_pass_ridership,Seniors,All seniors passes,group_total
+adult_book_of_tickets_ridership,Adult,Book of tickets,product
+adult_cash_single_ticket_ride_ridership,Adult,Cash / single ride,product
+adult_day_pass_ridership,Adult,Day pass,product
+adult_monthly_pass_ridership,Adult,Monthly pass,product
+adult_low_income_monthly_pass_ridership,Adult,Low-income monthly pass,product
+youth_book_of_tickets_ridership,Youth,Book of tickets,product
+youth_cash_single_ticket_ride_ridership,Youth,Cash / single ride,product
+youth_day_pass_ridership,Youth,Day pass,product
+youth_monthly_pass_ridership,Youth,Monthly pass,product
+youth_low_income_monthly_pass_ridership,Youth,Low-income monthly pass,product
+seniors_regular_pass_ridership,Seniors,Regular pass,product
+seniors_low_income_pass_ridership,Seniors,Low-income pass,product
+u_pass_ridership,Post-secondary,U-Pass,product
+free_fare_zone_ridership,Free fare zone,Free fare zone,product
+weekend_group_pass_ridership,Other,Weekend group pass,product
+airport_brt_ridership_total_trips,Other,Airport BRT (Route 300),product

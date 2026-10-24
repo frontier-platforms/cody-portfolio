@@ -1,6 +1,6 @@
 # Brand Guide: Cody Chandler Portfolio
 
-Version 1.17 (2026-10-13). Single source of truth for how the site looks and sounds. Read this before writing any copy, styles, or components.
+Version 1.18 (2026-10-23). Single source of truth for how the site looks and sounds. Read this before writing any copy, styles, or components.
 
 ## How to use this file
 
@@ -183,6 +183,11 @@ Added in 1.8:
 
 - **Routing diagram:** a vertical flow (question, agent, a row of model cards, response) with question chips that highlight the route taken. Model cards use a data-color top bar, a grain line in mono and measure chips.
 
+Added in 1.18:
+
+- **Data demos page:** an unlisted index at `/data-demos` (no nav link, not in the sitemap, not indexed). One project card per demo, linking with a plain `<a>` because each demo is a separate app.
+- **Scoped exception:** each demo under `/data-demos/<name>` is a separate app in `demos/` and may use its subject's look instead of this guide. The Calgary Transit demo uses the City of Calgary palette and Open Sans, built for a City of Calgary interview. The index page itself follows this guide.
+
 ## 7. Motion
 
 - Current setting: subtle (120ms fast, 200ms base).
@@ -363,3 +368,4 @@ Added in 1.8:
 - 1.15 (2026-10-08): Light mode by default, even when the system is dark. Dark stays available through the toggle.
 - 1.16 (2026-10-08): Consulting comes off this site (it gets its own later). Home metric strip is centred and all accent, with a new set: experience, platform, revenue, the Lab.
 - 1.17 (2026-10-13): Less pushy about jobs. No availability line; Get in touch replaces Work with me; contact reads 'Get in touch.' and welcomes questions, ideas or working together.
+- 1.18 (2026-10-23): Added the unlisted Data demos page. Demos in demos/ are separate apps and may use their subject's look; the Calgary Transit demo uses the City of Calgary palette at the owner's request.

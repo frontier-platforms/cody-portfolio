@@ -1,0 +1,69 @@
+models:
+  - name: fct_service_requests
+    description: >
+      One row per transit 311 service request (latest version across incremental loads).
+      Service names and agency codes are mapped to stable categories and departments through
+      the reference seeds, so reorganizations and renamed request types don't break trends.
+    columns:
+      - name: service_request_id
+        data_tests: [unique, not_null]
+      - name: requested_at
+        data_tests: [not_null]
+      - name: status
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["Open", "Closed"]
+      - name: service_category
+        description: Stable category from reference.service_category_map. A null here means a new, unmapped service name.
+        data_tests: [not_null]
+      - name: department
+        description: Canonical department from reference.agency_map. Collapses TRAN / OS / OSC / Tranc into Calgary Transit.
+        data_tests: [not_null]
+      - name: days_to_close
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+
+  - name: fct_ridership_monthly
+    description: >
+      One row per month with published ridership. trips counts each journey once; boardings counts
+      every vehicle boarded (a transfer is two boardings). Never add or compare them as the same measure.
+    columns:
+      - name: month
+        data_tests: [unique, not_null]
+      - name: trips
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+
+  - name: fct_ridership_by_fare_product
+    description: >
+      One row per month, rider group and fare product. Gaps between published subtotals and their
+      products are carried as explicit unallocated rows, so trips always sum to the official monthly total.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [month, rider_group, fare_product]
+
+  - name: fct_service_hours_monthly
+    description: One row per month and mode (Bus, CTrain, Community shuttle).
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [month, mode]
+    columns:
+      - name: service_hours
+        data_tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+
+  - name: dim_month
+    description: Calendar spine, one row per month from 2007 to the current month.
+    columns:
+      - name: month
+        data_tests: [unique, not_null]
