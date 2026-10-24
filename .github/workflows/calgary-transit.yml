@@ -1,0 +1,78 @@
+# Daily run of the Calgary Transit data demo (demos/calgary-transit), orchestrated by Airflow.
+# GitHub Actions is the scheduler: it runs the calgary_transit DAG once with `airflow dags test`.
+#
+#   Calgary open data API → bronze → dbt silver/gold (tests after each model) → dbt docs → publish
+#
+# A failed test or a stale Tier 1 feed fails the DAG before publishing, so the demo keeps serving
+# the last good data. Vercel redeploys the demo on the commit.
+name: Calgary Transit demo data
+
+on:
+  schedule:
+    - cron: "0 11 * * *" # daily, 11:00 UTC
+  workflow_dispatch:
+    inputs:
+      full_refresh:
+        description: Reload every source from scratch
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: calgary-transit-data
+  cancel-in-progress: false
+
+defaults:
+  run:
+    working-directory: demos/calgary-transit
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+          cache-dependency-glob: demos/calgary-transit/requirements-*.txt
+
+      - name: Set up environments
+        run: ./scripts/setup.sh
+
+      # The warehouse persists between runs so the 311 feed can load incrementally.
+      - name: Restore warehouse
+        uses: actions/cache/restore@v4
+        with:
+          path: demos/calgary-transit/data/warehouse.duckdb
+          key: calgary-transit-warehouse-${{ github.run_id }}
+          restore-keys: calgary-transit-warehouse-
+
+      - name: Run the Airflow DAG
+        env:
+          FULL_REFRESH: ${{ inputs.full_refresh && '1' || '0' }}
+          SOCRATA_APP_TOKEN: ${{ secrets.SOCRATA_APP_TOKEN }}
+        run: ./scripts/run_pipeline.sh
+
+      - name: Save warehouse
+        if: success()
+        uses: actions/cache/save@v4
+        with:
+          path: demos/calgary-transit/data/warehouse.duckdb
+          key: calgary-transit-warehouse-${{ github.run_id }}
+
+      - name: Commit refreshed data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add web/public/data web/public/dbt-docs.html
+          if git diff --cached --quiet; then
+            echo "No changes."
+            exit 0
+          fi
+          git commit -m "data: Calgary Transit daily refresh"
+          git pull --rebase
+          git push

@@ -1,0 +1,4 @@
+domain,source_table,source_dataset_id,data_owner,publish_cadence,freshness_target_days,incident_tier,accuracy_rule
+Ridership,ridership_monthly,iema-jbc4,Calgary Transit (published by City open data),Monthly with publication lag,120,Tier 2,Fare products plus unallocated reconcile exactly to published monthly ridership
+Service hours,service_hours_monthly,64iy-rpqq,Calgary Transit (published by City open data),Monthly with publication lag,120,Tier 2,Hours are non-negative and present for bus and CTrain every month
+311 service requests,service_requests_311,iahh-g8bj,311 Calgary (published by City open data),Daily,3,Tier 1,One row per request; every service name and agency maps to the reference tables

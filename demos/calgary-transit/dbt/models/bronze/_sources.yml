@@ -1,0 +1,31 @@
+sources:
+  - name: bronze
+    description: Raw City of Calgary open data, landed by Airflow exactly as the API returned it (one JSON record per row).
+    schema: bronze
+    tables:
+      - name: ridership_monthly
+        description: Calgary Transit ridership by fare product (dataset iema-jbc4). Includes placeholder months with no values.
+        config:
+          # Freshness is measured on the newest month that actually has data, not the newest placeholder row.
+          loaded_at_field: "strptime(record->>'date', '%Y/%m')"
+          freshness:
+            warn_after: {count: 120, period: day}
+            filter: "record->>'ridership' is not null"
+
+      - name: service_hours_monthly
+        description: Calgary Transit operating hours by mode (dataset 64iy-rpqq).
+        config:
+          loaded_at_field: "strptime(record->>'date', '%Y/%m')"
+          freshness:
+            warn_after: {count: 120, period: day}
+
+      - name: service_requests_311
+        description: Transit slice of 311 service requests (dataset iahh-g8bj), loaded incrementally on updated_date.
+        config:
+          loaded_at_field: "cast(record->>'requested_date' as timestamp)"
+          freshness:
+            warn_after: {count: 2, period: day}
+            error_after: {count: 3, period: day}
+
+      - name: _load_log
+        description: One row per Airflow load batch.

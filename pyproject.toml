@@ -25,6 +25,8 @@ package = false
 
 [tool.ruff]
 line-length = 110
+# Demo apps in demos/ carry their own Python environments and tooling.
+extend-exclude = ["demos"]
 
 [tool.pytest.ini_options]
 testpaths = ["ml/tests", "ingest/tests"]

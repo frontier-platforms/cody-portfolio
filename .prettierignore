@@ -11,3 +11,4 @@ public/ml
 dbt/target
 .venv
 ml/tests/fixtures
+demos

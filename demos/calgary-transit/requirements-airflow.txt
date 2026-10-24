@@ -1,0 +1,5 @@
+# Install with the Airflow constraints file (see scripts/setup.sh)
+apache-airflow==3.3.2
+astronomer-cosmos==1.15.1
+duckdb==1.5.5
+requests

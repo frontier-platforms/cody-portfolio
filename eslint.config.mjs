@@ -17,6 +17,8 @@ const eslintConfig = defineConfig([
     ".cache/**",
     "dbt/target/**",
     "public/dbt-docs/**",
+    // Self-contained demo apps with their own tooling (see demos/README.md):
+    "demos/**",
   ]),
 ]);
 

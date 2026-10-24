@@ -1,0 +1,26 @@
+.venv/
+.venv-dbt/
+__pycache__/
+*.pyc
+.env
+.env.*
+!.env.example
+
+# Warehouse and Airflow runtime state
+data/*.duckdb
+data/*.duckdb.wal
+.airflow/
+
+# dbt
+dbt/target/
+dbt/dbt_packages/
+dbt/logs/
+logs/
+
+# Web
+web/node_modules/
+web/.next/
+web/.vercel/
+
+.DS_Store
+dbt/.user.yml

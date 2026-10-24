@@ -1,0 +1,68 @@
+service_name,service_category,program,is_retired,is_internal,comparable_across_years
+After Hours Transit - General Concerns,General Feedback,Calgary Transit,false,false,true
+CT - Advertising and Communications,Communications & Signage,Calgary Transit,false,false,true
+CT - Bikes on Transit,General Feedback,Calgary Transit,false,false,true
+CT - Bus & Auxiliary Vehicle Maintenance,Vehicles & Maintenance,Calgary Transit,false,false,true
+CT - Bus Route or Bus Schedule,Routes & Schedules,Calgary Transit,false,false,true
+CT - Bus Stops,"Stops, Stations & Park and Ride",Calgary Transit,false,false,true
+CT - Bus or CTrain Vehicle Maintenance,Vehicles & Maintenance,Calgary Transit,false,false,true
+CT - Business Strategies Feedback,General Feedback,Calgary Transit,false,false,true
+CT - CTrain Schedule,Routes & Schedules,Calgary Transit,false,false,true
+CT - CTrain Stations,"Stops, Stations & Park and Ride",Calgary Transit,false,false,true
+CT - Employee Reported - Bus or Ctrain Maintenance,Vehicles & Maintenance,Calgary Transit,false,true,true
+CT - Fair Entry Inquiry,Fares & Passes,Calgary Transit,false,false,true
+CT - Lost Property,Lost Property,Calgary Transit,false,false,false
+CT - MAX,Routes & Schedules,Calgary Transit,false,false,true
+CT - Park and Ride Lot - LRT or Bus,"Stops, Stations & Park and Ride",Calgary Transit,false,false,true
+CT - Projects,Projects & Planning,Calgary Transit,false,false,true
+CT - Shared E-Bike,General Feedback,Calgary Transit,false,false,true
+CT - Shared E-Scooter,General Feedback,Calgary Transit,false,false,true
+CT - Snow and Ice Control,Snow & Ice,Calgary Transit,false,false,true
+CT - Transit Pass Programs,Fares & Passes,Calgary Transit,false,false,true
+CT - Transit Recruitment Inquiry,General Feedback,Calgary Transit,false,false,true
+CT - Transit Safety / Public Etiquette,Safety & Public Behaviour,Calgary Transit,false,false,true
+CT AC - Activity Report - CTA INTERNAL,Internal Activity,Calgary Transit Access,false,true,true
+CT AC - Activity Report - Care Calgary INTERNAL,Internal Activity,Calgary Transit Access,false,true,true
+CT AC - Activity Report - Checker INTERNAL,Internal Activity,Calgary Transit Access,false,true,true
+CT AC - Activity Report - Southland INTERNAL,Internal Activity,Calgary Transit Access,false,true,true
+CT AC - Activity Report INTERNAL,Internal Activity,Calgary Transit Access,false,true,true
+CT AC - Fair Entry Inquiry,Fares & Passes,Calgary Transit Access,false,false,true
+CT AC - Service Concern,Operator & Trip Feedback,Calgary Transit Access,false,false,true
+CT AC - Trip Feedback,Operator & Trip Feedback,Calgary Transit Access,false,false,true
+CT AC - Trip Feedback - CTA,Operator & Trip Feedback,Calgary Transit Access,false,false,true
+CT AC - Trip Feedback - Care Calgary,Operator & Trip Feedback,Calgary Transit Access,false,false,true
+CT AC - Trip Feedback - Checker Taxi,Operator & Trip Feedback,Calgary Transit Access,false,false,true
+CT AC - Trip Feedback - Southland,Operator & Trip Feedback,Calgary Transit Access,false,false,true
+N/A,Uncategorized,Calgary Transit,false,false,true
+PSD - Major Transit Projects Inquiry,Projects & Planning,Transit Capital Projects,false,false,true
+TI - Major Transit Projects Inquiry,Projects & Planning,Transit Capital Projects,false,false,true
+Z - CT - Feedback on Contracted Maintenance,Vehicles & Maintenance,Calgary Transit,true,false,true
+Z - CT AC - Commendation - Access Staff,Commendations,Calgary Transit Access,true,false,true
+Z - CT AC - Commendation - Service Provider,Commendations,Calgary Transit Access,true,false,true
+Z - CT AC - Schedule,Routes & Schedules,Calgary Transit Access,true,false,true
+Z - CT AC - Vehicle Maintenance,Vehicles & Maintenance,Calgary Transit Access,true,false,true
+Z - CT AC - Vehicle Operation,Operator & Trip Feedback,Calgary Transit Access,true,false,true
+Z CT - Advertising - System Map - Signage Issue,Communications & Signage,Calgary Transit,true,false,true
+Z CT - Bus Shelter Maintenance,"Stops, Stations & Park and Ride",Calgary Transit,true,false,true
+Z CT - Bus Zone Maintenance,"Stops, Stations & Park and Ride",Calgary Transit,true,false,true
+Z CT - CTrain Schedule Issue,Routes & Schedules,Calgary Transit,true,false,true
+Z CT - Downtown 7 Ave LRT Corridor - Streetlight,"Stops, Stations & Park and Ride",Calgary Transit,true,false,true
+Z CT - Employee Reported - Bus Shelter Maintenance,"Stops, Stations & Park and Ride",Calgary Transit,true,true,true
+Z CT - Employee Reported - Bus Zone Maintenance,"Stops, Stations & Park and Ride",Calgary Transit,true,true,true
+Z CT - Fare Collection Equipment,Fares & Passes,Calgary Transit,true,false,true
+Z CT - Fare Feedback,Fares & Passes,Calgary Transit,true,false,true
+Z CT - Fleet Management,Vehicles & Maintenance,Calgary Transit,true,false,true
+Z CT - LRT - Signals - Right of Way,Vehicles & Maintenance,Calgary Transit,true,false,true
+Z CT - LRT Station Maintenance,"Stops, Stations & Park and Ride",Calgary Transit,true,false,true
+Z CT - Park and Ride Lot Maintenance,"Stops, Stations & Park and Ride",Calgary Transit,true,false,true
+Z CT - Park and Ride Planning Feedback,Projects & Planning,Calgary Transit,true,false,true
+Z CT - Planning Concern,Projects & Planning,Calgary Transit,true,false,true
+Z CT - Public Behaviour,Safety & Public Behaviour,Calgary Transit,true,false,true
+Z CT - Route Schedule - Trapeze - Website Feedback,Routes & Schedules,Calgary Transit,true,false,true
+Z CT - Schedule Design,Routes & Schedules,Calgary Transit,true,false,true
+Z CT - Service Concern,General Feedback,Calgary Transit,true,false,true
+Z CT - T.S.S. Concern / Feedback,Safety & Public Behaviour,Calgary Transit,true,false,true
+Z CT - Vehicle Operation - Bus Operator,Operator & Trip Feedback,Calgary Transit,true,false,true
+Z CT - Vehicle Operation - CTrain Operator,Operator & Trip Feedback,Calgary Transit,true,false,true
+Z CT - Vehicle Operation - Not Bus or CTrain Operator,Operator & Trip Feedback,Calgary Transit,true,false,true
+z - CT - Enmax - OTN Maintenance,"Stops, Stations & Park and Ride",Calgary Transit,true,false,true
