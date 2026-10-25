@@ -14,12 +14,14 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { InfoTip } from "@/components/info-tip";
 import { Panel, PanelState } from "@/components/panel";
 import { AXIS, C } from "@/components/charts/palette";
 import { useQuery } from "@/lib/use-query";
 import { fmtCompact, fmtDate, fmtMonth, fmtNumber, fmtPct } from "@/lib/format";
 
 const BASELINE = 2019;
+const TITLE = "Calgary Transit: is the rider experience keeping up?";
 
 type Annual = { year: number; trips: number; service_hours: number; feedback: number; months: number };
 
@@ -54,7 +56,8 @@ export function Dashboard() {
 
   if (!now || !base) {
     return (
-      <div className="mt-8">
+      <div className="space-y-6">
+        <h1 className="mt-1 text-3xl font-bold">{TITLE}</h1>
         <PanelState error={error} height={160} />
       </div>
     );
@@ -64,16 +67,18 @@ export function Dashboard() {
   const baseMonthly = base.trips / 12;
 
   return (
-    <div className="mt-6 space-y-6">
-      <section className="rounded-lg bg-cgy-slate p-6 text-white">
-        <p className="text-sm font-semibold uppercase tracking-wide text-white/60">
-          {now.year} vs {BASELINE}, before the pandemic
-        </p>
-        <p className="mt-2 text-2xl font-semibold leading-snug">
-          Riders are back to {fmtPct(pct(now.trips, base.trips))} of {BASELINE}. Rider feedback per trip is up{" "}
-          {fmtPct(pct(rate(now), rate(base)) - 100)}.
-        </p>
-      </section>
+    <div className="space-y-6">
+      <div className="mt-1 flex items-center gap-3">
+        <h1 className="text-3xl font-bold">{TITLE}</h1>
+        <InfoTip label="About these numbers">
+          <strong>
+            {now.year} vs {BASELINE}, before the pandemic:
+          </strong>{" "}
+          riders are back to {fmtPct(pct(now.trips, base.trips))} of {BASELINE}, and rider feedback per trip is up{" "}
+          {fmtPct(pct(rate(now), rate(base)) - 100)}, like for like. Every number is a live query on the governed tables the
+          AI agent also uses.
+        </InfoTip>
+      </div>
 
       <div className="grid gap-3 sm:grid-cols-3">
         <Tile label={`Trips in ${now.year}`} value={fmtCompact(now.trips)} note={`${fmtPct(pct(now.trips, base.trips))} of ${BASELINE}`} />

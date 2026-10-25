@@ -38,6 +38,14 @@ website     dashboard (DuckDB-WASM in the browser) and AI agent (writes SQL agai
 | `service_requests_by_community` | year x community x category |
 | `data_contract_status` | data domain |
 
+## Machine learning
+
+`pipeline/ml/resolution_model.py` trains an XGBoost classifier in the DAG, right after the dbt tests pass: will a transit 311 request be closed within 7 days? It uses only what is known when a request is filed (request type, category, program, channel, community, timing, and the last 90 days' pace and 30 days' workload for that type), so it can score a new request immediately.
+
+- **Honest test:** trained on 2022 to 2024, scored on 2025, a year it never saw, against a baseline of each request type's past rate.
+- **Labels:** requests still open after 7 days count as not closed in 7, so slow requests aren't dropped.
+- **Export:** trees go to `web/public/data/resolution_model.json`; the website scores and explains predictions in the browser (`web/lib/ml/gbm.ts`). The run fails if the exported trees disagree with XGBoost.
+
 ## Data issues the pipeline handles
 
 - **One department, four codes.** 311 files Calgary Transit under `TRAN`, `OS`, `OSC` and `Tranc` as the org changed. `reference.agency_map` collapses them.

@@ -64,7 +64,8 @@ export default function ApproachPage() {
           />
         </a>
         <p className="mt-2 text-sm text-cgy-grey">
-          Airflow runs it daily: 31 tasks, 10 dbt models, 27 tests. A failed test stops publishing.{" "}
+          Airflow runs it daily: 32 tasks, 10 dbt models, 27 tests, then retrains an XGBoost model on the tested
+          data. A failed test stops publishing.{" "}
           <a className="font-semibold text-cgy-blue underline" href={DBT_DOCS_URL}>
             dbt docs
           </a>{" "}
@@ -80,6 +81,11 @@ export default function ApproachPage() {
           <li>
             <strong className="text-cgy-slate">Complaints looked up 43% per trip.</strong> Lost Property moved into 311 in
             2021. A governed flag fixed it once, for the dashboard and the agent: like for like, it&apos;s 12%.
+          </li>
+          <li>
+            <strong className="text-cgy-slate">The first model lost to a rule of thumb.</strong> Fixed features couldn&apos;t
+            keep up as closure times drifted. Adding recent pace and workload, and training on post-pandemic years, beat it
+            on 2025 data it never saw.
           </li>
           <li>
             <strong className="text-cgy-slate">The first cloud run failed.</strong> A test ran before its table existed.
