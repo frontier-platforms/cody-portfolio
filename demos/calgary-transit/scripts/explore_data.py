@@ -7,7 +7,11 @@ from pathlib import Path
 import duckdb
 
 path = os.environ.get("WAREHOUSE_PATH", str(Path(__file__).resolve().parents[1] / "data" / "warehouse.duckdb"))
-con = duckdb.connect(path, read_only=True)
+# The UI keeps its own notebook state in memory, so the session itself must be writable;
+# the warehouse is attached read-only so it can't be changed from the UI.
+con = duckdb.connect()
+con.execute(f"attach '{path}' as warehouse (read_only)")
+con.execute("use warehouse")
 con.execute("install ui; load ui; call start_ui()")
 print(f"DuckDB UI running at http://localhost:4213 on {path} (read-only). Ctrl+C to stop.")
 try:
