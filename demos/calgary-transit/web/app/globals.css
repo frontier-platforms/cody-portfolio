@@ -4,7 +4,7 @@
 :root {
   --cgy-red: #c8102e;
   --cgy-red-dark: #a6192e;
-  --cgy-navy: #041e42;
+  --cgy-slate: #4b4f55; /* City of Calgary logo charcoal */
   --cgy-charcoal: #4b4f55;
   --cgy-grey: #6f7277;
   --cgy-silver: #b7b9bb;
@@ -23,7 +23,7 @@
 @theme inline {
   --color-cgy-red: var(--cgy-red);
   --color-cgy-red-dark: var(--cgy-red-dark);
-  --color-cgy-navy: var(--cgy-navy);
+  --color-cgy-slate: var(--cgy-slate);
   --color-cgy-charcoal: var(--cgy-charcoal);
   --color-cgy-grey: var(--cgy-grey);
   --color-cgy-silver: var(--cgy-silver);
@@ -51,7 +51,7 @@
   h2,
   h3,
   h4 {
-    color: var(--cgy-navy);
+    color: var(--cgy-slate);
     letter-spacing: -0.01em;
   }
 

@@ -157,7 +157,7 @@ export function Ask() {
             type="button"
             disabled={busy}
             onClick={() => run(s)}
-            className="rounded-full border border-cgy-line bg-cgy-paper px-3 py-1 text-left text-sm text-cgy-navy hover:border-cgy-red hover:text-cgy-red disabled:opacity-40"
+            className="rounded-full border border-cgy-line bg-cgy-paper px-3 py-1 text-left text-sm text-cgy-slate hover:border-cgy-red hover:text-cgy-red disabled:opacity-40"
           >
             {s}
           </button>
@@ -177,7 +177,7 @@ function TurnView({ turn }: { turn: Turn }) {
   return (
     <article className="rounded-lg border border-cgy-line bg-white">
       <header className="border-b border-cgy-line bg-cgy-paper px-4 py-3">
-        <p className="font-semibold text-cgy-navy">{turn.question}</p>
+        <p className="font-semibold text-cgy-slate">{turn.question}</p>
       </header>
       <div className="space-y-4 p-4">
         {turn.answer && <Answer text={turn.answer} />}
@@ -208,7 +208,7 @@ function StepView({ step }: { step: Step }) {
   const cols = step.result?.columns ?? [];
   return (
     <div className="overflow-hidden rounded border border-cgy-line">
-      <pre className="overflow-x-auto bg-cgy-navy p-3 font-mono text-xs leading-relaxed text-white">{step.sql.trim()}</pre>
+      <pre className="overflow-x-auto bg-cgy-slate p-3 font-mono text-xs leading-relaxed text-white">{step.sql.trim()}</pre>
       {step.error ? (
         <p className="bg-white px-3 py-2 text-xs text-cgy-red">Error: {step.error} (the agent sees this and retries)</p>
       ) : (
@@ -217,7 +217,7 @@ function StepView({ step }: { step: Step }) {
             <thead className="sticky top-0 bg-cgy-mist">
               <tr>
                 {cols.map((c) => (
-                  <th key={c} className="whitespace-nowrap px-3 py-1.5 font-semibold text-cgy-navy">
+                  <th key={c} className="whitespace-nowrap px-3 py-1.5 font-semibold text-cgy-slate">
                     {c}
                   </th>
                 ))}
@@ -256,7 +256,7 @@ function inline(text: string): ReactNode[] {
   return text.split(/(\*\*[^*]+\*\*|`[^`]+`)/g).map((part, i) => {
     if (part.startsWith("**") && part.endsWith("**"))
       return (
-        <strong key={i} className="text-cgy-navy">
+        <strong key={i} className="text-cgy-slate">
           {part.slice(2, -2)}
         </strong>
       );

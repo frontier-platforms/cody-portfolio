@@ -1,6 +1,6 @@
 export const C = {
   red: "#c8102e",
-  navy: "#041e42",
+  slate: "#4b4f55",
   teal: "#005670",
   blue: "#0057b8",
   green: "#4c8c2b",
@@ -13,7 +13,7 @@ export const C = {
 };
 
 export const RIDER_GROUP_COLOURS: Record<string, string> = {
-  Adult: C.navy,
+  Adult: C.slate,
   Youth: C.blue,
   Seniors: C.teal,
   "Post-secondary": C.green,

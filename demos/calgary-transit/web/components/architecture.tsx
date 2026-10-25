@@ -14,7 +14,7 @@ const TONE: Record<Stage["tone"], string> = {
   source: "border-cgy-silver bg-white",
   layer: "border-cgy-line bg-cgy-paper",
   gold: "border-cgy-red bg-white",
-  consumer: "border-cgy-navy bg-cgy-navy",
+  consumer: "border-cgy-slate bg-cgy-slate",
 };
 
 export function Architecture({ caption = true }: { caption?: boolean }) {
@@ -31,7 +31,7 @@ export function Architecture({ caption = true }: { caption?: boolean }) {
               >
                 {s.label}
               </p>
-              <p className={`mt-1 font-bold ${s.tone === "consumer" ? "text-white" : "text-cgy-navy"}`}>{s.tool}</p>
+              <p className={`mt-1 font-bold ${s.tone === "consumer" ? "text-white" : "text-cgy-slate"}`}>{s.tool}</p>
               <p className={`mt-1 text-sm ${s.tone === "consumer" ? "text-white/85" : ""}`}>{s.detail}</p>
             </div>
             {i < STAGES.length - 1 && (

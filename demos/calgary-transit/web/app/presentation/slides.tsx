@@ -16,7 +16,7 @@ function Point({ n, title, children }: { n?: number; title: string; children: Re
     <div className="flex gap-4 rounded-lg bg-cgy-paper p-6">
       {n !== undefined && <span className="text-[40px] font-bold leading-none text-cgy-red">{n}</span>}
       <div>
-        <p className="text-[28px] font-bold leading-tight text-cgy-navy">{title}</p>
+        <p className="text-[28px] font-bold leading-tight text-cgy-slate">{title}</p>
         <p className="mt-2 text-[22px] leading-snug">{children}</p>
       </div>
     </div>
@@ -63,7 +63,7 @@ export const SLIDES: Slide[] = [
             ].map(([s, q], i) => (
               <div key={s} className="rounded-lg border-t-4 border-cgy-red bg-cgy-paper p-6">
                 <p className="text-[44px] font-bold leading-none text-cgy-red">{i + 1}</p>
-                <p className="mt-4 text-[28px] font-bold leading-tight text-cgy-navy">{s}</p>
+                <p className="mt-4 text-[28px] font-bold leading-tight text-cgy-slate">{s}</p>
                 <p className="mt-2 text-[19px] text-cgy-grey">{q}</p>
               </div>
             ))}
@@ -88,7 +88,7 @@ export const SLIDES: Slide[] = [
               {["Client A", "Client B", "Client C"].map((c) => (
                 <div
                   key={c}
-                  className="rounded border-2 border-cgy-silver bg-white py-4 text-center text-[18px] font-semibold text-cgy-navy"
+                  className="rounded border-2 border-cgy-silver bg-white py-4 text-center text-[18px] font-semibold text-cgy-slate"
                 >
                   {c}
                   <span className="block text-[13px] font-normal text-cgy-grey">own database</span>
@@ -96,7 +96,7 @@ export const SLIDES: Slide[] = [
               ))}
             </div>
             <p className="mt-5 text-center text-[22px] text-cgy-red">↓ manual weekly refresh ↓</p>
-            <p className="mt-5 text-center text-[26px] font-bold text-cgy-navy">
+            <p className="mt-5 text-center text-[26px] font-bold text-cgy-slate">
               Same question, different answers
             </p>
           </div>
@@ -142,7 +142,7 @@ export const SLIDES: Slide[] = [
               ],
             ].map(([t, b, r]) => (
               <div key={t} className="flex flex-col rounded-lg border border-cgy-line p-8">
-                <p className="text-[30px] font-bold leading-tight text-cgy-navy">{t}</p>
+                <p className="text-[30px] font-bold leading-tight text-cgy-slate">{t}</p>
                 <p className="mt-4 text-[23px] leading-snug">{b}</p>
                 <p className="mt-8 border-t border-cgy-line pt-5 text-[21px] font-semibold text-cgy-red">
                   → {r}
@@ -190,7 +190,7 @@ export const SLIDES: Slide[] = [
               ].map((s, i) => (
                 <li key={s} className="flex gap-3">
                   <span className="font-bold text-cgy-red">{i + 1}</span>
-                  <span className="text-cgy-navy">{s}</span>
+                  <span className="text-cgy-slate">{s}</span>
                 </li>
               ))}
             </ol>
@@ -234,14 +234,14 @@ export const SLIDES: Slide[] = [
               "Freshness checked every 30 min",
               "AI error digests",
             ].map((c) => (
-              <span key={c} className="rounded-full bg-cgy-paper px-4 py-2 font-semibold text-cgy-navy">
+              <span key={c} className="rounded-full bg-cgy-paper px-4 py-2 font-semibold text-cgy-slate">
                 {c}
               </span>
             ))}
           </div>
         </div>
         <div className="rounded-lg bg-cgy-paper px-6 py-5">
-          <p className="text-[20px] leading-snug text-cgy-navy">
+          <p className="text-[20px] leading-snug text-cgy-slate">
             <strong>My role:</strong> Director of Product Innovation &amp; Analytics. I owned PRIME from
             planning to general availability, working with Data Engineering and Customer Success.
           </p>
@@ -269,7 +269,7 @@ export const SLIDES: Slide[] = [
             <BigStat value="Self-serve" label="Routine Customer Success questions" />
           </div>
         </div>
-        <p className="rounded-lg bg-cgy-navy px-7 py-6 text-[26px] font-semibold leading-snug text-white">
+        <p className="rounded-lg bg-cgy-slate px-7 py-6 text-[26px] font-semibold leading-snug text-white">
           When the dashboard, the client export and the AI give the same number, people stop checking and
           start deciding.
         </p>
@@ -298,7 +298,7 @@ export const SLIDES: Slide[] = [
             ["Ask the data", "Plain English in, SQL and the answer out. My proudest part."],
           ].map(([t, b], i) => (
             <div key={t} className="rounded-lg bg-white/10 p-7">
-              <p className="text-[44px] font-bold leading-none text-cgy-red">{i + 1}</p>
+              <p className="text-[44px] font-bold leading-none text-white/70">{i + 1}</p>
               <p className="mt-4 text-[30px] font-bold text-white">{t}</p>
               <p className="mt-3 text-[23px] leading-snug text-white/85">{b}</p>
             </div>
@@ -343,7 +343,7 @@ export const SLIDES: Slide[] = [
             ].map(([t, p, s]) => (
               <div key={t} className="flex flex-col rounded-lg border border-cgy-line p-7">
                 <Label>{t}</Label>
-                <p className="mt-3 text-[30px] font-bold leading-tight text-cgy-navy">{p}</p>
+                <p className="mt-3 text-[30px] font-bold leading-tight text-cgy-slate">{p}</p>
                 <p className="mt-8 border-t border-cgy-line pt-5 text-[22px] leading-snug">{s}</p>
               </div>
             ))}
@@ -374,7 +374,7 @@ export const SLIDES: Slide[] = [
             </Point>
           </div>
         </div>
-        <p className="rounded-lg bg-cgy-navy px-7 py-6 text-[26px] font-semibold leading-snug text-white">
+        <p className="rounded-lg bg-cgy-slate px-7 py-6 text-[26px] font-semibold leading-snug text-white">
           The same work at the City: find where numbers disagree, agree one definition with the owners, and
           make it self-serve.
         </p>

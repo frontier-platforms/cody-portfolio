@@ -35,9 +35,9 @@ export default function ApproachPage() {
 
       <Step n={2} title="Who needs it">
         <ul className="list-disc space-y-1 pl-5">
-          <li><strong className="text-cgy-navy">Service planners:</strong> is ridership back, and is service keeping up?</li>
-          <li><strong className="text-cgy-navy">311 leads:</strong> what are riders contacting us about?</li>
-          <li><strong className="text-cgy-navy">Leadership:</strong> can I trust this number, and how current is it?</li>
+          <li><strong className="text-cgy-slate">Service planners:</strong> is ridership back, and is service keeping up?</li>
+          <li><strong className="text-cgy-slate">311 leads:</strong> what are riders contacting us about?</li>
+          <li><strong className="text-cgy-slate">Leadership:</strong> can I trust this number, and how current is it?</li>
         </ul>
         <p className="mt-2 text-sm text-cgy-grey">My assumption for this demo; in a real engagement I&apos;d confirm it in interviews.</p>
       </Step>
@@ -78,15 +78,15 @@ export default function ApproachPage() {
       <Step n={6} title="Review and iterate">
         <ul className="space-y-3">
           <li>
-            <strong className="text-cgy-navy">Complaints looked up 43% per trip.</strong> Lost Property moved into 311 in
+            <strong className="text-cgy-slate">Complaints looked up 43% per trip.</strong> Lost Property moved into 311 in
             2021. A governed flag fixed it once, for the dashboard and the agent: like for like, it&apos;s 12%.
           </li>
           <li>
-            <strong className="text-cgy-navy">The first cloud run failed.</strong> A test ran before its table existed.
+            <strong className="text-cgy-slate">The first cloud run failed.</strong> A test ran before its table existed.
             Tests now wait for every table they check.
           </li>
           <li>
-            <strong className="text-cgy-navy">The City&apos;s fare breakdown doesn&apos;t add up.</strong> The gap is kept
+            <strong className="text-cgy-slate">The City&apos;s fare breakdown doesn&apos;t add up.</strong> The gap is kept
             as a tested “unallocated” row instead of hidden.
           </li>
         </ul>

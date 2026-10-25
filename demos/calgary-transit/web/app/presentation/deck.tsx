@@ -151,7 +151,7 @@ function DownloadMenu() {
       </summary>
       <div className="absolute bottom-full right-0 mb-2 w-44 overflow-hidden rounded-md bg-white text-sm shadow-xl">
         {DOWNLOADS.map((d) => (
-          <a key={d.href} href={d.href} download className="block px-3 py-2 font-semibold text-cgy-navy hover:bg-cgy-mist">
+          <a key={d.href} href={d.href} download className="block px-3 py-2 font-semibold text-cgy-slate hover:bg-cgy-mist">
             {d.label}
           </a>
         ))}
@@ -193,7 +193,7 @@ export function Deck() {
 
   const elapsed = SLIDES.slice(0, index).reduce((m, s) => m + s.minutes, 0);
   return (
-    <div className="fixed inset-0 flex flex-col bg-[#020f22]">
+    <div className="fixed inset-0 flex flex-col bg-[#2a2d31]">
       <div className="relative min-h-0 flex-1">
         <Scaled index={index} className="absolute inset-0 px-3 pb-2 pt-3" />
         <button type="button" aria-label="Previous slide" onClick={() => go(index - 1)} className="absolute inset-y-0 left-0 w-1/5 cursor-w-resize" />
@@ -255,7 +255,7 @@ function PresenterView({ index, go }: { index: number; go: (i: number) => void }
   const over = secs / 60 > planned + 1;
 
   return (
-    <div className="fixed inset-0 z-50 grid grid-cols-[1.4fr_1fr] grid-rows-[auto_1fr] gap-4 bg-[#020f22] p-4 text-white">
+    <div className="fixed inset-0 z-50 grid grid-cols-[1.4fr_1fr] grid-rows-[auto_1fr] gap-4 bg-[#2a2d31] p-4 text-white">
       <div className="col-span-2 flex items-center gap-4 text-sm">
         <span className="font-bold">Presenter view</span>
         <span className="text-white/60">Keys here move the main window too.</span>

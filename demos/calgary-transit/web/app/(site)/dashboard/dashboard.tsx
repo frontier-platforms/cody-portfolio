@@ -65,7 +65,7 @@ export function Dashboard() {
 
   return (
     <div className="mt-6 space-y-6">
-      <section className="rounded-lg bg-cgy-navy p-6 text-white">
+      <section className="rounded-lg bg-cgy-slate p-6 text-white">
         <p className="text-sm font-semibold uppercase tracking-wide text-white/60">
           {now.year} vs {BASELINE}, before the pandemic
         </p>
@@ -104,7 +104,7 @@ function Tile({ label, value, note, alert }: { label: string; value: string; not
   return (
     <div className={`rounded-lg border-l-4 bg-cgy-paper p-5 ${alert ? "border-cgy-orange" : "border-cgy-red"}`}>
       <p className="text-xs font-semibold uppercase tracking-wide text-cgy-grey">{label}</p>
-      <p className="tabular mt-1 text-4xl font-bold text-cgy-navy">{value}</p>
+      <p className="tabular mt-1 text-4xl font-bold text-cgy-slate">{value}</p>
       <p className="mt-1 text-sm text-cgy-charcoal">{note}</p>
     </div>
   );
