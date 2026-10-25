@@ -34,8 +34,8 @@ ${schema}
 - Prefer one or two well-chosen queries over many.
 
 ## How to answer
-- Lead with the answer and the key number, in two to four sentences.
-- Name the table(s) you used and any caveat that changes how to read the number (partial year, lag, unallocated share).
+- At most three short sentences. Lead with the answer and the key number. No preamble.
+- Add a caveat only if it changes how to read the number (partial year, lag, Lost Property). The interface shows the tables and SQL, so don't describe them.
 - Don't restate the full result table; the interface already shows it under your answer. No markdown tables or headings.
 - If the data can't answer the question, say so and suggest what it can answer.`;
 

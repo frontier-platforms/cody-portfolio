@@ -18,6 +18,8 @@ type Turn = {
 type ApiResponse = { content?: Anthropic.Beta.BetaContentBlock[]; stop_reason?: string; error?: string };
 
 const MAX_ROUNDS = 8;
+// Years, months and codes read better without thousands separators.
+const PLAIN_COLUMN = /(^|_)(year|month|quarter|weekday|code|id)$/i;
 const MAX_ROWS_TO_MODEL = 100;
 
 const SUGGESTIONS = [
@@ -68,8 +70,9 @@ export function Ask() {
     const q = question.trim();
     if (!q || busy) return;
     setInput("");
-    const index = turns.length;
-    setTurns((all) => [...all, { question: q, steps: [], status: "thinking" }]);
+    // One answer at a time: a new question replaces the last one.
+    const index = 0;
+    setTurns([{ question: q, steps: [], status: "thinking" }]);
     getConnection().catch(() => {});
 
     const messages: Anthropic.Beta.BetaMessageParam[] = [{ role: "user", content: q }];
@@ -164,11 +167,11 @@ export function Ask() {
         ))}
       </div>
 
-      <div className="mt-8 space-y-8">
-        {[...turns].reverse().map((t, i) => (
-          <TurnView key={turns.length - i} turn={t} />
-        ))}
-      </div>
+      {turns[0] && (
+        <div className="mt-8">
+          <TurnView turn={turns[0]} />
+        </div>
+      )}
     </div>
   );
 }
@@ -188,15 +191,18 @@ function TurnView({ turn }: { turn: Turn }) {
             {turn.status === "querying" ? "Running SQL in your browser…" : "Claude is working out the query…"}
           </p>
         )}
-        {turn.steps.length > 0 && (
-          <div className="space-y-3">
-            <p className="text-xs font-semibold uppercase tracking-wide text-cgy-grey">
-              How this was answered · {turn.steps.length} {turn.steps.length === 1 ? "query" : "queries"}
-            </p>
-            {turn.steps.map((s, i) => (
-              <StepView key={i} step={s} />
-            ))}
-          </div>
+        {turn.steps.length > 0 && turn.status === "done" && (
+          <details className="group rounded border border-cgy-line">
+            <summary className="cursor-pointer list-none px-3 py-2 text-sm font-semibold text-cgy-slate hover:text-cgy-red">
+              <span className="mr-1 inline-block transition-transform group-open:rotate-90">›</span>
+              Show how this was answered ({turn.steps.length} SQL {turn.steps.length === 1 ? "query" : "queries"})
+            </summary>
+            <div className="space-y-3 border-t border-cgy-line p-3">
+              {turn.steps.map((s, i) => (
+                <StepView key={i} step={s} />
+              ))}
+            </div>
+          </details>
         )}
       </div>
     </article>
@@ -212,7 +218,7 @@ function StepView({ step }: { step: Step }) {
       {step.error ? (
         <p className="bg-white px-3 py-2 text-xs text-cgy-red">Error: {step.error} (the agent sees this and retries)</p>
       ) : (
-        <div className="max-h-64 overflow-auto">
+        <div className="max-h-48 overflow-auto">
           <table className="tabular w-full text-left text-xs">
             <thead className="sticky top-0 bg-cgy-mist">
               <tr>
@@ -224,18 +230,18 @@ function StepView({ step }: { step: Step }) {
               </tr>
             </thead>
             <tbody>
-              {rows.slice(0, 50).map((r, i) => (
+              {rows.slice(0, 10).map((r, i) => (
                 <tr key={i} className="border-t border-cgy-line">
                   {cols.map((c) => (
                     <td key={c} className="whitespace-nowrap px-3 py-1">
-                      {typeof r[c] === "number" ? fmtNumber(r[c] as number, Number.isInteger(r[c]) ? 0 : 2) : String(r[c] ?? "–")}
+                      {typeof r[c] === "number" && !PLAIN_COLUMN.test(c) ? fmtNumber(r[c] as number, Number.isInteger(r[c]) ? 0 : 2) : String(r[c] ?? "–")}
                     </td>
                   ))}
                 </tr>
               ))}
             </tbody>
           </table>
-          {rows.length > 50 && <p className="px-3 py-1.5 text-xs text-cgy-grey">Showing 50 of {rows.length} rows.</p>}
+          {rows.length > 10 && <p className="px-3 py-1.5 text-xs text-cgy-grey">First 10 of {rows.length} rows.</p>}
         </div>
       )}
     </div>
@@ -244,7 +250,7 @@ function StepView({ step }: { step: Step }) {
 
 function Answer({ text }: { text: string }) {
   return (
-    <div className="space-y-2 text-[15px] leading-relaxed text-cgy-charcoal">
+    <div className="space-y-2 text-lg leading-relaxed text-cgy-charcoal">
       {text.split(/\n{2,}/).map((p, i) => (
         <p key={i}>{inline(p)}</p>
       ))}
