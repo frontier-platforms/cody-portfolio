@@ -74,6 +74,11 @@ export function Performance({
           </p>
         </div>
       </div>
+      <p className="mt-3 text-sm text-cgy-grey">
+        <span className="font-semibold text-cgy-slate">Limits:</span> a guide, not a promise. It only knows
+        what the City records, more than a quarter of requests have no community, and closure times drift, so
+        it retrains every day.
+      </p>
     </section>
   );
 }

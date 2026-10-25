@@ -80,7 +80,7 @@ export function Dashboard() {
         </InfoTip>
       </div>
 
-      <div className="grid gap-3 sm:grid-cols-3">
+      <div className="grid grid-cols-3 gap-2 sm:gap-3">
         <Tile label={`Trips in ${now.year}`} value={fmtCompact(now.trips)} note={`${fmtPct(pct(now.trips, base.trips))} of ${BASELINE}`} />
         <Tile
           label="Service hours"
@@ -107,10 +107,10 @@ export function Dashboard() {
 
 function Tile({ label, value, note, alert }: { label: string; value: string; note: string; alert?: boolean }) {
   return (
-    <div className={`rounded-lg border-l-4 bg-cgy-paper p-5 ${alert ? "border-cgy-orange" : "border-cgy-red"}`}>
-      <p className="text-xs font-semibold uppercase tracking-wide text-cgy-grey">{label}</p>
-      <p className="tabular mt-1 text-4xl font-bold text-cgy-slate">{value}</p>
-      <p className="mt-1 text-sm text-cgy-charcoal">{note}</p>
+    <div className={`rounded-lg border-l-4 bg-cgy-paper p-3 sm:p-5 ${alert ? "border-cgy-orange" : "border-cgy-red"}`}>
+      <p className="text-[11px] font-semibold uppercase leading-tight tracking-wide text-cgy-grey sm:text-xs">{label}</p>
+      <p className="tabular mt-1 text-2xl font-bold text-cgy-slate sm:text-4xl">{value}</p>
+      <p className="mt-1 text-xs text-cgy-charcoal sm:text-sm">{note}</p>
     </div>
   );
 }
