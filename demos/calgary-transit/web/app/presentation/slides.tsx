@@ -171,8 +171,8 @@ export const SLIDES: Slide[] = [
           </div>
           <div className="mt-14 grid grid-cols-2 gap-10">
             <Sub letter="a" title="What it does">
-              Consolidates every client into one governed, tested layer, refreshed daily, with a data
-              contract: owners, targets and incident tiers.
+              Consolidates every client into one governed, tested layer, refreshed daily, that every
+              team and tool reads from.
             </Sub>
             <Sub letter="b" title="How people use it">
               <Chips
@@ -240,8 +240,8 @@ export const SLIDES: Slide[] = [
           </div>
           <div className="mt-14 grid grid-cols-2 gap-10">
             <Sub letter="a" title="Sourcing and preparing the data">
-              Ticketing, accounts, app logs, automations, segments and reference files: landed raw, personal
-              data masked, then modelled into one definition and tested.
+              Six source types (ticketing, accounts, app logs, automations, segments, reference files),
+              mapped client by client into one model.
             </Sub>
             <Sub letter="b" title="Methods and tools">
               <Chips
@@ -297,7 +297,7 @@ export const SLIDES: Slide[] = [
                 "Dashboard: riders back to 95% of 2019",
                 "The catch: a 43% jump that wasn't real",
                 "Predict: a live XGBoost model",
-                "Ask the data: plain English to SQL",
+                "Ask the data: plain English, with its working",
               ].map((s, i) => (
                 <li key={s} className="flex gap-3">
                   <span className="font-bold text-cgy-red">{i + 1}</span>
@@ -308,16 +308,17 @@ export const SLIDES: Slide[] = [
           </div>
         </div>
         <p className="mt-4 text-[17px] text-cgy-grey">
-          Airflow · dbt · DuckDB · 27 tests · XGBoost · Claude · codychandler.ca/data-demos/calgary-transit
+          Airflow · dbt · DuckDB · 27 tests · XGBoost · AI agent · codychandler.ca/data-demos/calgary-transit
         </p>
       </>
     ),
     notes: [
       "LIVE (5 min). If the internet fails, these screenshots carry it.",
       "1 · Dashboard: read the ⓘ headline. Point at the 2020 drop and recovery. (1 min)",
-      "2 · The 311 chart: 'My first cut said complaints per trip were up 43%. Lost Property moved into 311 in 2021. I fixed it once, in the data, so the dashboard and the AI both get it right. Like for like it's 12%.' (1 min)",
+      "2 · The 311 chart: 'My first cut said complaints per trip were up 43%. Lost Property moved into 311 in 2021. I fixed it once, in the data, so every consumer gets it right. Like for like it's 12%.' (1 min)",
       "3 · Predict: pick Advertising and Communications (usually low), then Transit Pass Programs (usually high). Recent pace matters more than the type. Tested on 2025, it catches more slow requests than the rule of thumb. (1 min)",
-      "4 · Ask the data: 'How has ridership recovered since the pandemic?'. Open 'Show how this was answered', then point at the same 95% on the dashboard. (1.5 min)",
+      "4 · Ask the data: type 'How has ridership recovered since the pandemic?' and say 'it writes SQL against the same gold tables' while it works. Read the answer, glance at the chart, open 'Show how this was answered'. Payoff: 'Same 95% as the dashboard. That's the point I made about PRIME.' (1.5 min)",
+      "Back to the deck: 'So that's what PRIME looks like in practice. Here's what was hard.'",
     ],
   },
   {
@@ -345,8 +346,8 @@ export const SLIDES: Slide[] = [
                 ],
                 [
                   "Analytical",
-                  "The wrong table, or a changed definition, quietly misleads.",
-                  "One grain per table, and governed fixes like Lost Property.",
+                  "The same metric meant different things to different teams.",
+                  "One definition in silver, one documented grain per gold table.",
                 ],
                 [
                   "Interested parties",
@@ -366,6 +367,7 @@ export const SLIDES: Slide[] = [
       </>
     ),
     notes: [
+      "Analytical row: one line back to the demo ('Lost Property was this problem in miniature'). Don't re-explain it.",
       "[Your story: the conversation that got the data contract agreed. Who pushed back, and what changed their mind?]",
     ],
   },
@@ -376,25 +378,21 @@ export const SLIDES: Slide[] = [
     body: (
       <>
         <Title>What am I most proud of?</Title>
-        <div className="mt-8 grid flex-1 grid-cols-[1fr_1.2fr] items-center gap-10">
-          <p className="text-[36px] font-bold leading-tight text-cgy-slate">
-            AI answers that match the dashboard, and show their work.
+        <div className="my-auto border-l-8 border-cgy-red py-2 pl-10">
+          <p className="max-w-[1000px] text-[44px] font-bold leading-tight text-cgy-slate">
+            Governance stopped being overhead and became the reason people could self-serve.
           </p>
-          <div className="space-y-6">
-            <Sub letter="1" title="Built on the governed layer">
-              One documented grain per table, so the agent can&apos;t double count.
-            </Sub>
-            <Sub letter="2" title="Shows its SQL">
-              Anyone can check the number it gives.
-            </Sub>
-            <Sub letter="3" title="Same tables for BI, ML and AI">
-              Governance stops being overhead and becomes the reason people can self-serve.
-            </Sub>
-          </div>
+          <p className="mt-8 max-w-[900px] text-[24px] leading-snug">
+            One tested layer fed dashboards, client data and an AI assistant, with no separate pipeline
+            for each. The answer you just saw is that, working.
+          </p>
         </div>
       </>
     ),
-    notes: ["You've just shown it live, so keep this to 30 to 45 seconds."],
+    notes: [
+      "30 to 45 seconds. Point back at the demo; don't re-demo it.",
+      "[Your story: the first time a team trusted an AI answer without checking it.]",
+    ],
   },
   {
     id: "q6",

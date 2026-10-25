@@ -5,6 +5,7 @@ import type Anthropic from "@anthropic-ai/sdk";
 import { getConnection, query, type QueryResult } from "@/lib/duckdb";
 import { checkSql } from "@/lib/agent/sql-guard";
 import { fmtNumber } from "@/lib/format";
+import { ResultChart } from "./result-chart";
 import { withBase } from "@/lib/paths";
 
 type Step = { sql: string; result?: QueryResult; error?: string };
@@ -177,6 +178,7 @@ export function Ask() {
 }
 
 function TurnView({ turn }: { turn: Turn }) {
+  const chartable = [...turn.steps].reverse().find((s) => s.result && s.result.rows.length > 1)?.result;
   return (
     <article className="rounded-lg border border-cgy-line bg-white">
       <header className="border-b border-cgy-line bg-cgy-paper px-4 py-3">
@@ -184,11 +186,12 @@ function TurnView({ turn }: { turn: Turn }) {
       </header>
       <div className="space-y-4 p-4">
         {turn.answer && <Answer text={turn.answer} />}
+        {turn.status === "done" && chartable && <ResultChart result={chartable} />}
         {turn.error && <p className="text-sm text-cgy-red">{turn.error}</p>}
         {turn.status !== "done" && (
           <p className="flex items-center gap-2 text-sm text-cgy-grey">
             <span className="h-2 w-2 animate-pulse rounded-full bg-cgy-red" />
-            {turn.status === "querying" ? "Running SQL in your browser…" : "Claude is working out the query…"}
+            {turn.status === "querying" ? "Running the query…" : "Working on it…"}
           </p>
         )}
         {turn.steps.length > 0 && turn.status === "done" && (
