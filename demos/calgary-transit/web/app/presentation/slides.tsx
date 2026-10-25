@@ -1,4 +1,7 @@
+import Image from "next/image";
 import type { ReactNode } from "react";
+import dashboardShot from "@/public/images/slide-dashboard.png";
+import predictShot from "@/public/images/slide-predict.png";
 import { BigStat, Flow, Title, type Slide } from "./slide-kit";
 
 function Label({ children, dark }: { children: ReactNode; dark?: boolean }) {
@@ -11,17 +14,44 @@ function Label({ children, dark }: { children: ReactNode; dark?: boolean }) {
   );
 }
 
-function Point({ n, title, children }: { n?: number; title: string; children: ReactNode }) {
+/** A lettered sub-answer, matching the panel's a, b, c. */
+function Sub({ letter, title, children }: { letter: string; title: string; children: ReactNode }) {
   return (
-    <div className="flex gap-4 rounded-lg bg-cgy-paper p-6">
-      {n !== undefined && <span className="text-[40px] font-bold leading-none text-cgy-red">{n}</span>}
+    <div className="flex gap-4">
+      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-cgy-red text-[18px] font-bold text-white">
+        {letter}
+      </span>
       <div>
-        <p className="text-[28px] font-bold leading-tight text-cgy-slate">{title}</p>
-        <p className="mt-2 text-[22px] leading-snug">{children}</p>
+        <p className="text-[22px] font-bold leading-tight text-cgy-slate">{title}</p>
+        <div className="mt-1 text-[19px] leading-snug">{children}</div>
       </div>
     </div>
   );
 }
+
+function Chips({ items }: { items: string[] }) {
+  return (
+    <div className="mt-2 flex flex-wrap gap-2">
+      {items.map((c) => (
+        <span
+          key={c}
+          className="rounded-full bg-cgy-paper px-3 py-1.5 text-[17px] font-semibold text-cgy-slate"
+        >
+          {c}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+const QUESTIONS = [
+  "What business problem was I solving?",
+  "What is the data product?",
+  "How did I approach it?",
+  "What challenges came up?",
+  "What am I most proud of?",
+  "What would I improve with more time?",
+];
 
 export const SLIDES: Slide[] = [
   {
@@ -42,48 +72,40 @@ export const SLIDES: Slide[] = [
       </div>
     ),
     notes: [
-      "[Your story: one line on who you are.] Then: 'I'll walk through PRIME, then show you the same approach working on the City's data.'",
+      "[Your story: one line on who you are.] Then: 'I'll answer your six questions in order, with a live demo in the middle.'",
     ],
   },
   {
     id: "agenda",
-    section: "The next 15 minutes",
+    section: "Your six questions",
     minutes: 0.25,
     body: (
       <>
-        <Title>How I worked, then the live product</Title>
-        <div className="flex flex-1 flex-col justify-center">
-          <div className="grid grid-cols-5 gap-3">
-            {[
-              ["Problem", "Q1"],
-              ["What people needed", "Q1"],
-              ["Strategy and build", "Q2 · Q3"],
-              ["Results", "Q2"],
-              ["Live demo", "Q3 · Q5"],
-            ].map(([s, q], i) => (
-              <div key={s} className="rounded-lg border-t-4 border-cgy-red bg-cgy-paper p-6">
-                <p className="text-[44px] font-bold leading-none text-cgy-red">{i + 1}</p>
-                <p className="mt-4 text-[28px] font-bold leading-tight text-cgy-slate">{s}</p>
-                <p className="mt-2 text-[19px] text-cgy-grey">{q}</p>
-              </div>
-            ))}
-          </div>
-          <p className="mt-8 text-[24px]">Then the challenges (Q4) and what I&apos;d build next (Q6).</p>
-        </div>
+        <Title>I&apos;ll answer them in order</Title>
+        <ol className="mt-8 grid flex-1 grid-cols-2 content-center gap-x-10 gap-y-5">
+          {QUESTIONS.map((q, i) => (
+            <li key={q} className="flex items-center gap-5 rounded-lg bg-cgy-paper px-6 py-5">
+              <span className="text-[40px] font-bold leading-none text-cgy-red">{i + 1}</span>
+              <span className="text-[25px] font-semibold leading-tight text-cgy-slate">{q}</span>
+            </li>
+          ))}
+        </ol>
+        <p className="mt-6 text-[20px] text-cgy-grey">
+          With a 5-minute live demo on City of Calgary data after question 3.
+        </p>
       </>
     ),
-    notes: ["Fifteen seconds. The tag on each slide shows which of your questions it answers."],
+    notes: ["Fifteen seconds. Each slide's title is one of their questions."],
   },
   {
-    id: "problem",
-    section: "The problem",
-    answers: "Q1",
+    id: "q1",
+    section: "Question 1 of 6",
     minutes: 1.5,
     body: (
       <>
-        <Title>Multi-tenancy made accurate reporting hard</Title>
-        <div className="mt-8 grid flex-1 grid-cols-[1fr_1fr] gap-8">
-          <div className="flex flex-col justify-center rounded-lg bg-cgy-paper p-8">
+        <Title>What business problem was I solving?</Title>
+        <div className="mt-6 grid flex-1 grid-cols-[0.9fr_1.1fr] gap-10">
+          <div className="flex flex-col justify-center rounded-lg bg-cgy-paper p-7">
             <div className="grid grid-cols-3 gap-3">
               {["Client A", "Client B", "Client C"].map((c) => (
                 <div
@@ -95,98 +117,187 @@ export const SLIDES: Slide[] = [
                 </div>
               ))}
             </div>
-            <p className="mt-5 text-center text-[22px] text-cgy-red">↓ manual weekly refresh ↓</p>
-            <p className="mt-5 text-center text-[26px] font-bold text-cgy-slate">
+            <p className="mt-5 text-center text-[21px] text-cgy-red">↓ manual weekly refresh ↓</p>
+            <p className="mt-5 text-center text-[25px] font-bold text-cgy-slate">
               Same question, different answers
             </p>
           </div>
-          <div className="flex flex-col justify-center gap-4">
-            <Point title="Stale">Data was up to 7 days old.</Point>
-            <Point title="Fragmented">Every cross-client question went through engineering.</Point>
-            <Point title="Unowned">No owner and no service levels when it broke.</Point>
+          <div className="flex flex-col justify-center gap-7">
+            <div>
+              <p className="text-[22px] font-bold text-cgy-slate">The problem</p>
+              <p className="mt-1 text-[19px] leading-snug">
+                A multi-tenant product kept each client&apos;s data in its own database, so internal reporting
+                was stale (up to 7 days old), fragmented and unowned.
+              </p>
+            </div>
+            <Sub letter="a" title="Why it mattered">
+              Teams and clients worked from different numbers, and every cross-client question needed
+              engineering.
+            </Sub>
+            <Sub letter="b" title="Who it affected">
+              <Chips items={["Customer Success", "Product", "Clients", "Analysts", "AI assistants"]} />
+            </Sub>
           </div>
         </div>
       </>
     ),
     notes: [
-      "Customer Success, Product and clients each had their own number, so meetings argued about whose was right.",
-      "[Your story: one concrete moment where this hurt.]",
-      "City link: departments with their own systems face the same thing. The useful questions cut across them.",
+      "[Your story: one concrete moment where inconsistent numbers hurt.]",
+      "City link: departments with their own systems face the same thing.",
     ],
   },
   {
-    id: "needs",
-    section: "What people needed",
-    answers: "Q1",
-    minutes: 1,
+    id: "q2",
+    section: "Question 2 of 6",
+    minutes: 1.25,
     body: (
       <>
-        <Title>Three needs shaped every decision</Title>
+        <Title>What is the data product?</Title>
         <div className="flex flex-1 flex-col justify-center">
-          <div className="grid grid-cols-3 gap-5">
-            {[
-              [
-                "One version of the truth",
-                "CS, Product and clients see the same numbers.",
-                "One definition across every client",
-              ],
-              [
-                "Fresh and dependable",
-                "A known refresh schedule, and someone accountable.",
-                "Daily refresh and a data contract",
-              ],
-              [
-                "Self-serve",
-                "Routine questions answered without a ticket, by people or AI.",
-                "Documented tables, one grain each",
-              ],
-            ].map(([t, b, r]) => (
-              <div key={t} className="flex flex-col rounded-lg border border-cgy-line p-8">
-                <p className="text-[30px] font-bold leading-tight text-cgy-slate">{t}</p>
-                <p className="mt-4 text-[23px] leading-snug">{b}</p>
-                <p className="mt-8 border-t border-cgy-line pt-5 text-[21px] font-semibold text-cgy-red">
-                  → {r}
-                </p>
+          <div className="">
+            <Flow
+              steps={[
+                {
+                  label: "Sources",
+                  title: "Ticketing, accounts, apps",
+                  detail: "Logs, automations, segments",
+                },
+                { label: "Bronze", title: "Raw", detail: "Personal data masked" },
+                { label: "Silver", title: "One definition", detail: "Across every client" },
+                { label: "Gold", title: "Tested tables", detail: "One grain each", highlight: true },
+                { label: "Consumers", title: "BI · ML · AI", detail: "Role-based access", dark: true },
+              ]}
+            />
+          </div>
+          <div className="mt-14 grid grid-cols-2 gap-10">
+            <Sub letter="a" title="What it does">
+              Consolidates every client into one governed, tested layer, refreshed daily, with a data
+              contract: owners, targets and incident tiers.
+            </Sub>
+            <Sub letter="b" title="How people use it">
+              <Chips
+                items={["BI dashboards", "Client data sharing", "CS platform", "Plain-English questions"]}
+              />
+            </Sub>
+          </div>
+        </div>
+      </>
+    ),
+    notes: [
+      "My role: Director of Product Innovation & Analytics; I owned PRIME from planning to general availability, working with Data Engineering and Customer Success.",
+      "Plain-English example: 'How did ticket revenue trend this month?' answered from the table with the right grain.",
+    ],
+  },
+  {
+    id: "q2-value",
+    section: "Question 2 of 6",
+    minutes: 0.75,
+    body: (
+      <>
+        <div className="flex items-center gap-4">
+          <span className="flex h-12 w-12 items-center justify-center rounded-full bg-cgy-red text-[24px] font-bold text-white">
+            c
+          </span>
+          <Title>What value it delivered</Title>
+        </div>
+        <div className="flex flex-1 flex-col justify-center">
+          <div className="grid grid-cols-4 gap-4">
+            <BigStat from="7 days" value="< 12 hrs" label="Data freshness" />
+            <BigStat value="100+" label="Tested models, replacing a database per client" />
+            <BigStat value="30 min" label="To flag a missed refresh" />
+            <BigStat value="Self-serve" label="Routine Customer Success questions" />
+          </div>
+        </div>
+        <p className="rounded-lg bg-cgy-slate px-7 py-6 text-[25px] font-semibold leading-snug text-white">
+          When the dashboard, the client export and the AI give the same number, people stop checking and
+          start deciding.
+        </p>
+      </>
+    ),
+    notes: ["[Your story: any adoption or time-saved number.]"],
+  },
+  {
+    id: "q3",
+    section: "Question 3 of 6",
+    minutes: 1.25,
+    body: (
+      <>
+        <Title>How did I approach it?</Title>
+        <div className="flex flex-1 flex-col justify-center">
+          <div className="flex items-stretch">
+            {["Problem", "Needs", "Strategy", "Plan", "Build", "Review and iterate"].map((s, i, all) => (
+              <div key={s} className="flex flex-1 items-center">
+                <div
+                  className={`flex-1 rounded-lg px-3 py-6 text-center text-[21px] font-bold ${
+                    i === all.length - 1 ? "bg-cgy-red text-white" : "bg-cgy-paper text-cgy-slate"
+                  }`}
+                >
+                  {s}
+                </div>
+                {i < all.length - 1 && <span className="px-1.5 text-[22px] font-bold text-cgy-red">→</span>}
               </div>
             ))}
           </div>
+          <div className="mt-14 grid grid-cols-2 gap-10">
+            <Sub letter="a" title="Sourcing and preparing the data">
+              Ticketing, accounts, app logs, automations, segments and reference files: landed raw, personal
+              data masked, then modelled into one definition and tested.
+            </Sub>
+            <Sub letter="b" title="Methods and tools">
+              <Chips
+                items={[
+                  "Snowflake",
+                  "dbt",
+                  "Airflow",
+                  "AWS",
+                  "Medallion layers",
+                  "Data contract",
+                  "Semantic layer",
+                  "LLMs",
+                ]}
+              />
+            </Sub>
+          </div>
         </div>
       </>
     ),
     notes: [
-      "Users: Customer Success, Product, clients, analysts, and later AI assistants.",
-      "[Your story: how you gathered these. Interviews, the ticket queue, client feedback?]",
+      "Walk the strip in one breath: started from the problem and the people, agreed what 'right' means, then built, tested and fixed what review found.",
+      "[Your story: how you gathered requirements, and the real build order.]",
+      "Transition: 'Here's the same approach running on the City's data.'",
     ],
   },
   {
-    id: "strategy",
-    section: "Strategy and build",
-    answers: "Q3",
-    minutes: 1,
+    id: "demo",
+    section: "Live demo",
+    minutes: 5,
     body: (
       <>
-        <Title>Fix the layer, not the reports</Title>
-        <div className="mt-8 grid flex-1 grid-cols-[1.3fr_1fr] gap-8">
-          <div className="flex flex-col justify-between gap-4">
-            <Point n={1} title="Consolidate once">
-              One governed Snowflake layer instead of patching each client database.
-            </Point>
-            <Point n={2} title="Contract before code">
-              Owners, refresh targets and incident tiers agreed first.
-            </Point>
-            <Point n={3} title="Model by grain">
-              Each table answers one shape of question, so nothing double counts.
-            </Point>
+        <Title>The same approach, live on City of Calgary data</Title>
+        <div className="mt-5 grid min-h-0 flex-1 grid-cols-[1.25fr_1fr] gap-6">
+          <div className="relative overflow-hidden rounded-lg border border-cgy-line">
+            <Image
+              src={dashboardShot}
+              alt="The Calgary Transit dashboard: trips, service hours and rider feedback, with two charts"
+              className="h-full w-full bg-white object-contain object-top"
+              sizes="700px"
+            />
           </div>
-          <div className="rounded-lg border border-cgy-line p-7">
-            <Label>Sequenced so each step was usable</Label>
-            <ol className="mt-6 space-y-6 text-[25px]">
+          <div className="flex min-h-0 flex-col gap-4">
+            <div className="relative min-h-0 flex-1 overflow-hidden rounded-lg border border-cgy-line">
+              <Image
+                src={predictShot}
+                alt="The live 311 prediction with what moved it"
+                className="h-full w-full bg-white object-contain object-top"
+                sizes="540px"
+              />
+            </div>
+            <ol className="space-y-1.5 text-[19px]">
               {[
-                "Agree the contract",
-                "Land and protect the data",
-                "Define it once",
-                "Serve dashboards and data shares",
-                "Add AI, internal bot first",
+                "Dashboard: riders back to 95% of 2019",
+                "The catch: a 43% jump that wasn't real",
+                "Predict: a live XGBoost model",
+                "Ask the data: plain English to SQL",
               ].map((s, i) => (
                 <li key={s} className="flex gap-3">
                   <span className="font-bold text-cgy-red">{i + 1}</span>
@@ -196,160 +307,61 @@ export const SLIDES: Slide[] = [
             </ol>
           </div>
         </div>
-      </>
-    ),
-    notes: [
-      "Each decision maps to a need on the last slide.",
-      "[Your story: confirm the real order, and an option you rejected.]",
-    ],
-  },
-  {
-    id: "build",
-    section: "Strategy and build",
-    answers: "Q2 · Q3",
-    minutes: 1.25,
-    body: (
-      <>
-        <Title>PRIME: one layer every consumer reads from</Title>
-        <div className="flex flex-1 flex-col justify-center">
-          <Flow
-            steps={[
-              { label: "Sources", title: "Ticketing, accounts, apps", detail: "Logs, automations, segments" },
-              { label: "Bronze", title: "Raw", detail: "Personal data masked" },
-              { label: "Silver", title: "One definition", detail: "Across every client" },
-              { label: "Gold", title: "Tested tables", detail: "One grain each", highlight: true },
-              {
-                label: "Consumers",
-                title: "BI · ML · AI",
-                detail: "Role-based access",
-                dark: true,
-              },
-            ]}
-          />
-          <div className="mt-8 flex flex-wrap gap-3 text-[20px]">
-            {[
-              "Snowflake",
-              "dbt · 100+ tested models",
-              "Airflow",
-              "Freshness checked every 30 min",
-              "AI error digests",
-            ].map((c) => (
-              <span key={c} className="rounded-full bg-cgy-paper px-4 py-2 font-semibold text-cgy-slate">
-                {c}
-              </span>
-            ))}
-          </div>
-        </div>
-        <div className="rounded-lg bg-cgy-paper px-6 py-5">
-          <p className="text-[20px] leading-snug text-cgy-slate">
-            <strong>My role:</strong> Director of Product Innovation &amp; Analytics. I owned PRIME from
-            planning to general availability, working with Data Engineering and Customer Success.
-          </p>
-        </div>
-      </>
-    ),
-    notes: [
-      "How people use it: a CS manager asks 'how did ticket revenue trend this month?' and the agent answers from the table with the right grain.",
-      "[Your story: what you personally decided as product owner.]",
-    ],
-  },
-  {
-    id: "results",
-    section: "Results",
-    answers: "Q2",
-    minutes: 0.75,
-    body: (
-      <>
-        <Title>What changed</Title>
-        <div className="flex flex-1 flex-col justify-center">
-          <div className="grid grid-cols-4 gap-4">
-            <BigStat from="7 days" value="< 12 hrs" label="Data freshness" />
-            <BigStat value="100+" label="Tested models, replacing a database per client" />
-            <BigStat value="30 min" label="To flag a missed refresh" />
-            <BigStat value="Self-serve" label="Routine Customer Success questions" />
-          </div>
-        </div>
-        <p className="rounded-lg bg-cgy-slate px-7 py-6 text-[26px] font-semibold leading-snug text-white">
-          When the dashboard, the client export and the AI give the same number, people stop checking and
-          start deciding.
+        <p className="mt-4 text-[17px] text-cgy-grey">
+          Airflow · dbt · DuckDB · 27 tests · XGBoost · Claude · codychandler.ca/data-demos/calgary-transit
         </p>
       </>
     ),
     notes: [
-      "[Your story: any adoption or time-saved number you can share.] Pause, then: 'Let me show you this working.'",
+      "LIVE (5 min). If the internet fails, these screenshots carry it.",
+      "1 · Dashboard: read the ⓘ headline. Point at the 2020 drop and recovery. (1 min)",
+      "2 · The 311 chart: 'My first cut said complaints per trip were up 43%. Lost Property moved into 311 in 2021. I fixed it once, in the data, so the dashboard and the AI both get it right. Like for like it's 12%.' (1 min)",
+      "3 · Predict: pick Advertising and Communications (usually low), then Transit Pass Programs (usually high). Recent pace matters more than the type. Tested on 2025, it catches more slow requests than the rule of thumb. (1 min)",
+      "4 · Ask the data: 'How has ridership recovered since the pandemic?'. Open 'Show how this was answered', then point at the same 95% on the dashboard. (1.5 min)",
     ],
   },
   {
-    id: "demo",
-    dark: true,
-    section: "Live demo",
-    answers: "Q3 · Q5",
-    minutes: 5,
-    body: (
-      <>
-        <Label dark>PRIME&apos;s data belongs to clients, so I rebuilt the approach on open data</Label>
-        <h2 className="mt-3 text-[50px] font-bold leading-tight text-white">
-          Live on City of Calgary transit data
-        </h2>
-        <div className="mt-10 grid grid-cols-4 gap-4">
-          {[
-            ["The story", "Riders are back to 95% of 2019. Feedback per trip is up 12%."],
-            ["The catch", "A 43% jump in complaints that wasn't real."],
-            ["Predict", "A live XGBoost model: will a 311 request close within a week?"],
-            ["Ask the data", "Plain English in, SQL and the answer out. My proudest part."],
-          ].map(([t, b], i) => (
-            <div key={t} className="rounded-lg bg-white/10 p-7">
-              <p className="text-[44px] font-bold leading-none text-white/70">{i + 1}</p>
-              <p className="mt-4 text-[30px] font-bold text-white">{t}</p>
-              <p className="mt-3 text-[23px] leading-snug text-white/85">{b}</p>
-            </div>
-          ))}
-        </div>
-        <p className="mt-auto text-[19px] text-white/60">
-          Built this week: Airflow · dbt · DuckDB · 27 tests · XGBoost · Claude ·
-          codychandler.ca/data-demos/calgary-transit
-        </p>
-      </>
-    ),
-    notes: [
-      "LIVE (5 min). Switch to the Dashboard tab.",
-      "1 · Read the headline. Point at the trips line: the 2020 drop and the recovery. (1 min)",
-      "2 · The 311 chart. 'My first cut said complaints per trip were up 43%. That felt too dramatic, so I checked. Lost Property moved into 311 in 2021. I fixed it in the data, once, so the dashboard and the AI both get it right. Like for like it's 12%, led by fares and stops.' (1 min)",
-      "3 · Predict tab: 'Same governed tables, now ML.' Pick Advertising and Communications (usually low), then Transit Pass Programs (usually high), and point at what moved it: recent pace matters more than the type itself. Then the honest part: 'Tested on 2025, a year it never saw, it catches more slow requests than the rule of thumb and explains every prediction.' Numbers shift a little each day because it retrains daily. (1 min)",
-      "4 · Ask the data: click 'How has ridership recovered since the pandemic?'. While it runs: 'it reads the dbt docs, writes SQL, and runs it here in the browser on governed tables only.' Show the SQL, then point at the same 95% on the dashboard. (1.5 min)",
-      "If asked how it's built: open the Approach page and the Airflow graph. Otherwise skip it.",
-    ],
-  },
-  {
-    id: "challenges",
-    section: "Challenges",
-    answers: "Q4",
+    id: "q4",
+    section: "Question 4 of 6",
     minutes: 1.5,
     body: (
       <>
-        <Title>The hard parts were definitions and people</Title>
+        <Title>What challenges came up, and how did I handle them?</Title>
         <div className="flex flex-1 flex-col justify-center">
-          <div className="grid grid-cols-3 gap-5">
-            {[
-              ["People", "Nobody owned freshness.", "The contract named owners, targets and incident tiers."],
-              [
-                "Analytical",
-                "The wrong table, or a changed definition, quietly misleads.",
-                "One grain per table. The Lost Property fix.",
-              ],
-              [
-                "Technical",
-                "Many shapes of the same thing.",
-                "Every client at StellarAlgo; four department codes at the City.",
-              ],
-            ].map(([t, p, s]) => (
-              <div key={t} className="flex flex-col rounded-lg border border-cgy-line p-7">
-                <Label>{t}</Label>
-                <p className="mt-3 text-[30px] font-bold leading-tight text-cgy-slate">{p}</p>
-                <p className="mt-8 border-t border-cgy-line pt-5 text-[22px] leading-snug">{s}</p>
-              </div>
-            ))}
-          </div>
+          <table className="w-full text-left text-[22px]">
+            <thead>
+              <tr className="border-b-2 border-cgy-slate text-cgy-slate">
+                <th className="w-[18%] py-3 pr-4">Type</th>
+                <th className="w-[38%] py-3 pr-4">Challenge</th>
+                <th className="py-3">How I solved it</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                [
+                  "Technical",
+                  "Every client system had its own shape.",
+                  "One dimensional model all clients map into.",
+                ],
+                [
+                  "Analytical",
+                  "The wrong table, or a changed definition, quietly misleads.",
+                  "One grain per table, and governed fixes like Lost Property.",
+                ],
+                [
+                  "Interested parties",
+                  "Nobody owned freshness or accuracy.",
+                  "A data contract with named owners, targets and tiers.",
+                ],
+              ].map(([t, c, s]) => (
+                <tr key={t} className="border-b border-cgy-line align-top">
+                  <td className="py-6 pr-4 font-bold text-cgy-red">{t}</td>
+                  <td className="py-6 pr-4 text-cgy-slate">{c}</td>
+                  <td className="py-6">{s}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </>
     ),
@@ -358,25 +370,54 @@ export const SLIDES: Slide[] = [
     ],
   },
   {
-    id: "next",
-    section: "With more time",
-    answers: "Q6",
+    id: "q5",
+    section: "Question 5 of 6",
+    minutes: 0.75,
+    body: (
+      <>
+        <Title>What am I most proud of?</Title>
+        <div className="mt-8 grid flex-1 grid-cols-[1fr_1.2fr] items-center gap-10">
+          <p className="text-[36px] font-bold leading-tight text-cgy-slate">
+            AI answers that match the dashboard, and show their work.
+          </p>
+          <div className="space-y-6">
+            <Sub letter="1" title="Built on the governed layer">
+              One documented grain per table, so the agent can&apos;t double count.
+            </Sub>
+            <Sub letter="2" title="Shows its SQL">
+              Anyone can check the number it gives.
+            </Sub>
+            <Sub letter="3" title="Same tables for BI, ML and AI">
+              Governance stops being overhead and becomes the reason people can self-serve.
+            </Sub>
+          </div>
+        </div>
+      </>
+    ),
+    notes: ["You've just shown it live, so keep this to 30 to 45 seconds."],
+  },
+  {
+    id: "q6",
+    section: "Question 6 of 6",
     minutes: 1,
     body: (
       <>
-        <Title>What I&apos;d build next</Title>
+        <Title>What would I improve with more time?</Title>
         <div className="flex flex-1 flex-col justify-center">
           <div className="grid grid-cols-3 gap-5">
-            <Point title="PRIME for clients">Take the internal CS bot to clients as Stellar Insights.</Point>
-            <Point title="On-time performance">
-              Add the City&apos;s real-time feeds to measure reliability by route.
-            </Point>
-            <Point title="Owner sign-off">
-              Agree targets and definitions with the people who run the service.
-            </Point>
+            {[
+              ["PRIME for clients", "Take the internal CS bot to clients as Stellar Insights."],
+              ["On-time performance", "Add the City's real-time feeds to measure reliability by route."],
+              ["Owner sign-off", "Agree targets and definitions with the people who run the service."],
+            ].map(([t, b]) => (
+              <div key={t} className="rounded-lg bg-cgy-paper p-6">
+                <p className="text-[26px] font-bold leading-tight text-cgy-slate">{t}</p>
+                <p className="mt-2 text-[20px] leading-snug">{b}</p>
+              </div>
+            ))}
           </div>
         </div>
-        <p className="rounded-lg bg-cgy-slate px-7 py-6 text-[26px] font-semibold leading-snug text-white">
+        <p className="rounded-lg bg-cgy-slate px-7 py-6 text-[25px] font-semibold leading-snug text-white">
           The same work at the City: find where numbers disagree, agree one definition with the owners, and
           make it self-serve.
         </p>

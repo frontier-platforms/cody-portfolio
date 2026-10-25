@@ -105,9 +105,12 @@ export function Predictor() {
   ).sort(([a], [b]) => a.localeCompare(b));
 
   return (
-    <div className="mt-8 space-y-6">
+    <div className="mt-6 space-y-6">
       <div className="grid gap-6 lg:grid-cols-[1fr_1.2fr]">
-        <form className="space-y-4 rounded-lg border border-cgy-line p-5" onSubmit={(e) => e.preventDefault()}>
+        <form
+          className="space-y-4 rounded-lg border border-cgy-line p-5"
+          onSubmit={(e) => e.preventDefault()}
+        >
           <p className="text-sm font-semibold uppercase tracking-wide text-cgy-grey">A new request</p>
           <Field label="Request type">
             <select value={type} onChange={(e) => setType(e.target.value)} className={INPUT}>
@@ -143,18 +146,28 @@ export function Predictor() {
               </select>
             </Field>
             <Field label="Filed on">
-              <input type="date" value={result.filed} onChange={(e) => setDate(e.target.value || today())} className={INPUT} />
+              <input
+                type="date"
+                value={result.filed}
+                onChange={(e) => setDate(e.target.value || today())}
+                className={INPUT}
+              />
             </Field>
           </div>
           <p className="text-sm text-cgy-grey">
             Today&apos;s context for this type:{" "}
-            {result.ctx.recent_pace === null ? "no recent requests" : `${fmtPct(result.ctx.recent_pace * 100)} closed within a week over the last 90 days`}
-            , and {fmtNumber(result.ctx.workload_30d)} {result.category.toLowerCase()} requests in the last 30 days.
+            {result.ctx.recent_pace === null
+              ? "no recent requests"
+              : `${fmtPct(result.ctx.recent_pace * 100)} closed within a week over the last 90 days`}
+            , and {fmtNumber(result.ctx.workload_30d)} {result.category.toLowerCase()} requests in the last 30
+            days.
           </p>
         </form>
 
-        <section className="rounded-lg bg-cgy-paper p-5" aria-live="polite">
-          <p className="text-sm font-semibold uppercase tracking-wide text-cgy-grey">Chance it&apos;s closed within 7 days</p>
+        <section className="order-first rounded-lg bg-cgy-paper p-5 lg:order-none" aria-live="polite">
+          <p className="text-sm font-semibold uppercase tracking-wide text-cgy-grey">
+            Chance it&apos;s closed within 7 days
+          </p>
           <div className="mt-2 flex items-baseline gap-4">
             <p className="tabular text-6xl font-bold text-cgy-slate">{fmtPct(result.probability * 100)}</p>
             <p className={`text-lg font-semibold ${likely ? "text-cgy-green" : "text-cgy-orange"}`}>
@@ -162,10 +175,15 @@ export function Predictor() {
             </p>
           </div>
           <div className="mt-3 h-2 rounded bg-cgy-line">
-            <div className="h-2 rounded bg-cgy-red transition-all" style={{ width: `${result.probability * 100}%` }} />
+            <div
+              className="h-2 rounded bg-cgy-red transition-all"
+              style={{ width: `${result.probability * 100}%` }}
+            />
           </div>
 
-          <p className="mt-6 text-sm font-semibold uppercase tracking-wide text-cgy-grey">What moved this prediction</p>
+          <p className="mt-6 text-sm font-semibold uppercase tracking-wide text-cgy-grey">
+            What moved this prediction
+          </p>
           <ul className="mt-3 space-y-2">
             {result.drivers.map((d) => (
               <li key={d.feature} className="grid grid-cols-[170px_1fr] items-center gap-3 text-sm">
@@ -185,9 +203,9 @@ export function Predictor() {
 
       <Performance testYear={model.testYear} metrics={model.metrics} evaluation={model.evaluation} />
       <p className="text-sm text-cgy-grey">
-        {model.library}, {model.trees} trees. After testing, retrained on{" "}
-        {fmtNumber(model.rows.final)} requests from {model.trainFrom} to {fmtDate(model.labelledThrough)}. Retrained every
-        day by Airflow; this page scores it in your browser, checked against XGBoost on every run.
+        {model.library}, {model.trees} trees. After testing, retrained on {fmtNumber(model.rows.final)}{" "}
+        requests from {model.trainFrom} to {fmtDate(model.labelledThrough)}. Retrained every day by Airflow;
+        this page scores it in your browser, checked against XGBoost on every run.
       </p>
     </div>
   );

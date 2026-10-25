@@ -14,7 +14,7 @@ export const SECTIONS = [
 export function NavLinks() {
   const pathname = usePathname();
   return (
-    <nav aria-label="Main" className="-mx-2 flex flex-wrap text-sm font-semibold">
+    <nav aria-label="Main" className="-mx-2 flex max-w-full overflow-x-auto whitespace-nowrap text-sm font-semibold sm:flex-wrap">
       {SECTIONS.map(({ href, label }) => {
         const active = pathname.startsWith(href);
         return (
