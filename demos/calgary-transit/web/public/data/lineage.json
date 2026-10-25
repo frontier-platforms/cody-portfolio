@@ -1,0 +1,158 @@
+{
+ "nodes": [
+  {
+   "id": "data_contract_status",
+   "layer": "Gold"
+  },
+  {
+   "id": "ridership_by_fare_product",
+   "layer": "Gold"
+  },
+  {
+   "id": "service_requests_by_community",
+   "layer": "Gold"
+  },
+  {
+   "id": "service_requests_monthly",
+   "layer": "Gold"
+  },
+  {
+   "id": "transit_monthly_kpis",
+   "layer": "Gold"
+  },
+  {
+   "id": "resolution_model",
+   "layer": "ML"
+  },
+  {
+   "id": "agency_map",
+   "layer": "Reference"
+  },
+  {
+   "id": "data_contract",
+   "layer": "Reference"
+  },
+  {
+   "id": "fare_product_map",
+   "layer": "Reference"
+  },
+  {
+   "id": "service_category_map",
+   "layer": "Reference"
+  },
+  {
+   "id": "dim_month",
+   "layer": "Silver"
+  },
+  {
+   "id": "fct_ridership_by_fare_product",
+   "layer": "Silver"
+  },
+  {
+   "id": "fct_ridership_monthly",
+   "layer": "Silver"
+  },
+  {
+   "id": "fct_service_hours_monthly",
+   "layer": "Silver"
+  },
+  {
+   "id": "fct_service_requests",
+   "layer": "Silver"
+  },
+  {
+   "id": "ridership_monthly",
+   "layer": "Sources"
+  },
+  {
+   "id": "service_hours_monthly",
+   "layer": "Sources"
+  },
+  {
+   "id": "service_requests_311",
+   "layer": "Sources"
+  }
+ ],
+ "edges": [
+  [
+   "agency_map",
+   "fct_service_requests"
+  ],
+  [
+   "data_contract",
+   "data_contract_status"
+  ],
+  [
+   "dim_month",
+   "transit_monthly_kpis"
+  ],
+  [
+   "fare_product_map",
+   "fct_ridership_by_fare_product"
+  ],
+  [
+   "fct_ridership_by_fare_product",
+   "ridership_by_fare_product"
+  ],
+  [
+   "fct_ridership_monthly",
+   "data_contract_status"
+  ],
+  [
+   "fct_ridership_monthly",
+   "ridership_by_fare_product"
+  ],
+  [
+   "fct_ridership_monthly",
+   "transit_monthly_kpis"
+  ],
+  [
+   "fct_service_hours_monthly",
+   "data_contract_status"
+  ],
+  [
+   "fct_service_hours_monthly",
+   "transit_monthly_kpis"
+  ],
+  [
+   "fct_service_requests",
+   "data_contract_status"
+  ],
+  [
+   "fct_service_requests",
+   "resolution_model"
+  ],
+  [
+   "fct_service_requests",
+   "service_requests_by_community"
+  ],
+  [
+   "fct_service_requests",
+   "service_requests_monthly"
+  ],
+  [
+   "fct_service_requests",
+   "transit_monthly_kpis"
+  ],
+  [
+   "ridership_monthly",
+   "fct_ridership_by_fare_product"
+  ],
+  [
+   "ridership_monthly",
+   "fct_ridership_monthly"
+  ],
+  [
+   "service_category_map",
+   "fct_service_requests"
+  ],
+  [
+   "service_hours_monthly",
+   "fct_service_hours_monthly"
+  ],
+  [
+   "service_requests_311",
+   "fct_service_requests"
+  ]
+ ]
+}

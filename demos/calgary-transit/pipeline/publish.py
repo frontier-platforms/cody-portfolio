@@ -29,6 +29,31 @@ def _dbt_docs() -> dict[str, dict]:
     }
 
 
+def lineage() -> dict:
+    """dbt's own lineage (sources, seeds, models) from the manifest, plus the ML model trained on
+    silver, so the website's diagram always matches the dbt docs."""
+    manifest = json.loads(MANIFEST.read_text())
+    layers = {"source": "Sources", "seed": "Reference", "silver": "Silver", "gold": "Gold"}
+    nodes, edges = {}, []
+    for uid, parents in manifest["parent_map"].items():
+        kind = uid.split(".")[0]
+        if kind not in ("source", "seed", "model"):
+            continue
+        name = uid.split(".")[-1]
+        if kind == "model":
+            node = manifest["nodes"][uid]
+            layer = layers.get(node["schema"], node["schema"])
+        else:
+            layer = layers[kind]
+        if name.startswith("_"):
+            continue
+        nodes[uid] = {"id": name, "layer": layer}
+        edges += [[p.split(".")[-1], name] for p in parents if not p.split(".")[-1].startswith("_")]
+    nodes["ml"] = {"id": "resolution_model", "layer": "ML"}
+    edges.append(["fct_service_requests", "resolution_model"])
+    return {"nodes": sorted(nodes.values(), key=lambda n: (n["layer"], n["id"])), "edges": sorted(edges)}
+
+
 def publish() -> dict:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     docs = _dbt_docs()
@@ -70,6 +95,7 @@ def publish() -> dict:
         "tables": tables,
     }
     (OUT_DIR / "catalog.json").write_text(json.dumps(catalog, indent=2) + "\n")
+    (OUT_DIR / "lineage.json").write_text(json.dumps(lineage(), indent=1) + "\n")
     # The dbt docs site is served by the demo itself at /dbt-docs.html.
     if DBT_DOCS.exists():
         shutil.copyfile(DBT_DOCS, REPO_ROOT / "web" / "public" / "dbt-docs.html")
