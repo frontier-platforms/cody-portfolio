@@ -22,9 +22,7 @@ const MAX_ROWS_TO_MODEL = 100;
 
 const SUGGESTIONS = [
   "How has ridership recovered since the pandemic?",
-  "Which fare products grew the most between 2019 and 2024?",
-  "What do riders contact 311 about most, and how quickly are those requests closed?",
-  "Is service productivity back to pre-pandemic levels?",
+  "What do riders contact 311 about more than in 2019?",
   "How current is each data source?",
 ];
 

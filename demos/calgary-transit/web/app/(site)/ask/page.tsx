@@ -9,8 +9,8 @@ export default function AskPage() {
       <p className="text-sm font-semibold uppercase tracking-wide text-cgy-red">AI agent over the gold layer</p>
       <h1 className="mt-1 text-3xl font-bold">Ask the data</h1>
       <p className="mt-2 text-cgy-charcoal">
-        Ask a question in plain English. Claude reads the documented gold tables, writes SQL, and the query runs here in
-        your browser. Every answer shows the exact SQL and rows behind it, so the agent and the dashboard always agree.
+        Ask in plain English. Claude writes SQL against the documented tables, it runs here in your browser, and every
+        answer shows its work.
       </p>
       <Ask />
     </div>
