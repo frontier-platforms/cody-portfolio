@@ -75,7 +75,9 @@ cd web && npm install && npm run dev   # http://localhost:3000/data-demos/calgar
 
 After editing slides, regenerate the downloads with the site running: `BASE_URL=http://localhost:3000 npm run export:deck` (use a production build, `npm run build && npm start`, so the dev badge isn't captured).
 
-The agent needs `ANTHROPIC_API_KEY` (in `web/.env.local` locally, or a Vercel environment variable). Without it, everything except the agent works. ## How it's served
+The agent needs `ANTHROPIC_API_KEY` (in `web/.env.local` locally, or a Vercel environment variable). Without it, everything except the agent works.
+
+## How it's served
 
 The web app is its own Next.js app (a [multi-zone](https://nextjs.org/docs/app/guides/multi-zones)) with `basePath: /data-demos/calgary-transit`, deployed as a separate Vercel project with root directory `demos/calgary-transit/web`. The portfolio rewrites `/data-demos/calgary-transit/*` to it when `CALGARY_TRANSIT_URL` is set. This keeps the City of Calgary styling and tooling fully separate from the portfolio's brand system.
 

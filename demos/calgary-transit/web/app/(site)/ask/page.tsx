@@ -9,8 +9,8 @@ export default function AskPage() {
       <p className="text-sm font-semibold uppercase tracking-wide text-cgy-red">AI agent over the gold layer</p>
       <h1 className="mt-1 text-3xl font-bold">Ask the data</h1>
       <p className="mt-2 text-cgy-charcoal">
-        Ask in plain English. Claude writes SQL against the documented tables, it runs here in your browser, and every
-        answer shows its work.
+        Ask in plain English. The agent writes SQL against the governed tables, runs it in your browser, and
+        shows its work.
       </p>
       <Ask />
     </div>
