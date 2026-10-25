@@ -220,7 +220,7 @@ export const SLIDES: Slide[] = [
               { label: "Gold", title: "Tested tables", detail: "One grain each", highlight: true },
               {
                 label: "Consumers",
-                title: "CS · clients · BI · AI",
+                title: "BI · ML · AI",
                 detail: "Role-based access",
                 dark: true,
               },
@@ -284,17 +284,18 @@ export const SLIDES: Slide[] = [
     dark: true,
     section: "Live demo",
     answers: "Q3 · Q5",
-    minutes: 4.5,
+    minutes: 5,
     body: (
       <>
         <Label dark>PRIME&apos;s data belongs to clients, so I rebuilt the approach on open data</Label>
         <h2 className="mt-3 text-[50px] font-bold leading-tight text-white">
           Live on City of Calgary transit data
         </h2>
-        <div className="mt-10 grid grid-cols-3 gap-5">
+        <div className="mt-10 grid grid-cols-4 gap-4">
           {[
             ["The story", "Riders are back to 95% of 2019. Feedback per trip is up 12%."],
             ["The catch", "A 43% jump in complaints that wasn't real."],
+            ["Predict", "A live XGBoost model: will a 311 request close within a week?"],
             ["Ask the data", "Plain English in, SQL and the answer out. My proudest part."],
           ].map(([t, b], i) => (
             <div key={t} className="rounded-lg bg-white/10 p-7">
@@ -305,16 +306,17 @@ export const SLIDES: Slide[] = [
           ))}
         </div>
         <p className="mt-auto text-[19px] text-white/60">
-          Built this week: Airflow · dbt · DuckDB · 27 tests every day · Claude ·
+          Built this week: Airflow · dbt · DuckDB · 27 tests · XGBoost · Claude ·
           codychandler.ca/data-demos/calgary-transit
         </p>
       </>
     ),
     notes: [
-      "LIVE (4 min). Switch to the Dashboard tab.",
+      "LIVE (5 min). Switch to the Dashboard tab.",
       "1 · Read the headline. Point at the trips line: the 2020 drop and the recovery. (1 min)",
       "2 · The 311 chart. 'My first cut said complaints per trip were up 43%. That felt too dramatic, so I checked. Lost Property moved into 311 in 2021. I fixed it in the data, once, so the dashboard and the AI both get it right. Like for like it's 12%, led by fares and stops.' (1 min)",
-      "3 · Ask the data: click 'How has ridership recovered since the pandemic?'. While it runs: 'it reads the dbt docs, writes SQL, and runs it here in the browser on governed tables only.' Show the SQL, then point at the same 95% on the dashboard. (1.5 min)",
+      "3 · Predict tab: 'Same governed tables, now ML.' Pick Bus Stops: about 45%, likely slower. 'The biggest driver is how fast this type has been handled lately, more than the type itself.' Switch to Transit Pass Programs and watch it jump to about 80%. Then the honest part: 'Tested on 2025, a year it never saw, it beats the simple rule of thumb by a couple of points, and it explains every prediction.' (1 min)",
+      "4 · Ask the data: click 'How has ridership recovered since the pandemic?'. While it runs: 'it reads the dbt docs, writes SQL, and runs it here in the browser on governed tables only.' Show the SQL, then point at the same 95% on the dashboard. (1.5 min)",
       "If asked how it's built: open the Approach page and the Airflow graph. Otherwise skip it.",
     ],
   },

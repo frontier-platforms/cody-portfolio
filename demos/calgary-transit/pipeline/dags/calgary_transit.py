@@ -68,10 +68,17 @@ with DAG(
         append_env=True,
     )
 
+    # Trains on the tested silver facts after dbt, so a failed test means no new model either.
+    @task
+    def train_resolution_model() -> dict:
+        from pipeline.ml.resolution_model import train
+
+        return train()
+
     @task
     def publish_gold() -> dict:
         from pipeline.publish import publish
 
         return publish()
 
-    bronze[0] >> bronze[1] >> bronze[2] >> source_freshness >> transform >> parse_docs >> publish_gold()
+    bronze[0] >> bronze[1] >> bronze[2] >> source_freshness >> transform >> train_resolution_model() >> parse_docs >> publish_gold()

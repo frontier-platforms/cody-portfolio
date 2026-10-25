@@ -23,8 +23,15 @@ const STEPS = [
     body: "Calgary Transit's recovery, productivity and rider feedback, queried live from the governed layer.",
   },
   {
-    href: "/ask",
+    href: "/predict",
     step: "4",
+    title: "The prediction",
+    label: "Predict",
+    body: "A live XGBoost model on the same tables: will a 311 request close within a week?",
+  },
+  {
+    href: "/ask",
+    step: "5",
     title: "Self-serve",
     label: "Ask the data",
     body: "Ask in plain English. The agent writes SQL against the same tables and shows its work.",
@@ -59,7 +66,7 @@ export default function Home() {
           </div>
         </div>
       </section>
-      <section className="mx-auto grid w-full max-w-6xl gap-3 px-4 py-5 sm:grid-cols-2 sm:px-6 lg:grid-cols-4 [@media(min-height:820px)]:py-8">
+      <section className="mx-auto grid w-full max-w-6xl gap-3 px-4 py-5 sm:grid-cols-2 sm:px-6 lg:grid-cols-5 [@media(min-height:820px)]:py-8">
         {STEPS.map((s) => (
           <Link
             key={s.href}

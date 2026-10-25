@@ -7,6 +7,7 @@ export const SECTIONS = [
   { href: "/presentation", label: "Presentation" },
   { href: "/approach", label: "Approach" },
   { href: "/dashboard", label: "Dashboard" },
+  { href: "/predict", label: "Predict" },
   { href: "/ask", label: "Ask the data" },
 ];
 
