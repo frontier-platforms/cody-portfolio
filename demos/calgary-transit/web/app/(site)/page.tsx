@@ -35,7 +35,7 @@ export default function Home() {
   return (
     // Fills the screen below the header so the four tiles are always visible on a laptop.
     <div className="flex min-h-[calc(100dvh-58px)] flex-col">
-      <section className="flex flex-1 items-center bg-cgy-navy text-white">
+      <section className="flex flex-1 items-center bg-cgy-slate text-white">
         <div className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 [@media(min-height:820px)]:py-14">
           <p className="text-sm font-semibold uppercase tracking-wide text-white/70">Data product case study</p>
           <h1 className="mt-2 max-w-3xl text-3xl font-bold leading-tight text-white sm:text-4xl [@media(min-height:820px)]:sm:text-5xl">
@@ -69,7 +69,7 @@ export default function Home() {
             <span className="text-2xl font-bold leading-none text-cgy-red">{s.step}</span>
             <span>
               <span className="block text-xs font-semibold uppercase tracking-wide text-cgy-grey">{s.label}</span>
-              <span className="block text-lg font-bold text-cgy-navy group-hover:text-cgy-red">{s.title}</span>
+              <span className="block text-lg font-bold text-cgy-slate group-hover:text-cgy-red">{s.title}</span>
               <span className="mt-1 block text-sm">{s.body}</span>
             </span>
           </Link>
