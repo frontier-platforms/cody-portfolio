@@ -2,11 +2,11 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { explain, type GbmModel } from "@/lib/ml/gbm";
+import { Performance, type Evaluation, type Scores } from "./performance";
 import { withBase } from "@/lib/paths";
 import { fmtDate, fmtNumber, fmtPct, titleCase } from "@/lib/format";
 
 type Encoder = { mean: number; values: Record<string, number> };
-type Scores = { accuracy: number; auc: number; slowPrecision: number };
 type Model = {
   trainedAt: string;
   library: string;
@@ -16,6 +16,7 @@ type Model = {
   testYear: number;
   trainFrom: number;
   metrics: { model: Scores; baseline: Scores };
+  evaluation: { model: Evaluation; baseline: Evaluation };
   encoders: Record<string, Encoder>;
   gbm: GbmModel;
   options: {
@@ -94,7 +95,6 @@ export function Predictor() {
   if (error) return <p className="mt-8 text-cgy-red">{error}</p>;
   if (!model || !result) return <p className="mt-8 text-cgy-grey">Loading the model…</p>;
 
-  const m = model.metrics;
   const likely = result.probability >= 0.5;
   const maxDriver = Math.max(...result.drivers.map((d) => Math.abs(d.value)), 0.01);
   const typesByCategory = Object.entries(
@@ -183,14 +183,9 @@ export function Predictor() {
         </section>
       </div>
 
-      <section className="grid gap-3 sm:grid-cols-3">
-        <Score label="Accuracy on 2025" model={m.model.accuracy} baseline={m.baseline.accuracy} />
-        <Score label="AUC on 2025" model={m.model.auc} baseline={m.baseline.auc} decimals />
-        <Score label="Flagged slow that were slow" model={m.model.slowPrecision} baseline={m.baseline.slowPrecision} />
-      </section>
+      <Performance testYear={model.testYear} metrics={model.metrics} evaluation={model.evaluation} />
       <p className="text-sm text-cgy-grey">
-        {model.library}, {model.trees} trees. Tested on {fmtNumber(model.rows.test)} requests from {model.testYear}, a year
-        it never saw, against a baseline of each request type&apos;s past rate. Then retrained on{" "}
+        {model.library}, {model.trees} trees. After testing, retrained on{" "}
         {fmtNumber(model.rows.final)} requests from {model.trainFrom} to {fmtDate(model.labelledThrough)}. Retrained every
         day by Airflow; this page scores it in your browser, checked against XGBoost on every run.
       </p>
@@ -206,16 +201,5 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
       {label}
       {children}
     </label>
-  );
-}
-
-function Score({ label, model, baseline, decimals }: { label: string; model: number; baseline: number; decimals?: boolean }) {
-  const show = (v: number) => (decimals ? fmtNumber(v, 3) : fmtPct(v * 100, 1));
-  return (
-    <div className="rounded-lg border border-cgy-line p-4">
-      <p className="text-xs font-semibold uppercase tracking-wide text-cgy-grey">{label}</p>
-      <p className="tabular mt-1 text-2xl font-bold text-cgy-slate">{show(model)}</p>
-      <p className="text-sm text-cgy-grey">Baseline {show(baseline)}</p>
-    </div>
   );
 }

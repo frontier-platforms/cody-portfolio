@@ -180,6 +180,35 @@ def scores(y: np.ndarray, p: np.ndarray) -> dict:
     }
 
 
+def evaluation(y: np.ndarray, p: np.ndarray) -> dict:
+    """Plain-language test results: a confusion matrix per 1,000 requests, precision and recall
+    for "will take longer" (the case 311 staff act on), and calibration in five bands."""
+    slow_pred, slow_true = p < 0.5, y == 0
+    per_1000 = lambda mask: int(round(1000 * mask.mean()))
+    tp = (slow_pred & slow_true).sum()
+    bands = []
+    for lo in (0.0, 0.2, 0.4, 0.6, 0.8):
+        m = (p >= lo) & (p < lo + 0.2 if lo < 0.8 else p <= 1.0)
+        if m.sum():
+            bands.append({
+                "band": f"{int(lo * 100)}-{int(lo * 100) + 20}%",
+                "predicted": round(float(p[m].mean()), 4),
+                "actual": round(float(y[m].mean()), 4),
+                "requests": int(m.sum()),
+            })
+    return {
+        "confusion": {
+            "slowCaught": per_1000(slow_pred & slow_true),
+            "fastCaught": per_1000(~slow_pred & ~slow_true),
+            "falseAlarm": per_1000(slow_pred & ~slow_true),
+            "missedSlow": per_1000(~slow_pred & slow_true),
+        },
+        "slowPrecision": round(float(tp / max(slow_pred.sum(), 1)), 4),
+        "slowRecall": round(float(tp / max(slow_true.sum(), 1)), 4),
+        "calibration": bands,
+    }
+
+
 # ------------------------------------------------------------------ export
 
 
@@ -283,6 +312,7 @@ def train() -> dict:
         "testYear": TEST_YEAR,
         "trainFrom": TRAIN_FROM,
         "metrics": {"model": scores(y_test, p_model), "baseline": scores(y_test, p_base)},
+        "evaluation": {"model": evaluation(y_test, p_model), "baseline": evaluation(y_test, p_base)},
         "positiveRate": round(float(y_test.mean()), 4),
         "parityMaxError": float(worst),
         "encoders": final_encoders,
@@ -308,7 +338,7 @@ def train() -> dict:
         },
     }
     OUT.write_text(json.dumps(model, separators=(",", ":")) + "\n")
-    summary = {"rows": model["rows"], "metrics": model["metrics"], "parity": float(worst), "bytes": OUT.stat().st_size}
+    summary = {"rows": model["rows"], "metrics": model["metrics"], "evaluation": model["evaluation"]["model"], "parity": float(worst), "bytes": OUT.stat().st_size}
     print(summary)
     return summary
 

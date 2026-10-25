@@ -315,7 +315,7 @@ export const SLIDES: Slide[] = [
       "LIVE (5 min). Switch to the Dashboard tab.",
       "1 · Read the headline. Point at the trips line: the 2020 drop and the recovery. (1 min)",
       "2 · The 311 chart. 'My first cut said complaints per trip were up 43%. That felt too dramatic, so I checked. Lost Property moved into 311 in 2021. I fixed it in the data, once, so the dashboard and the AI both get it right. Like for like it's 12%, led by fares and stops.' (1 min)",
-      "3 · Predict tab: 'Same governed tables, now ML.' Pick Bus Stops: about 45%, likely slower. 'The biggest driver is how fast this type has been handled lately, more than the type itself.' Switch to Transit Pass Programs and watch it jump to about 80%. Then the honest part: 'Tested on 2025, a year it never saw, it beats the simple rule of thumb by a couple of points, and it explains every prediction.' (1 min)",
+      "3 · Predict tab: 'Same governed tables, now ML.' Pick Advertising and Communications (usually low), then Transit Pass Programs (usually high), and point at what moved it: recent pace matters more than the type itself. Then the honest part: 'Tested on 2025, a year it never saw, it catches more slow requests than the rule of thumb and explains every prediction.' Numbers shift a little each day because it retrains daily. (1 min)",
       "4 · Ask the data: click 'How has ridership recovered since the pandemic?'. While it runs: 'it reads the dbt docs, writes SQL, and runs it here in the browser on governed tables only.' Show the SQL, then point at the same 95% on the dashboard. (1.5 min)",
       "If asked how it's built: open the Approach page and the Airflow graph. Otherwise skip it.",
     ],
