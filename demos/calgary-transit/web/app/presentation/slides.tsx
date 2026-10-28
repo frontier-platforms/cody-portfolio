@@ -299,7 +299,11 @@ export const SLIDES: Slide[] = [
           <Flow
             large
             steps={[
-              { label: "Sources", title: "Three systems", detail: "Every client's data" },
+              {
+                label: "Sources",
+                title: "3+ systems",
+                detail: "Product analytics, customer data, client config",
+              },
               { label: "Bronze", title: "Raw", detail: "Personal data masked" },
               { label: "Silver", title: "One definition", detail: "Across every client" },
               { label: "Gold", title: "Tested tables", detail: "One grain each", highlight: true },
@@ -324,7 +328,7 @@ export const SLIDES: Slide[] = [
       </>
     ),
     notes: [
-      "Left to right, once: three sources, transformed once, one set of shared metrics, every consumer.",
+      "Left to right, once: product analytics, customer data (ticketing, acquisition) and client config, transformed once, one set of shared metrics, every consumer.",
       "Governance is built in: personal data masked on landing, access by role, and a data contract.",
     ],
   },
@@ -438,8 +442,8 @@ export const SLIDES: Slide[] = [
           </div>
           <div className="mt-10 grid grid-cols-[1fr_1.35fr] gap-10">
             <Sub letter="a" title="Sourcing and preparing the data">
-              Three source systems, landed raw with personal data masked, then mapped client by client into
-              one model and tested.
+              Product analytics, customer data and client config, landed raw with personal data masked, then
+              mapped client by client into one model and tested.
             </Sub>
             <Sub letter="b" title="Methods and tools">
               <div className="mt-2 grid grid-cols-3 gap-2">
