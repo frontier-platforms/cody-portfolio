@@ -450,22 +450,26 @@ export const SLIDES: Slide[] = [
               <p className="text-[22px] font-bold text-cgy-slate">Sourcing and preparing the data</p>
             </div>
             <p className="mt-3 text-[17px] leading-snug">
-              Product analytics, customer data and client config, for every client.
+              Product analytics, customer data and client config.
             </p>
-            <div className="mt-auto flex items-stretch gap-2 pt-4">
+            <div className="my-auto grid grid-cols-[1fr_auto_1fr_auto_1fr] items-stretch gap-2 pt-4">
               {[
                 ["Land", "Raw, personal data masked"],
                 ["Map", "Client by client, into one model"],
                 ["Test", "On every run, before use"],
-              ].map(([t, d], i) => (
-                <div key={t} className="flex flex-1 items-stretch gap-2">
-                  <div className="flex-1 rounded-lg bg-cgy-paper px-3 py-2.5">
-                    <p className="text-[17px] font-bold text-cgy-slate">{t}</p>
-                    <p className="text-[14px] leading-snug">{d}</p>
-                  </div>
-                  {i < 2 && <span className="self-center text-[20px] font-bold text-cgy-red">→</span>}
-                </div>
-              ))}
+              ].flatMap(([t, d], i) => [
+                ...(i > 0
+                  ? [
+                      <span key={`arrow-${t}`} className="self-center text-[20px] font-bold text-cgy-red">
+                        →
+                      </span>,
+                    ]
+                  : []),
+                <div key={t} className="rounded-lg bg-cgy-paper px-3 py-3 text-center">
+                  <p className="text-[17px] font-bold text-cgy-slate">{t}</p>
+                  <p className="mt-0.5 text-[14px] leading-snug">{d}</p>
+                </div>,
+              ])}
             </div>
           </div>
           <div className="flex flex-col rounded-lg border-2 border-cgy-line p-5">
@@ -473,10 +477,7 @@ export const SLIDES: Slide[] = [
               <Letter>b</Letter>
               <p className="text-[22px] font-bold text-cgy-slate">Methods and tools</p>
             </div>
-            <p className="mt-3 text-[17px] leading-snug">
-              Engineered like software: every change versioned, every model tested and documented.
-            </p>
-            <div className="mt-auto grid grid-cols-3 gap-2 pt-4">
+            <div className="my-auto grid grid-cols-3 gap-2 pt-4">
               {STACK.map(([verb, tool]) => (
                 <div key={verb} className="rounded-lg bg-cgy-paper px-3 py-2.5">
                   <p className="text-[12px] font-semibold uppercase tracking-wide text-cgy-grey">{verb}</p>
