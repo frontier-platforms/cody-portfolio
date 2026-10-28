@@ -105,37 +105,37 @@ export function Predictor() {
   ).sort(([a], [b]) => a.localeCompare(b));
 
   return (
-    <div className="mt-6 space-y-6">
-      <div className="grid gap-6 lg:grid-cols-[1fr_1.2fr]">
+    <div className="mt-6 space-y-6 lg:mt-4 lg:flex lg:flex-1 lg:flex-col lg:space-y-4">
+      <div className="grid gap-6 lg:flex-1 lg:grid-cols-[1fr_1.2fr] lg:gap-4">
         <form
-          className="space-y-4 rounded-lg border border-cgy-line p-5"
+          className="space-y-3 rounded-lg border border-cgy-line p-5 lg:flex lg:flex-col lg:justify-center tall:space-y-5 tall:p-7"
           onSubmit={(e) => e.preventDefault()}
         >
           <p className="text-sm font-semibold uppercase tracking-wide text-cgy-grey">A new request</p>
-          <Field label="Request type">
-            <select value={type} onChange={(e) => setType(e.target.value)} className={INPUT}>
-              {typesByCategory.map(([cat, names]) => (
-                <optgroup key={cat} label={cat}>
-                  {names.map((n) => (
-                    <option key={n} value={n}>
-                      {n.replace(/^CT( AC)? - /, "")}
-                    </option>
-                  ))}
-                </optgroup>
-              ))}
-            </select>
-          </Field>
-          <Field label="Community">
-            <select value={community} onChange={(e) => setCommunity(e.target.value)} className={INPUT}>
-              <option value={NOT_RECORDED}>Not recorded</option>
-              {model.options.community.map((c) => (
-                <option key={c} value={c}>
-                  {titleCase(c)}
-                </option>
-              ))}
-            </select>
-          </Field>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid gap-3 sm:grid-cols-2">
+            <Field label="Request type">
+              <select value={type} onChange={(e) => setType(e.target.value)} className={INPUT}>
+                {typesByCategory.map(([cat, names]) => (
+                  <optgroup key={cat} label={cat}>
+                    {names.map((n) => (
+                      <option key={n} value={n}>
+                        {n.replace(/^CT( AC)? - /, "")}
+                      </option>
+                    ))}
+                  </optgroup>
+                ))}
+              </select>
+            </Field>
+            <Field label="Community">
+              <select value={community} onChange={(e) => setCommunity(e.target.value)} className={INPUT}>
+                <option value={NOT_RECORDED}>Not recorded</option>
+                {model.options.community.map((c) => (
+                  <option key={c} value={c}>
+                    {titleCase(c)}
+                  </option>
+                ))}
+              </select>
+            </Field>
             <Field label="Channel">
               <select value={channel} onChange={(e) => setChannel(e.target.value)} className={INPUT}>
                 {model.options.intake_channel.map((c) => (
@@ -154,7 +154,7 @@ export function Predictor() {
               />
             </Field>
           </div>
-          <p className="text-sm text-cgy-grey">
+          <p className="text-sm text-cgy-grey tall:text-base">
             Today&apos;s context for this type:{" "}
             {result.ctx.recent_pace === null
               ? "no recent requests"
@@ -164,36 +164,48 @@ export function Predictor() {
           </p>
         </form>
 
-        <section className="order-first rounded-lg bg-cgy-paper p-5 lg:order-none" aria-live="polite">
+        <section
+          className="order-first rounded-lg bg-cgy-paper p-5 lg:order-none lg:flex lg:flex-col lg:justify-center tall:p-7"
+          aria-live="polite"
+        >
           <p className="text-sm font-semibold uppercase tracking-wide text-cgy-grey">
             Chance it&apos;s closed within 7 days
           </p>
           <div className="mt-2 flex items-baseline gap-4">
-            <p className="tabular text-6xl font-bold text-cgy-slate">{fmtPct(result.probability * 100)}</p>
-            <p className={`text-lg font-semibold ${likely ? "text-cgy-green" : "text-cgy-orange"}`}>
+            <p className="tabular text-6xl font-bold text-cgy-slate lg:text-5xl tall:text-7xl">
+              {fmtPct(result.probability * 100)}
+            </p>
+            <p
+              className={`text-lg font-semibold tall:text-2xl ${likely ? "text-cgy-green" : "text-cgy-orange"}`}
+            >
               {likely ? "Likely closed within a week" : "Likely to take longer"}
             </p>
           </div>
-          <div className="mt-3 h-2 rounded bg-cgy-line">
+          <div className="mt-3 h-2 rounded bg-cgy-line tall:h-3">
             <div
-              className="h-2 rounded bg-cgy-red transition-all"
+              className="h-full rounded bg-cgy-red transition-all"
               style={{ width: `${result.probability * 100}%` }}
             />
           </div>
 
-          <p className="mt-6 text-sm font-semibold uppercase tracking-wide text-cgy-grey">
+          <p className="mt-5 text-sm font-semibold uppercase tracking-wide text-cgy-grey">
             What moved this prediction
           </p>
-          <ul className="mt-3 space-y-2">
+          <ul className="mt-2 space-y-1.5 tall:mt-4 tall:space-y-3.5">
             {result.drivers.map((d) => (
-              <li key={d.feature} className="grid grid-cols-[170px_1fr] items-center gap-3 text-sm">
+              <li
+                key={d.feature}
+                className="grid grid-cols-[170px_1fr] items-center gap-3 text-sm tall:grid-cols-[210px_1fr] tall:text-base"
+              >
                 <span className="font-semibold text-cgy-slate">{LABELS[d.feature] ?? d.feature}</span>
                 <span className="flex items-center gap-2">
                   <span
-                    className={`h-2.5 rounded ${d.value > 0 ? "bg-cgy-green" : "bg-cgy-orange"}`}
+                    className={`h-2.5 rounded tall:h-3.5 ${d.value > 0 ? "bg-cgy-green" : "bg-cgy-orange"}`}
                     style={{ width: `${(Math.abs(d.value) / maxDriver) * 70}%` }}
                   />
-                  <span className="text-xs text-cgy-grey">{d.value > 0 ? "faster" : "slower"}</span>
+                  <span className="text-xs text-cgy-grey tall:text-sm">
+                    {d.value > 0 ? "faster" : "slower"}
+                  </span>
                 </span>
               </li>
             ))}
@@ -201,21 +213,21 @@ export function Predictor() {
         </section>
       </div>
 
-      <Performance testYear={model.testYear} metrics={model.metrics} evaluation={model.evaluation} />
-      <p className="text-sm text-cgy-grey">
+      <Performance testYear={model.testYear} metrics={model.metrics} evaluation={model.evaluation}>
         {model.library}, {model.trees} trees. After testing, retrained on {fmtNumber(model.rows.final)}{" "}
         requests from {model.trainFrom} to {fmtDate(model.labelledThrough)}. Retrained every day by Airflow;
         this page scores it in your browser, checked against XGBoost on every run.
-      </p>
+      </Performance>
     </div>
   );
 }
 
-const INPUT = "mt-1 w-full rounded border border-cgy-silver bg-white px-2 py-2 text-sm";
+const INPUT =
+  "mt-1 w-full rounded border border-cgy-silver bg-white px-2 py-2 text-sm tall:py-2.5 tall:text-base";
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <label className="block text-sm font-semibold text-cgy-slate">
+    <label className="block text-sm font-semibold text-cgy-slate tall:text-base">
       {label}
       {children}
     </label>

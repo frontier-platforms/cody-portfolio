@@ -2,7 +2,15 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  useSyncExternalStore,
+  type ReactNode,
+} from "react";
 import { SLIDES } from "./slides";
 import { SlideFrame } from "./slide-kit";
 import { withBase } from "@/lib/paths";
@@ -42,7 +50,10 @@ function Scaled({ index, className = "" }: { index: number; className?: string }
     <div ref={box} className={`flex items-center justify-center overflow-hidden ${className}`}>
       {scale > 0 && (
         <div style={{ width: W * scale, height: H * scale }} className="relative shadow-2xl">
-          <div style={{ transform: `scale(${scale})`, transformOrigin: "top left" }} className="absolute left-0 top-0">
+          <div
+            style={{ transform: `scale(${scale})`, transformOrigin: "top left" }}
+            className="absolute left-0 top-0"
+          >
             <SlideFrame slide={SLIDES[index]} index={index} total={TOTAL} />
           </div>
         </div>
@@ -115,7 +126,16 @@ function Notes({ index }: { index: number }) {
       </p>
       <ul className="mt-2 list-disc space-y-1.5 pl-5">
         {s.notes.map((n, i) => (
-          <li key={i} className={n.includes("[Your story") ? "text-cgy-gold" : n.startsWith("LIVE DEMO") ? "font-semibold text-white" : ""}>
+          <li
+            key={i}
+            className={
+              n.includes("[Your story")
+                ? "text-cgy-gold"
+                : n.startsWith("LIVE DEMO")
+                  ? "font-semibold text-white"
+                  : ""
+            }
+          >
             {n}
           </li>
         ))}
@@ -124,7 +144,15 @@ function Notes({ index }: { index: number }) {
   );
 }
 
-function ToolbarButton({ onClick, children, label }: { onClick: () => void; children: ReactNode; label: string }) {
+function ToolbarButton({
+  onClick,
+  children,
+  label,
+}: {
+  onClick: () => void;
+  children: ReactNode;
+  label: string;
+}) {
   return (
     <button
       type="button"
@@ -139,8 +167,8 @@ function ToolbarButton({ onClick, children, label }: { onClick: () => void; chil
 }
 
 export const DOWNLOADS = [
-  { href: withBase("/downloads/prime-case-study.pdf"), label: "PDF" },
-  { href: withBase("/downloads/prime-case-study.pptx"), label: "PowerPoint" },
+  { href: withBase("/downloads/data-product-case-study.pdf"), label: "PDF" },
+  { href: withBase("/downloads/data-product-case-study.pptx"), label: "PowerPoint" },
 ];
 
 function DownloadMenu() {
@@ -151,7 +179,12 @@ function DownloadMenu() {
       </summary>
       <div className="absolute bottom-full right-0 mb-2 w-44 overflow-hidden rounded-md bg-white text-sm shadow-xl">
         {DOWNLOADS.map((d) => (
-          <a key={d.href} href={d.href} download className="block px-3 py-2 font-semibold text-cgy-slate hover:bg-cgy-mist">
+          <a
+            key={d.href}
+            href={d.href}
+            download
+            className="block px-3 py-2 font-semibold text-cgy-slate hover:bg-cgy-mist"
+          >
             {d.label}
           </a>
         ))}
@@ -170,23 +203,26 @@ export function Deck() {
     () => false,
   );
 
-  const extra = useCallback((e: KeyboardEvent) => {
-    if (e.key === "n") {
-      setShowNotes((v) => !v);
-      return true;
-    }
-    if (e.key === "f") {
-      if (document.fullscreenElement) document.exitFullscreen();
-      else document.documentElement.requestFullscreen().catch(() => {});
-      return true;
-    }
-    // In fullscreen the browser uses Esc to leave fullscreen; outside it, Esc leaves the presentation.
-    if (e.key === "Escape" && !document.fullscreenElement) {
-      router.push("/");
-      return true;
-    }
-    return false;
-  }, [router]);
+  const extra = useCallback(
+    (e: KeyboardEvent) => {
+      if (e.key === "n") {
+        setShowNotes((v) => !v);
+        return true;
+      }
+      if (e.key === "f") {
+        if (document.fullscreenElement) document.exitFullscreen();
+        else document.documentElement.requestFullscreen().catch(() => {});
+        return true;
+      }
+      // In fullscreen the browser uses Esc to leave fullscreen; outside it, Esc leaves the presentation.
+      if (e.key === "Escape" && !document.fullscreenElement) {
+        router.push("/");
+        return true;
+      }
+      return false;
+    },
+    [router],
+  );
   useKeys(index, go, extra);
 
   if (presenter) return <PresenterView index={index} go={go} />;
@@ -196,8 +232,18 @@ export function Deck() {
     <div className="fixed inset-0 flex flex-col bg-[#2a2d31]">
       <div className="relative min-h-0 flex-1">
         <Scaled index={index} className="absolute inset-0 px-3 pb-2 pt-3" />
-        <button type="button" aria-label="Previous slide" onClick={() => go(index - 1)} className="absolute inset-y-0 left-0 w-1/5 cursor-w-resize" />
-        <button type="button" aria-label="Next slide" onClick={() => go(index + 1)} className="absolute inset-y-0 right-0 w-1/5 cursor-e-resize" />
+        <button
+          type="button"
+          aria-label="Previous slide"
+          onClick={() => go(index - 1)}
+          className="absolute inset-y-0 left-0 w-1/5 cursor-w-resize"
+        />
+        <button
+          type="button"
+          aria-label="Next slide"
+          onClick={() => go(index + 1)}
+          className="absolute inset-y-0 right-0 w-1/5 cursor-e-resize"
+        />
       </div>
       {showNotes && (
         <div className="max-h-[30vh] shrink-0 overflow-y-auto border-t border-white/10 px-6 py-3">
@@ -213,24 +259,41 @@ export function Deck() {
           ✕ Exit
         </Link>
         <div className="mx-2 h-1 flex-1 overflow-hidden rounded bg-white/10">
-          <div className="h-1 bg-cgy-red transition-all" style={{ width: `${((index + 1) / TOTAL) * 100}%` }} />
+          <div
+            className="h-1 bg-cgy-red transition-all"
+            style={{ width: `${((index + 1) / TOTAL) * 100}%` }}
+          />
         </div>
         <span className="tabular px-2 text-xs text-white/50">~{Math.round(elapsed)} min in</span>
-        <ToolbarButton onClick={() => go(index - 1)} label="Previous (←)">←</ToolbarButton>
+        <ToolbarButton onClick={() => go(index - 1)} label="Previous (←)">
+          ←
+        </ToolbarButton>
         <span className="tabular px-1 text-sm text-white/70">
           {index + 1} / {TOTAL}
         </span>
-        <ToolbarButton onClick={() => go(index + 1)} label="Next (→)">→</ToolbarButton>
-        <ToolbarButton onClick={() => setShowNotes((v) => !v)} label="Speaker notes (N)">Notes</ToolbarButton>
+        <ToolbarButton onClick={() => go(index + 1)} label="Next (→)">
+          →
+        </ToolbarButton>
+        <ToolbarButton onClick={() => setShowNotes((v) => !v)} label="Speaker notes (N)">
+          Notes
+        </ToolbarButton>
         <ToolbarButton
-          onClick={() => window.open(withBase(`/presentation?view=presenter#${index + 1}`), "presenter", "width=1100,height=760")}
+          onClick={() =>
+            window.open(
+              withBase(`/presentation?view=presenter#${index + 1}`),
+              "presenter",
+              "width=1100,height=760",
+            )
+          }
           label="Open presenter view in a new window"
         >
           Presenter
         </ToolbarButton>
         <ToolbarButton
           onClick={() =>
-            document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen().catch(() => {})
+            document.fullscreenElement
+              ? document.exitFullscreen()
+              : document.documentElement.requestFullscreen().catch(() => {})
           }
           label="Fullscreen (F)"
         >
@@ -263,22 +326,47 @@ function PresenterView({ index, go }: { index: number; go: (i: number) => void }
           {Math.floor(secs / 60)}:{String(secs % 60).padStart(2, "0")}
         </span>
         <span className="tabular text-white/60">plan: ~{Math.round(planned)} min in by this slide</span>
-        <button type="button" onClick={() => { setStart(Date.now()); setNow(Date.now()); }} className="rounded bg-white/10 px-2 py-1 text-xs font-semibold hover:bg-white/20">
+        <button
+          type="button"
+          onClick={() => {
+            setStart(Date.now());
+            setNow(Date.now());
+          }}
+          className="rounded bg-white/10 px-2 py-1 text-xs font-semibold hover:bg-white/20"
+        >
           Reset timer
         </button>
       </div>
       <div className="flex min-h-0 flex-col gap-3">
         <Scaled index={index} className="min-h-0 flex-1" />
         <div className="flex items-center gap-2">
-          <button type="button" onClick={() => go(index - 1)} className="rounded bg-white/10 px-3 py-1.5 text-sm font-semibold hover:bg-white/20">← Previous</button>
-          <span className="tabular text-sm text-white/70">{index + 1} / {TOTAL}</span>
-          <button type="button" onClick={() => go(index + 1)} className="rounded bg-cgy-red px-3 py-1.5 text-sm font-semibold hover:bg-cgy-red-dark">Next →</button>
+          <button
+            type="button"
+            onClick={() => go(index - 1)}
+            className="rounded bg-white/10 px-3 py-1.5 text-sm font-semibold hover:bg-white/20"
+          >
+            ← Previous
+          </button>
+          <span className="tabular text-sm text-white/70">
+            {index + 1} / {TOTAL}
+          </span>
+          <button
+            type="button"
+            onClick={() => go(index + 1)}
+            className="rounded bg-cgy-red px-3 py-1.5 text-sm font-semibold hover:bg-cgy-red-dark"
+          >
+            Next →
+          </button>
         </div>
       </div>
       <div className="flex min-h-0 flex-col gap-4">
         <div>
           <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-white/50">Next</p>
-          {index < TOTAL - 1 ? <Scaled index={index + 1} className="h-48" /> : <p className="text-white/60">Last slide</p>}
+          {index < TOTAL - 1 ? (
+            <Scaled index={index + 1} className="h-48" />
+          ) : (
+            <p className="text-white/60">Last slide</p>
+          )}
         </div>
         <div className="min-h-0 flex-1 overflow-y-auto rounded bg-white/5 p-4">
           <Notes index={index} />

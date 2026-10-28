@@ -23,10 +23,14 @@ const MAX_ROUNDS = 8;
 const PLAIN_COLUMN = /(^|_)(year|month|quarter|weekday|code|id)$/i;
 const MAX_ROWS_TO_MODEL = 100;
 
+// Each one has a clear, chartable answer in the gold tables.
 const SUGGESTIONS = [
   "How has ridership recovered since the pandemic?",
-  "What do riders contact 311 about more than in 2019?",
-  "How current is each data source?",
+  "Has CTrain or bus recovered more since 2019?",
+  "Which fare products have grown since 2019?",
+  "Is each service hour carrying as many riders as in 2019?",
+  "Which communities file the most transit 311 requests?",
+  "Which 311 request types take longest to close?",
 ];
 
 async function ask(messages: Anthropic.Beta.BetaMessageParam[]): Promise<ApiResponse> {

@@ -8,7 +8,7 @@ import pptxgen from "pptxgenjs";
 
 const base = process.env.BASE_URL ?? "http://localhost:3000";
 const outDir = path.join(path.dirname(fileURLToPath(import.meta.url)), "..", "public", "downloads");
-const name = "prime-case-study";
+const name = "data-product-case-study";
 
 await mkdir(outDir, { recursive: true });
 const browser = await chromium.launch();
@@ -23,7 +23,7 @@ const slides = page.locator("section.print-slide");
 const count = await slides.count();
 const pres = new pptxgen();
 pres.layout = "LAYOUT_16x9";
-pres.title = "PRIME: one governed data layer for a multi-tenant product";
+pres.title = "One source of truth for a multi-tenant product";
 pres.author = "Cody Chandler";
 
 for (let i = 0; i < count; i++) {
@@ -31,7 +31,14 @@ for (let i = 0; i < count; i++) {
   const png = await el.screenshot({ type: "png" });
   const notes = JSON.parse((await el.getAttribute("data-notes")) ?? "[]");
   const slide = pres.addSlide();
-  slide.addImage({ data: `image/png;base64,${png.toString("base64")}`, x: 0, y: 0, w: 10, h: 5.625, altText: `Slide ${i + 1}` });
+  slide.addImage({
+    data: `image/png;base64,${png.toString("base64")}`,
+    x: 0,
+    y: 0,
+    w: 10,
+    h: 5.625,
+    altText: `Slide ${i + 1}`,
+  });
   if (notes.length) slide.addNotes(notes.map((n) => `• ${n}`).join("\n\n"));
 }
 
