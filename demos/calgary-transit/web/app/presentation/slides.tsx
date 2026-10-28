@@ -195,7 +195,9 @@ export const SLIDES: Slide[] = [
                 </div>
               ))}
             </div>
-            <p className="mt-5 text-center text-[21px] text-cgy-red">↓ manual weekly refresh ↓</p>
+            <p className="mt-5 text-center text-[21px] text-cgy-red">
+              ↓ manual SQL, ad hoc analysis ↓
+            </p>
             <p className="mt-5 text-center text-[25px] font-bold text-cgy-slate">
               Same question, different answers
             </p>
@@ -206,7 +208,8 @@ export const SLIDES: Slide[] = [
               Reports were up to <b className="text-cgy-red">7 days old</b> and nobody owned the numbers.
             </p>
             <Sub letter="a" title="Why it mattered">
-              Teams worked from different numbers, and every cross-client question needed engineering.
+              Every cross-client question meant manual SQL scripts and ad hoc analysis, and teams still ended
+              up with different numbers.
             </Sub>
             <Sub letter="b" title="Users and interested parties">
               <Chips items={["Customer Success", "Product", "Clients", "Analysts"]} />
