@@ -193,7 +193,8 @@ export const SLIDES: Slide[] = [
           One source of truth for a multi-tenant product
         </h1>
         <p className="mt-6 max-w-[900px] text-[26px] text-white/85">
-          How I made internal reporting consistent and reliable, at scale.
+          How I turned siloed client data into one governed layer for reporting, AI and the tools teams work
+          in.
         </p>
         <p className="mt-12 text-[22px] font-semibold text-white">Cody Chandler</p>
         <p className="text-[18px] text-white/60">Data and Business Analyst interview · The City of Calgary</p>
@@ -234,8 +235,8 @@ export const SLIDES: Slide[] = [
         <Title>What business problem was I solving?</Title>
         <div className="mt-5">
           <Banner>
-            The problem to solve: no single analytical source of truth, so reporting couldn&apos;t be
-            consistent or reliable at scale.
+            The problem to solve: no single analytical source of truth, so reporting, analysis and AI
+            couldn&apos;t be consistent or reliable at scale.
           </Banner>
         </div>
         <div className="mt-8 grid min-h-0 flex-1 grid-cols-[1fr_1.15fr] gap-14">
@@ -390,7 +391,9 @@ export const SLIDES: Slide[] = [
             </div>
           ))}
         </div>
-        <Banner>Reporting became consistent and reliable: every team works from one source of truth.</Banner>
+        <Banner>
+          Every team, dashboard and tool now works from one consistent, reliable source of truth.
+        </Banner>
       </>
     ),
     notes: [
