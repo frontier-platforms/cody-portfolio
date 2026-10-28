@@ -63,6 +63,59 @@ function Banner({ children }: { children: ReactNode }) {
   );
 }
 
+/** A 24px line icon, drawn inline so the deck needs no icon library. */
+function Icon({ paths }: { paths: string[] }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      className="h-6 w-6"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
+      {paths.map((d) => (
+        <path key={d} d={d} />
+      ))}
+    </svg>
+  );
+}
+
+/** Who reads the governed layer, on the product slide. */
+const CONSUMERS = [
+  {
+    title: "BI dashboards",
+    detail: "Internal reporting",
+    icon: ["M3 3v18h18", "M8 17v-4", "M13 17V7", "M18 17v-8"],
+  },
+  {
+    title: "Client data",
+    detail: "Shared with each client",
+    icon: [
+      "M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2",
+      "M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z",
+      "M22 21v-2a4 4 0 0 0-3-3.87",
+      "M16 3.13a4 4 0 0 1 0 7.75",
+    ],
+  },
+  {
+    title: "AI assistant",
+    detail: "Plain-English questions",
+    icon: ["M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z", "M8 9h8", "M8 13h5"],
+  },
+  {
+    title: "ML models",
+    detail: "Trained on tested data",
+    icon: [
+      "M6 4h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z",
+      "M9 9h6v6H9z",
+      "M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 14h3M1 9h3M1 14h3",
+    ],
+  },
+];
+
 const QUESTIONS = [
   "What business problem was I solving?",
   "What is the data product?",
@@ -198,15 +251,18 @@ export const SLIDES: Slide[] = [
               <span className="text-[22px] font-bold text-cgy-slate">Used by</span>
             </div>
             <div className="mt-4 grid grid-cols-4 gap-4">
-              {[
-                ["BI dashboards", "Internal reporting"],
-                ["Client data sharing", "Each client's own data"],
-                ["AI assistant", "Plain-English questions"],
-                ["ML models", "Trained on tested data"],
-              ].map(([t, d]) => (
-                <div key={t} className="rounded-lg bg-cgy-slate px-5 py-4 text-white">
-                  <p className="text-[22px] font-bold leading-tight">{t}</p>
-                  <p className="mt-1 text-[16px] text-white/80">{d}</p>
+              {CONSUMERS.map(({ title, detail, icon }) => (
+                <div
+                  key={title}
+                  className="flex items-center gap-4 rounded-lg bg-cgy-slate px-5 py-4 text-white"
+                >
+                  <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-cgy-red">
+                    <Icon paths={icon} />
+                  </span>
+                  <span>
+                    <span className="block text-[21px] font-bold leading-tight">{title}</span>
+                    <span className="mt-0.5 block text-[15px] text-white/80">{detail}</span>
+                  </span>
                 </div>
               ))}
             </div>
