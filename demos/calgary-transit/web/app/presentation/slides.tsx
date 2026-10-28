@@ -140,9 +140,9 @@ export const SLIDES: Slide[] = [
           </div>
           <div className="flex flex-col gap-6">
             <p className="text-[21px] leading-snug">
-              Our multi-tenant product kept each client&apos;s data in its own database. Internal reporting
-              was up to <b className="text-cgy-red">7 days old</b>, a cross-client question meant visiting
-              every system, and nobody owned the numbers.
+              Our multi-tenant product kept each client&apos;s data in its own database, so accurate internal
+              reporting was hard. Reports were up to <b className="text-cgy-red">7 days old</b>, a
+              cross-client question meant visiting every system, and nobody owned the numbers.
             </p>
             <Sub letter="a" title="Why it mattered">
               Teams and clients worked from different numbers, and every cross-client question needed
@@ -153,15 +153,15 @@ export const SLIDES: Slide[] = [
             </Sub>
           </div>
         </div>
-        <div className="mt-6 flex items-center gap-4 rounded-lg border-2 border-cgy-line px-6 py-4">
-          <span className="text-[17px] font-bold uppercase tracking-wide text-cgy-grey">
-            They needed data that was
-          </span>
-          {NEEDS.map((n) => (
-            <span key={n} className="text-[22px] font-bold text-cgy-red">
-              {n}
-            </span>
-          ))}
+        <div className="mt-6 rounded-lg border-2 border-cgy-line px-6 py-4">
+          <p className="text-[22px] font-bold leading-snug text-cgy-slate">
+            The need: one consolidated analytical source of truth, so internal reporting is consistent and
+            reliable at scale.
+          </p>
+          <p className="mt-2 flex items-baseline gap-4">
+            <span className="text-[17px] font-bold uppercase tracking-wide text-cgy-grey">Data that is</span>
+            <span className="text-[22px] font-bold text-cgy-red">{NEEDS.join(", ")}</span>
+          </p>
         </div>
       </>
     ),
@@ -196,9 +196,7 @@ export const SLIDES: Slide[] = [
             <div className="flex-1 rounded-lg border-2 border-cgy-slate p-4">
               <p className="text-[17px] font-bold text-cgy-slate">
                 Snowflake{" "}
-                <span className="font-semibold text-cgy-grey">
-                  · modelled in dbt · run by Airflow on AWS
-                </span>
+                <span className="font-semibold text-cgy-grey">· modelled in dbt · run by Airflow on AWS</span>
               </p>
               <div className="mt-3 flex">
                 {[
