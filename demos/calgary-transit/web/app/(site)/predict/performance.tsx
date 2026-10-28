@@ -64,16 +64,18 @@ export function Performance({
       </div>
       <div className="mt-3 grid gap-3 lg:grid-cols-[repeat(3,1fr)_1.3fr]">
         {cards.map((k) => (
-          <div key={k.label} className="rounded-lg border border-cgy-line p-4 lg:p-3">
+          <div key={k.label} className="rounded-lg border border-cgy-line p-4 lg:p-3 tall:p-4">
             <p className="text-xs font-semibold uppercase tracking-wide text-cgy-grey">{k.label}</p>
             <p className="mt-1 flex items-baseline gap-2">
-              <span className="tabular text-3xl font-bold text-cgy-slate lg:text-2xl">{k.value}</span>
+              <span className="tabular text-3xl font-bold text-cgy-slate lg:text-2xl tall:text-3xl">
+                {k.value}
+              </span>
               <span className="text-xs text-cgy-grey">rule of thumb {k.base}</span>
             </p>
-            <p className="mt-1 text-sm">{k.plain}</p>
+            <p className="mt-1 text-sm tall:text-base">{k.plain}</p>
           </div>
         ))}
-        <div className="rounded-lg bg-cgy-paper p-4 text-sm lg:p-3">
+        <div className="rounded-lg bg-cgy-paper p-4 text-sm lg:p-3 tall:text-base">
           <p className="text-xs font-semibold uppercase tracking-wide text-cgy-grey">Per 1,000 requests</p>
           <p className="mt-1">
             <strong className="tabular text-cgy-slate">{c.slowCaught + c.fastCaught}</strong> predicted

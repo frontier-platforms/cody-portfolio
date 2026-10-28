@@ -17,7 +17,8 @@ const WHY = [
 
 export default function PredictPage() {
   return (
-    <div className="mx-auto w-full max-w-6xl px-4 pb-16 pt-8 sm:px-6 lg:pb-6 lg:pt-5">
+    // On laptops and up, the page fills the window below the header, and the model panels take the spare height.
+    <div className="mx-auto w-full max-w-6xl px-4 pb-16 pt-8 sm:px-6 lg:flex lg:min-h-[calc(100dvh-60px)] lg:flex-col lg:pb-6 lg:pt-5">
       <p className="text-sm font-semibold uppercase tracking-wide text-cgy-red">
         Machine learning on the same layer
       </p>

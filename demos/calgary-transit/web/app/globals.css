@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* Laptop width with room to spare vertically: pages that fit one screen can use bigger type. */
+@custom-variant tall (@media (min-width: 64rem) and (min-height: 880px));
+
 /* City of Calgary palette, taken from calgary.ca stylesheets. */
 :root {
   --cgy-red: #c8102e;
