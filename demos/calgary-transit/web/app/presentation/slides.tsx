@@ -155,7 +155,8 @@ export const SLIDES: Slide[] = [
           </div>
         </div>
         <Banner>
-          The need: one analytical source of truth, so reporting is consistent and reliable at scale.
+          The problem to solve: no single analytical source of truth, so reporting couldn&apos;t be consistent
+          or reliable at scale.
         </Banner>
       </>
     ),
