@@ -1,8 +1,5 @@
-import Image from "next/image";
 import type { ReactNode } from "react";
-import dashboardShot from "@/public/images/slide-dashboard.png";
-import predictShot from "@/public/images/slide-predict.png";
-import { BigStat, Flow, Title, type Slide } from "./slide-kit";
+import { Flow, Title, type Slide } from "./slide-kit";
 
 function Label({ children, dark }: { children: ReactNode; dark?: boolean }) {
   return (
@@ -98,7 +95,7 @@ function Icon({ paths }: { paths: string[] }) {
 const CHANNELS = [
   {
     title: "BI dashboards",
-    body: "Self-serve reporting on the tested gold tables, refreshed daily.",
+    body: "Self-serve reporting on the tested gold tables, refreshed four times a day.",
     tag: "Leadership, Product, Customer Success",
     icon: ["M3 3v18h18", "M8 17v-4", "M13 17V7", "M18 17v-8"],
   },
@@ -127,6 +124,53 @@ function Lead({ letter, children }: { letter?: string; children: ReactNode }) {
 }
 
 const Arrow = () => <span className="shrink-0 text-[30px] font-bold leading-none text-cgy-red">→</span>;
+
+/** The value slide: each card answers a need from question 1. */
+const VALUE = [
+  {
+    need: "Fresh",
+    from: "Weekly, by hand",
+    value: "4× a day",
+    label: "Automated refreshes, on a schedule teams can rely on.",
+    icon: [
+      "M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8",
+      "M21 3v5h-5",
+      "M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16",
+      "M8 16H3v5",
+    ],
+  },
+  {
+    need: "Consistent",
+    from: "Different answers",
+    value: "One number",
+    label: "The same metric in every report, dashboard and tool.",
+    icon: ["M22 11.08V12a10 10 0 1 1-5.93-9.14", "M22 4 12 14.01l-3-3"],
+  },
+  {
+    need: "Observable",
+    from: "Found by clients",
+    value: "Monitored",
+    label: "Freshness, tests, pipeline errors and cost, watched on every run.",
+    icon: ["M22 12h-4l-3 9L9 3l-3 9H2"],
+  },
+  {
+    need: "Self-serve",
+    from: "Engineering tickets",
+    value: "Self\u2011serve",
+    label: "Routine Customer Success questions, answered without engineering.",
+    icon: ["M13 2 3 14h9l-1 8 10-12h-9l1-8z"],
+  },
+];
+
+/** Q3b: what each tool did, so the stack reads as decisions, not a logo list. */
+const STACK = [
+  ["Built in", "dbt"],
+  ["Stored in", "Snowflake"],
+  ["Orchestrated by", "Airflow on AWS"],
+  ["Versioned in", "GitHub"],
+  ["Documented in", "dbt docs, Confluence"],
+  ["Served through", "Semantic layer, LLMs"],
+];
 
 const QUESTIONS = [
   "What business problem was I solving?",
@@ -247,7 +291,9 @@ export const SLIDES: Slide[] = [
     body: (
       <>
         <Title>What is the data product?</Title>
-        <Lead letter="a">One governed, tested layer for every client&apos;s data, refreshed daily.</Lead>
+        <Lead letter="a">
+          One governed, tested layer for every client&apos;s data, refreshed four times a day.
+        </Lead>
         <div className="flex flex-1 flex-col justify-center gap-8">
           <Flow
             large
@@ -323,19 +369,33 @@ export const SLIDES: Slide[] = [
       <>
         <Title>What is the data product?</Title>
         <Lead letter="c">The value it delivered.</Lead>
-        <div className="flex flex-1 flex-col justify-center">
-          <div className="grid grid-cols-[1fr_1fr_1fr_1.3fr] gap-4 [&>div]:h-full">
-            <BigStat from="7 days" value="< 12 hrs" label="Data freshness" />
-            <BigStat from="Per client" value="1 layer" label="Governed source of truth for every client" />
-            <BigStat value="30 min" label="To flag a missed refresh, before a client notices" />
-            <BigStat value={"Self\u2011serve"} label="Routine Customer Success questions" />
-          </div>
+        <div className="my-auto grid grid-cols-4 gap-5">
+          {VALUE.map(({ need, value, from, label, icon }) => (
+            <div key={need} className="flex flex-col rounded-lg bg-cgy-paper p-6">
+              <div className="flex items-center gap-3">
+                <span className="flex h-11 w-11 items-center justify-center rounded-full bg-cgy-red text-white">
+                  <Icon paths={icon} />
+                </span>
+                <span className="text-[16px] font-bold uppercase tracking-wide text-cgy-grey">{need}</span>
+              </div>
+              <div className="mt-8">
+                {from && (
+                  <p className="text-[17px] font-semibold text-cgy-grey line-through decoration-cgy-red decoration-2">
+                    {from}
+                  </p>
+                )}
+                <p className="whitespace-nowrap text-[36px] font-bold leading-tight text-cgy-red">{value}</p>
+                <p className="mt-2 text-[18px] leading-snug text-cgy-slate">{label}</p>
+              </div>
+            </div>
+          ))}
         </div>
-        <Banner>Every team now reports from one source of truth, on a schedule they can rely on.</Banner>
+        <Banner>Reporting became consistent and reliable: every team works from one source of truth.</Banner>
       </>
     ),
     notes: [
-      "Ten seconds per number. The banner is the answer to question 1.",
+      "Ten seconds per card. The banner is the answer to question 1.",
+      "Observable: freshness checked against each domain's target, dbt tests on every run, AI-written digests of pipeline errors, and cost tracked per model.",
       "[Your story: an adoption or time-saved number.]",
     ],
   },
@@ -353,7 +413,7 @@ export const SLIDES: Slide[] = [
               ["Requirements", "What each team needed to trust a number."],
               ["Strategy", "Fix the data once, not every report."],
               ["Plan", "Bronze, silver, gold. One grain per table."],
-              ["Build", "Airflow and dbt, daily instead of weekly."],
+              ["Build", "dbt models, run by Airflow four times a day."],
               ["Review and iterate", "Monitor, find issues, fix them once."],
             ].map(([t, b], i, all) => (
               <div key={t} className="flex flex-1 items-stretch">
@@ -373,12 +433,20 @@ export const SLIDES: Slide[] = [
               </div>
             ))}
           </div>
-          <div className="mt-14 grid grid-cols-2 gap-10">
+          <div className="mt-10 grid grid-cols-[1fr_1.35fr] gap-10">
             <Sub letter="a" title="Sourcing and preparing the data">
-              Three source systems, mapped client by client into one model, then tested.
+              Three source systems, landed raw with personal data masked, then mapped client by client into
+              one model and tested.
             </Sub>
             <Sub letter="b" title="Methods and tools">
-              <Chips items={["Snowflake", "dbt", "Airflow", "AWS", "Semantic layer", "LLMs"]} />
+              <div className="mt-2 grid grid-cols-3 gap-2">
+                {STACK.map(([verb, tool]) => (
+                  <div key={verb} className="rounded-lg bg-cgy-paper px-3 py-2">
+                    <p className="text-[13px] font-semibold uppercase tracking-wide text-cgy-grey">{verb}</p>
+                    <p className="text-[18px] font-bold leading-tight text-cgy-slate">{tool}</p>
+                  </div>
+                ))}
+              </div>
             </Sub>
           </div>
         </div>
@@ -386,6 +454,7 @@ export const SLIDES: Slide[] = [
     ),
     notes: [
       "One breath across the strip. The why matters more than the stack.",
+      "On b, say it plainly: 'Modelled in dbt, stored in Snowflake, orchestrated in Airflow, every change versioned in GitHub and documented in dbt docs and Confluence.'",
       "[Your story: how you ran requirements, and the real build order.]",
     ],
   },
@@ -520,62 +589,7 @@ export const SLIDES: Slide[] = [
         </Banner>
       </>
     ),
-    notes: [
-      "[Your story: swap in whatever you'd genuinely do differently.]",
-      "Transition: 'I can't show you StellarAlgo's data, so I rebuilt the same approach on the City's open data.'",
-    ],
-  },
-  {
-    id: "demo",
-    section: "Live demo",
-    minutes: 5,
-    body: (
-      <>
-        <Title>The same approach, live on City of Calgary data</Title>
-        <div className="mt-5 grid min-h-0 flex-1 grid-cols-[1.25fr_1fr] gap-6">
-          <div className="relative overflow-hidden rounded-lg border border-cgy-line">
-            <Image
-              src={dashboardShot}
-              alt="The Calgary Transit dashboard: trips, service hours and rider feedback, with two charts"
-              className="h-full w-full bg-white object-contain object-top"
-              sizes="700px"
-            />
-          </div>
-          <div className="flex min-h-0 flex-col gap-4">
-            <div className="relative min-h-0 flex-1 overflow-hidden rounded-lg border border-cgy-line">
-              <Image
-                src={predictShot}
-                alt="The live 311 prediction with what moved it"
-                className="h-full w-full bg-white object-contain object-top"
-                sizes="540px"
-              />
-            </div>
-            <ol className="space-y-1.5 text-[19px]">
-              {[
-                "Approach: the pipeline and its lineage",
-                "Dashboard: a 43% jump that wasn't real",
-                "Predict: a live machine learning model",
-                "Ask the data: plain English, with its working",
-              ].map((s, i) => (
-                <li key={s} className="flex gap-3">
-                  <span className="font-bold text-cgy-red">{i + 1}</span>
-                  <span className="text-cgy-slate">{s}</span>
-                </li>
-              ))}
-            </ol>
-          </div>
-        </div>
-        <p className="mt-4 text-[17px] text-cgy-grey">codychandler.ca/data-demos/calgary-transit</p>
-      </>
-    ),
-    notes: [
-      "LIVE (5 min). Open the site before the interview. If the internet fails, these screenshots carry it.",
-      "1 · Approach page, lineage graph: 'Same layers as StellarAlgo: three City datasets, tested in dbt, run daily by Airflow.' (45 s)",
-      "2 · Dashboard: read the ⓘ headline. Then the 311 chart: 'My first cut said complaints per trip were up 43%. Lost Property moved into 311 in 2021. I fixed it once, in the data, so every consumer gets it right. Like for like it's 12%.' (1.25 min)",
-      "3 · Predict: Advertising and Communications (usually low), then Transit Pass Programs (usually high). 'Tested on 2025, a year it never saw, it catches more slow requests than the rule of thumb.' (1 min)",
-      "4 · Ask: 'How has ridership recovered since the pandemic?' While it works: 'it writes SQL against the same gold tables.' Read the answer, glance at the chart, open 'Show how this was answered'. Payoff: 'Same number as the dashboard. One source of truth.' (1.5 min)",
-      "Close: 'That's the work I'd bring to the City.' Then the last slide.",
-    ],
+    notes: ["[Your story: swap in whatever you'd genuinely do differently.]"],
   },
   {
     id: "close",
@@ -583,11 +597,25 @@ export const SLIDES: Slide[] = [
     minutes: 0.25,
     body: (
       <div className="flex flex-1 flex-col justify-center">
-        <h2 className="text-[64px] font-bold text-white">Thank you. Questions?</h2>
-        <p className="mt-10 text-[22px] text-white/60">Live demo</p>
-        <p className="text-[24px] font-semibold text-white">codychandler.ca/data-demos/calgary-transit</p>
+        <h2 className="text-[64px] font-bold text-white">Thank you.</h2>
+        <p className="mt-6 max-w-[950px] text-[30px] leading-snug text-white/85">
+          I can&apos;t show you StellarAlgo&apos;s data, so I rebuilt the same approach on City of Calgary
+          open data. Let&apos;s look at it live.
+        </p>
+        <p className="mt-12 text-[20px] font-semibold uppercase tracking-wide text-white/60">Live demo</p>
+        <p className="mt-1 text-[26px] font-semibold text-white">
+          codychandler.ca/data-demos/calgary-transit
+        </p>
       </div>
     ),
-    notes: ["Stop talking. Leave this up for questions."],
+    notes: [
+      "Read the line on the slide, then switch to the browser.",
+      "LIVE DEMO (5 min). Have codychandler.ca/data-demos/calgary-transit open in a tab. Backup if the internet fails: the local copy (npm run dev).",
+      "1 · Approach page, lineage graph: 'Same layers as StellarAlgo: three City datasets, tested in dbt, run daily by Airflow.' (45 s)",
+      "2 · Dashboard: read the ⓘ headline. Then the 311 chart: 'My first cut said complaints per trip were up 43%. Lost Property moved into 311 in 2021. I fixed it once, in the data, so every consumer gets it right. Like for like it's 12%.' (1.25 min)",
+      "3 · Predict: Advertising and Communications (usually low), then Transit Pass Programs (usually high). 'Tested on 2025, a year it never saw, it catches more slow requests than the rule of thumb.' (1 min)",
+      "4 · Ask: 'How has ridership recovered since the pandemic?' While it works: 'it writes SQL against the same gold tables.' Read the answer, glance at the chart, open 'Show how this was answered'. Payoff: 'Same number as the dashboard. One source of truth.' (1.5 min)",
+      "Close: 'That's the work I'd bring to the City.' Then: 'Happy to take questions.'",
+    ],
   },
 ];
