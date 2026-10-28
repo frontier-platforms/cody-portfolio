@@ -4,8 +4,6 @@ export type Slide = {
   id: string;
   section?: string;
   answers?: string;
-  /** Where this slide sits in the STAR story. */
-  star?: "S" | "T" | "A" | "R";
   minutes: number;
   dark?: boolean;
   body: ReactNode;
@@ -21,20 +19,6 @@ export function SlideFrame({ slide, index, total }: { slide: Slide; index: numbe
       <div className="h-2 shrink-0 bg-cgy-red" />
       <div className="flex shrink-0 items-center justify-between px-16 pt-6 text-[15px] font-semibold">
         <span className={`flex items-center gap-3 ${dark ? "text-white/60" : "text-cgy-grey"}`}>
-          {slide.star && (
-            <span className="flex gap-1" aria-label={`STAR: ${slide.section}`}>
-              {(["S", "T", "A", "R"] as const).map((l) => (
-                <span
-                  key={l}
-                  className={`flex h-6 w-6 items-center justify-center rounded text-[13px] font-bold ${
-                    l === slide.star ? "bg-cgy-red text-white" : "bg-cgy-mist text-cgy-silver"
-                  }`}
-                >
-                  {l}
-                </span>
-              ))}
-            </span>
-          )}
           {slide.section ?? ""}
           {slide.answers && (
             <span
