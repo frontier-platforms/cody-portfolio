@@ -181,6 +181,34 @@ const APPROACH = [
   ["Review & iterate", "Tests and monitoring find issues; fix them once, in the layer."],
 ];
 
+/** Q6: what I'd do next. */
+const IMPROVE = [
+  {
+    title: "Measure from day one",
+    body: "Baseline hours and escalations before launch, so the value is a number.",
+    icon: [
+      "M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z",
+      "M12 18a6 6 0 1 0 0-12 6 6 0 0 0 0 12z",
+      "M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4z",
+    ],
+  },
+  {
+    title: "Take it to clients",
+    body: "Offer the internal AI assistant to clients, on the same layer.",
+    icon: [
+      "M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2",
+      "M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z",
+      "M22 21v-2a4 4 0 0 0-3-3.87",
+      "M16 3.13a4 4 0 0 1 0 7.75",
+    ],
+  },
+  {
+    title: "Cover more domains",
+    body: "More semantic models, each with one grain, so the AI can answer more.",
+    icon: ["m12 2 10 5-10 5L2 7l10-5z", "m2 17 10 5 10-5", "m2 12 10 5 10-5"],
+  },
+];
+
 const QUESTIONS = [
   "What business problem was I solving?",
   "What is the data product?",
@@ -606,19 +634,16 @@ export const SLIDES: Slide[] = [
       <>
         <Title>What would I improve with more time?</Title>
         <Lead>Prove the value sooner, and take the layer further.</Lead>
-        <div className="flex flex-1 flex-col justify-center">
-          <div className="grid grid-cols-3 gap-5">
-            {[
-              ["Measure from day one", "Baseline hours and escalations before launch, so value is a number."],
-              ["Take it to clients", "Offer the internal AI assistant to clients, on the same layer."],
-              ["Cover more of the business", "More semantic models, each with one grain."],
-            ].map(([t, b]) => (
-              <div key={t} className="rounded-lg bg-cgy-paper p-6">
-                <p className="text-[26px] font-bold leading-tight text-cgy-slate">{t}</p>
-                <p className="mt-2 text-[20px] leading-snug">{b}</p>
-              </div>
-            ))}
-          </div>
+        <div className="my-auto grid grid-cols-3 gap-5">
+          {IMPROVE.map(({ title, body, icon }) => (
+            <div key={title} className="rounded-lg bg-cgy-paper p-7">
+              <span className="flex h-12 w-12 items-center justify-center rounded-full bg-cgy-red text-white">
+                <Icon paths={icon} />
+              </span>
+              <p className="mt-6 text-[26px] font-bold leading-tight text-cgy-slate">{title}</p>
+              <p className="mt-2 text-[19px] leading-snug">{body}</p>
+            </div>
+          ))}
         </div>
         <Banner>
           The same work at the City: find where numbers disagree, agree one definition with the owners, and
