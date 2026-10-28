@@ -31,25 +31,6 @@ const STEPS = [
   ],
 ];
 
-const CAUGHT = [
-  [
-    "Complaints looked up 43% per trip.",
-    "Lost Property moved into 311 in 2021. A governed flag fixed it once, for every consumer: like for like, it's 12%.",
-  ],
-  [
-    "The first model lost to a rule of thumb.",
-    "Adding recent pace and workload, and training on post-pandemic years, beat it on 2025 data it never saw.",
-  ],
-  [
-    "The first cloud run failed.",
-    "A test ran before its table existed. Tests now wait for every table they check.",
-  ],
-  [
-    "The City's fare breakdown doesn't add up.",
-    "The gap is kept as a tested “unallocated” row instead of hidden.",
-  ],
-];
-
 export default function ApproachPage() {
   return (
     <div className="mx-auto w-full max-w-6xl px-4 pb-16 pt-8 sm:px-6">
@@ -89,20 +70,6 @@ export default function ApproachPage() {
         </div>
         <div className="mt-4 rounded-lg border border-cgy-line bg-white p-4">
           <LineageGraph />
-        </div>
-      </section>
-
-      <section className="mt-12" aria-labelledby="caught">
-        <h2 id="caught" className="text-xl font-bold">
-          What review caught, and what changed
-        </h2>
-        <div className="mt-4 grid gap-3 md:grid-cols-2">
-          {CAUGHT.map(([found, fix]) => (
-            <div key={found} className="rounded-lg border border-cgy-line p-4">
-              <p className="font-semibold text-cgy-slate">{found}</p>
-              <p className="mt-1 text-sm leading-relaxed">{fix}</p>
-            </div>
-          ))}
         </div>
       </section>
     </div>
