@@ -54,7 +54,7 @@ export default function ApproachPage() {
   return (
     <div className="mx-auto w-full max-w-6xl px-4 pb-16 pt-8 sm:px-6">
       <p className="text-sm font-semibold uppercase tracking-wide text-cgy-red">The approach</p>
-      <h1 className="mt-1 text-3xl font-bold">The PRIME approach, applied to Calgary Transit</h1>
+      <h1 className="mt-1 text-3xl font-bold">The same approach, applied to Calgary Transit</h1>
 
       <ol className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {STEPS.map(([title, body], i) => (

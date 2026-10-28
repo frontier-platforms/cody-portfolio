@@ -2,7 +2,7 @@
 
 Live at [codychandler.ca/data-demos/calgary-transit](https://www.codychandler.ca/data-demos/calgary-transit) (shared by direct link; not linked from the site's navigation).
 
-A working replica of the PRIME pattern (one governed data layer that every consumer trusts), built on City of Calgary open data.
+A working replica of the pattern I led at StellarAlgo (one governed data layer that every consumer trusts), built on City of Calgary open data.
 
 ```
 Calgary open data API (Socrata)

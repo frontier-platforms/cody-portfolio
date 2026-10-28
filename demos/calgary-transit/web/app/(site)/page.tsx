@@ -6,7 +6,7 @@ const STEPS = [
     step: "1",
     title: "The story",
     label: "Presentation",
-    body: "The problem PRIME solved, what people needed, and how it was planned, built and improved.",
+    body: "The problem I solved at StellarAlgo, what people needed, and how it was planned, built and improved.",
   },
   {
     href: "/approach",
@@ -44,17 +44,22 @@ export default function Home() {
     <div className="flex min-h-[calc(100dvh-58px)] flex-col">
       <section className="flex flex-1 items-center bg-cgy-slate text-white">
         <div className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 [@media(min-height:820px)]:py-14">
-          <p className="text-sm font-semibold uppercase tracking-wide text-white/70">Data product case study</p>
+          <p className="text-sm font-semibold uppercase tracking-wide text-white/70">
+            Data product case study
+          </p>
           <h1 className="mt-2 max-w-3xl text-3xl font-bold leading-tight text-white sm:text-4xl [@media(min-height:820px)]:sm:text-5xl">
             One governed data layer, so every number matches.
           </h1>
           <p className="mt-3 max-w-2xl text-base text-white/85 sm:text-lg">
-            At StellarAlgo I led PRIME, which consolidated client data trapped in a multi-tenant architecture into one
-            tested, documented layer. This site rebuilds the same pattern on City of Calgary open data, so you can see how
-            it works.
+            At StellarAlgo I led a data product that consolidated client data trapped in a multi-tenant
+            architecture into one tested, documented layer. This site rebuilds the same pattern on City of
+            Calgary open data, so you can see how it works.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
-            <Link href="/presentation" className="rounded bg-cgy-red px-5 py-2.5 font-semibold text-white hover:bg-cgy-red-dark">
+            <Link
+              href="/presentation"
+              className="rounded bg-cgy-red px-5 py-2.5 font-semibold text-white hover:bg-cgy-red-dark"
+            >
               Start the presentation
             </Link>
             <Link
@@ -75,8 +80,12 @@ export default function Home() {
           >
             <span className="text-2xl font-bold leading-none text-cgy-red">{s.step}</span>
             <span>
-              <span className="block text-xs font-semibold uppercase tracking-wide text-cgy-grey">{s.label}</span>
-              <span className="block text-lg font-bold text-cgy-slate group-hover:text-cgy-red">{s.title}</span>
+              <span className="block text-xs font-semibold uppercase tracking-wide text-cgy-grey">
+                {s.label}
+              </span>
+              <span className="block text-lg font-bold text-cgy-slate group-hover:text-cgy-red">
+                {s.title}
+              </span>
               <span className="mt-1 block text-sm">{s.body}</span>
             </span>
           </Link>
