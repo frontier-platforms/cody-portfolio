@@ -28,7 +28,8 @@ export function SlideFrame({ slide, index, total }: { slide: Slide; index: numbe
             </span>
           )}
         </span>
-        <span className={dark ? "text-white/60" : "text-cgy-grey"}>Data product case study</span>
+        {/* The dark title and closing slides carry their own label. */}
+        {!dark && <span className="text-cgy-grey">Data product case study</span>}
       </div>
       <div className="flex min-h-0 flex-1 flex-col px-16 pb-10 pt-4">{slide.body}</div>
       <div

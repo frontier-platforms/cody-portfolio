@@ -102,7 +102,7 @@ const CHANNELS = [
   {
     title: "AI assistant",
     body: "Ask in plain English. The semantic layer picks the model with the right grain.",
-    tag: "“How did revenue trend this month?”",
+    tag: "“How is ticket revenue trending?”",
     icon: ["M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z", "M8 9h8", "M8 13h5"],
   },
   {
@@ -396,7 +396,7 @@ export const SLIDES: Slide[] = [
       </>
     ),
     notes: [
-      "Three ways in, one source of truth. Most people never open a new tool: the data comes to the CRM.",
+      "Three ways to use the same tables. Most people never open a new tool: the data comes to them in the CRM.",
       "The technical point on AI: 'An AI that guesses the grain double counts. One grain per model means it can't.'",
       "Shipped first as an internal Customer Success bot; I led discovery for the client-facing version.",
       "The example question is illustrative. [Your story: a real question the bot answered.]",
@@ -526,8 +526,8 @@ export const SLIDES: Slide[] = [
     minutes: 1.25,
     body: (
       <>
-        <Title>What challenges came up, and how did I handle them?</Title>
-        <Lead>What got in the way, and what I did about it.</Lead>
+        <Title>What challenges came up?</Title>
+        <Lead>What got in the way, and how I handled it.</Lead>
         <div className="flex flex-1 flex-col justify-center">
           <table className="w-full text-left text-[22px]">
             <thead>
@@ -580,7 +580,7 @@ export const SLIDES: Slide[] = [
           <div className="w-[250px] shrink-0 rounded-lg bg-cgy-paper p-5">
             <Label>Question</Label>
             <p className="mt-2 text-[22px] font-semibold leading-snug text-cgy-slate">
-              &ldquo;How did ticket revenue trend this month?&rdquo;
+              &ldquo;How is ticket revenue trending?&rdquo;
             </p>
           </div>
           <Arrow />
@@ -648,7 +648,10 @@ export const SLIDES: Slide[] = [
         </Banner>
       </>
     ),
-    notes: ["[Your story: swap in whatever you'd genuinely do differently.]"],
+    notes: [
+      "[Your story: swap in whatever you'd genuinely do differently.]",
+      "Land the City line slowly. It's the bridge to the role, and the lead-in to the demo.",
+    ],
   },
   {
     id: "close",
