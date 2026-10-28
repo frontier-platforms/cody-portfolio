@@ -69,10 +69,10 @@ export function LineageGraph() {
   const height = TOP + tallest;
 
   return (
-    <div className="overflow-x-auto">
+    <div className="overflow-x-auto lg:h-full lg:overflow-visible">
       <svg
         viewBox={`-2 0 ${width + 4} ${height + 4}`}
-        className="w-full min-w-[760px]"
+        className="w-full min-w-[760px] lg:h-full lg:min-w-0"
         role="img"
         aria-label="Data lineage from Calgary open data sources through silver and gold dbt models to the model, dashboard, agent and predictor"
       >

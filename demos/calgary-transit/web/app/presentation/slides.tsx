@@ -123,6 +123,12 @@ export const SLIDES: Slide[] = [
     body: (
       <>
         <Title>What business problem was I solving?</Title>
+        <div className="mt-5">
+          <Banner>
+            The problem to solve: no single analytical source of truth, so reporting couldn&apos;t be
+            consistent or reliable at scale.
+          </Banner>
+        </div>
         <div className="grid flex-1 grid-cols-[0.85fr_1.15fr] items-center gap-12">
           <div className="rounded-lg bg-cgy-paper px-7 py-10">
             <div className="grid grid-cols-3 gap-3">
@@ -154,10 +160,6 @@ export const SLIDES: Slide[] = [
             </Sub>
           </div>
         </div>
-        <Banner>
-          The problem to solve: no single analytical source of truth, so reporting couldn&apos;t be consistent
-          or reliable at scale.
-        </Banner>
       </>
     ),
     notes: [
