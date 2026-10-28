@@ -14,12 +14,12 @@ function Label({ children, dark }: { children: ReactNode; dark?: boolean }) {
   );
 }
 
-function Letter({ children, big }: { children: string; big?: boolean }) {
+function Letter({ children, big, muted }: { children: string; big?: boolean; muted?: boolean }) {
   return (
     <span
-      className={`flex shrink-0 items-center justify-center rounded-full bg-cgy-red font-bold text-white ${
-        big ? "h-12 w-12 text-[24px]" : "h-9 w-9 text-[18px]"
-      }`}
+      className={`flex shrink-0 items-center justify-center rounded-full font-bold text-white ${
+        muted ? "bg-cgy-slate" : "bg-cgy-red"
+      } ${big ? "h-12 w-12 text-[24px]" : "h-9 w-9 text-[18px]"}`}
     >
       {children}
     </span>
@@ -27,10 +27,21 @@ function Letter({ children, big }: { children: string; big?: boolean }) {
 }
 
 /** A lettered sub-answer, matching the panel's a, b, c. */
-function Sub({ letter, title, children }: { letter: string; title: string; children: ReactNode }) {
+function Sub({
+  letter,
+  title,
+  children,
+  muted,
+}: {
+  letter: string;
+  title: string;
+  children: ReactNode;
+  /** A grey marker, for context that isn't one of the panel's lettered parts. */
+  muted?: boolean;
+}) {
   return (
     <div className="flex gap-4">
-      <Letter>{letter}</Letter>
+      <Letter muted={muted}>{letter}</Letter>
       <div>
         <p className="text-[22px] font-bold leading-tight text-cgy-slate">{title}</p>
         <div className="mt-1 text-[19px] leading-snug">{children}</div>
@@ -182,31 +193,38 @@ export const SLIDES: Slide[] = [
             consistent or reliable at scale.
           </Banner>
         </div>
-        <div className="grid flex-1 grid-cols-[0.85fr_1.15fr] items-center gap-12">
-          <div className="rounded-lg bg-cgy-paper px-7 py-10">
-            <div className="grid grid-cols-3 gap-3">
+        <div className="mt-8 grid min-h-0 flex-1 grid-cols-[1fr_1.15fr] gap-14">
+          <div className="flex flex-col justify-center rounded-lg bg-cgy-paper px-7 py-6">
+            <Label>Before</Label>
+            <div className="mt-3 grid grid-cols-3 gap-3">
               {["Client A", "Client B", "Client C"].map((c) => (
                 <div
                   key={c}
-                  className="rounded border-2 border-cgy-silver bg-white py-4 text-center text-[18px] font-semibold text-cgy-slate"
+                  className="rounded border-2 border-cgy-silver bg-white py-3 text-center text-[18px] font-semibold text-cgy-slate"
                 >
                   {c}
                   <span className="block text-[13px] font-normal text-cgy-grey">own database</span>
                 </div>
               ))}
             </div>
-            <p className="mt-5 text-center text-[21px] text-cgy-red">↓ manual SQL, ad hoc analysis ↓</p>
-            <p className="mt-5 text-center text-[18px] text-cgy-grey">Same question, different answers</p>
-            <p className="mt-1 text-center text-[27px] font-bold text-cgy-slate">No trust in the numbers</p>
-          </div>
-          <div className="flex flex-col gap-7">
-            <p className="text-[22px] leading-snug">
-              Each client&apos;s data lived in its own database, so accurate internal reporting was hard.
-              Reports were up to <b className="text-cgy-red">7 days old</b> and nobody owned the numbers.
+            <p className="py-2 text-center text-[22px] leading-none text-cgy-red">↓</p>
+            <p className="mx-auto w-fit rounded-full border-2 border-cgy-red bg-white px-4 py-1.5 text-[17px] font-semibold text-cgy-red">
+              Manual SQL · ad hoc analysis
             </p>
+            <p className="py-2 text-center text-[22px] leading-none text-cgy-red">↓</p>
+            <div className="rounded-lg border-l-[6px] border-cgy-red bg-white px-5 py-3 text-center">
+              <p className="text-[16px] text-cgy-grey">Same question, different answers</p>
+              <p className="text-[26px] font-bold leading-tight text-cgy-slate">No trust in the numbers</p>
+            </div>
+          </div>
+          <div className="flex flex-col justify-between py-3">
+            <Sub letter="!" title="What was happening" muted>
+              Each client&apos;s data lived in its own database. Reports were up to{" "}
+              <b className="text-cgy-red">7 days old</b>, and nobody owned the numbers.
+            </Sub>
             <Sub letter="a" title="Why it mattered">
-              Every cross-client question meant manual SQL scripts and ad hoc analysis, and teams still ended
-              up with different numbers.
+              Every cross-client question meant manual SQL and ad hoc analysis, and teams still ended up with
+              different numbers.
             </Sub>
             <Sub letter="b" title="Users and interested parties">
               <Chips items={["Customer Success", "Product", "Clients", "Analysts"]} />
