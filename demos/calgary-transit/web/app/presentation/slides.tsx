@@ -101,20 +101,20 @@ export const SLIDES: Slide[] = [
     body: (
       <>
         <Title>I&apos;ll answer them in order</Title>
-        <ol className="mt-8 grid flex-1 grid-cols-2 content-center gap-x-10 gap-y-5">
+        <ol className="mt-8 grid flex-1 grid-cols-2 grid-rows-3 gap-x-8 gap-y-5">
           {QUESTIONS.map((q, i) => (
-            <li key={q} className="flex items-center gap-5 rounded-lg bg-cgy-paper px-6 py-5">
-              <span className="text-[40px] font-bold leading-none text-cgy-red">{i + 1}</span>
-              <span className="text-[25px] font-semibold leading-tight text-cgy-slate">{q}</span>
+            <li key={q} className="flex items-center gap-6 rounded-lg bg-cgy-paper px-8">
+              <span className="w-8 shrink-0 text-[48px] font-bold leading-none text-cgy-red">{i + 1}</span>
+              <span className="text-[28px] font-semibold leading-tight text-cgy-slate">{q}</span>
             </li>
           ))}
         </ol>
-        <p className="mt-6 text-[20px] text-cgy-grey">
-          Then five minutes live: the same approach on City of Calgary open data.
-        </p>
       </>
     ),
-    notes: ["Fifteen seconds. Every slide title is one of their questions."],
+    notes: [
+      "Fifteen seconds. Every slide title is one of their questions.",
+      "Say: 'Then five minutes live, on City of Calgary open data.'",
+    ],
   },
   {
     id: "q1",

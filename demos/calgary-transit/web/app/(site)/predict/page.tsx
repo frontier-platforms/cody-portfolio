@@ -17,7 +17,7 @@ const WHY = [
 
 export default function PredictPage() {
   return (
-    <div className="mx-auto w-full max-w-6xl px-4 pb-16 pt-8 sm:px-6">
+    <div className="mx-auto w-full max-w-6xl px-4 pb-16 pt-8 sm:px-6 lg:pb-6 lg:pt-5">
       <p className="text-sm font-semibold uppercase tracking-wide text-cgy-red">
         Machine learning on the same layer
       </p>
@@ -26,7 +26,8 @@ export default function PredictPage() {
         About half of requests take longer than a week. This scores each one when it&apos;s filed, so 311 can
         set expectations and triage.
       </p>
-      <div className="mt-4 hidden gap-3 sm:grid sm:grid-cols-3">
+      {/* Hidden on short laptop screens so the model and its results fit without scrolling. */}
+      <div className="mt-3 hidden gap-3 sm:grid-cols-3 sm:[@media(min-height:760px)]:grid">
         {WHY.map(([label, text]) => (
           <div key={label} className="border-l-4 border-cgy-red pl-3">
             <p className="text-xs font-semibold uppercase tracking-wide text-cgy-grey">{label}</p>

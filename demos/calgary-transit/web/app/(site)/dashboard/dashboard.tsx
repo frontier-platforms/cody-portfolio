@@ -46,6 +46,10 @@ select domain, latest_data_date, freshness_status
 from data_contract_status
 order by domain`;
 
+// Charts are a fixed height on phones; on laptops they share whatever height the window leaves.
+const FILL = "flex flex-col lg:min-h-0";
+const CHART = "h-[280px] lg:h-auto lg:min-h-[180px] lg:flex-1";
+
 const pct = (a: number, b: number) => (a / b) * 100;
 
 export function Dashboard() {
@@ -67,21 +71,25 @@ export function Dashboard() {
   const baseMonthly = base.trips / 12;
 
   return (
-    <div className="space-y-6">
+    <div className="flex flex-col gap-6 lg:min-h-0 lg:flex-1 lg:gap-4">
       <div className="mt-1 flex items-center gap-3">
         <h1 className="text-3xl font-bold">{TITLE}</h1>
         <InfoTip label="About these numbers">
           <strong>
             {now.year} vs {BASELINE}, before the pandemic:
           </strong>{" "}
-          riders are back to {fmtPct(pct(now.trips, base.trips))} of {BASELINE}, and rider feedback per trip is up{" "}
-          {fmtPct(pct(rate(now), rate(base)) - 100)}, like for like. Every number is a live query on the governed tables the
-          AI agent also uses.
+          riders are back to {fmtPct(pct(now.trips, base.trips))} of {BASELINE}, and rider feedback per trip
+          is up {fmtPct(pct(rate(now), rate(base)) - 100)}, like for like. Every number is a live query on the
+          governed tables the AI agent also uses.
         </InfoTip>
       </div>
 
       <div className="grid grid-cols-3 gap-2 sm:gap-3">
-        <Tile label={`Trips in ${now.year}`} value={fmtCompact(now.trips)} note={`${fmtPct(pct(now.trips, base.trips))} of ${BASELINE}`} />
+        <Tile
+          label={`Trips in ${now.year}`}
+          value={fmtCompact(now.trips)}
+          note={`${fmtPct(pct(now.trips, base.trips))} of ${BASELINE}`}
+        />
         <Tile
           label="Service hours"
           value={fmtCompact(now.service_hours)}
@@ -95,7 +103,7 @@ export function Dashboard() {
         />
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid gap-6 lg:min-h-0 lg:flex-1 lg:grid-cols-2">
         <Recovery baseline={baseMonthly} />
         <FeedbackChange year={now.year} />
       </div>
@@ -105,10 +113,24 @@ export function Dashboard() {
   );
 }
 
-function Tile({ label, value, note, alert }: { label: string; value: string; note: string; alert?: boolean }) {
+function Tile({
+  label,
+  value,
+  note,
+  alert,
+}: {
+  label: string;
+  value: string;
+  note: string;
+  alert?: boolean;
+}) {
   return (
-    <div className={`rounded-lg border-l-4 bg-cgy-paper p-3 sm:p-5 ${alert ? "border-cgy-orange" : "border-cgy-red"}`}>
-      <p className="text-[11px] font-semibold uppercase leading-tight tracking-wide text-cgy-grey sm:text-xs">{label}</p>
+    <div
+      className={`rounded-lg border-l-4 bg-cgy-paper p-3 sm:p-5 ${alert ? "border-cgy-orange" : "border-cgy-red"}`}
+    >
+      <p className="text-[11px] font-semibold uppercase leading-tight tracking-wide text-cgy-grey sm:text-xs">
+        {label}
+      </p>
       <p className="tabular mt-1 text-2xl font-bold text-cgy-slate sm:text-4xl">{value}</p>
       <p className="mt-1 text-xs text-cgy-charcoal sm:text-sm">{note}</p>
     </div>
@@ -122,20 +144,32 @@ function Recovery({ baseline }: { baseline: number }) {
       title="Riders are back"
       subtitle={`Monthly trips. The dashed line is the ${BASELINE} monthly average.`}
       source="transit_monthly_kpis"
+      className={FILL}
     >
       {!rows ? (
-        <PanelState error={error} height={300} />
+        <PanelState error={error} height={240} />
       ) : (
-        <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={rows} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
-            <CartesianGrid stroke={C.line} vertical={false} />
-            <XAxis dataKey="month" {...AXIS} tickFormatter={(m: string) => m.slice(0, 4)} interval="preserveStartEnd" minTickGap={40} />
-            <YAxis {...AXIS} tickFormatter={(v: number) => fmtCompact(v)} width={48} />
-            <Tooltip labelFormatter={(m) => fmtMonth(String(m))} formatter={(v) => [fmtNumber(Number(v)), "Trips"]} />
-            <ReferenceLine y={baseline} stroke={C.grey} strokeDasharray="4 4" />
-            <Line type="monotone" dataKey="trips" stroke={C.red} dot={false} strokeWidth={2.5} />
-          </LineChart>
-        </ResponsiveContainer>
+        <div className={CHART}>
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={rows} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
+              <CartesianGrid stroke={C.line} vertical={false} />
+              <XAxis
+                dataKey="month"
+                {...AXIS}
+                tickFormatter={(m: string) => m.slice(0, 4)}
+                interval="preserveStartEnd"
+                minTickGap={40}
+              />
+              <YAxis {...AXIS} tickFormatter={(v: number) => fmtCompact(v)} width={48} />
+              <Tooltip
+                labelFormatter={(m) => fmtMonth(String(m))}
+                formatter={(v) => [fmtNumber(Number(v)), "Trips"]}
+              />
+              <ReferenceLine y={baseline} stroke={C.grey} strokeDasharray="4 4" />
+              <Line type="monotone" dataKey="trips" stroke={C.red} dot={false} strokeWidth={2.5} />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
       )}
     </Panel>
   );
@@ -157,34 +191,52 @@ limit 5`;
       title="What riders contact 311 about"
       subtitle="Top five categories. Lost Property is left out: it moved into 311 in 2021, which made complaints look 43% higher."
       source="service_requests_monthly"
+      className={FILL}
     >
       {!rows ? (
-        <PanelState error={error} height={300} />
+        <PanelState error={error} height={240} />
       ) : (
-        <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={rows} layout="vertical" margin={{ top: 0, right: 16, left: 0, bottom: 0 }} barGap={2}>
-            <CartesianGrid stroke={C.line} horizontal={false} />
-            <XAxis type="number" {...AXIS} tickFormatter={(v: number) => fmtCompact(v)} />
-            <YAxis type="category" dataKey="service_category" {...AXIS} width={150} interval={0} />
-            <Tooltip
-              formatter={(v, name) => [fmtNumber(Number(v)), name]}
-              labelFormatter={(label, payload) => {
-                const p = payload?.[0]?.payload as { before?: number; after?: number } | undefined;
-                return p?.before ? `${label} · ${fmtPct(pct(p.after ?? 0, p.before) - 100)} change` : String(label);
-              }}
-            />
-            <Legend wrapperStyle={{ fontSize: 12 }} />
-            <Bar dataKey="before" name={String(BASELINE)} fill={C.silver} radius={[0, 2, 2, 0]} />
-            <Bar dataKey="after" name={String(year)} fill={C.red} radius={[0, 2, 2, 0]} />
-          </BarChart>
-        </ResponsiveContainer>
+        <div className={CHART}>
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart
+              data={rows}
+              layout="vertical"
+              margin={{ top: 0, right: 16, left: 0, bottom: 0 }}
+              barGap={2}
+            >
+              <CartesianGrid stroke={C.line} horizontal={false} />
+              <XAxis type="number" {...AXIS} tickFormatter={(v: number) => fmtCompact(v)} />
+              <YAxis type="category" dataKey="service_category" {...AXIS} width={170} interval={0} />
+              <Tooltip
+                formatter={(v, name) => [fmtNumber(Number(v)), name]}
+                labelFormatter={(label, payload) => {
+                  const p = payload?.[0]?.payload as { before?: number; after?: number } | undefined;
+                  return p?.before
+                    ? `${label} · ${fmtPct(pct(p.after ?? 0, p.before) - 100)} change`
+                    : String(label);
+                }}
+              />
+              <Legend wrapperStyle={{ fontSize: 12 }} />
+              <Bar
+                dataKey="before"
+                maxBarSize={26}
+                name={String(BASELINE)}
+                fill={C.silver}
+                radius={[0, 2, 2, 0]}
+              />
+              <Bar dataKey="after" maxBarSize={26} name={String(year)} fill={C.red} radius={[0, 2, 2, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
       )}
     </Panel>
   );
 }
 
 function Freshness() {
-  const { rows } = useQuery<{ domain: string; latest_data_date: string; freshness_status: string }>(Q_FRESHNESS);
+  const { rows } = useQuery<{ domain: string; latest_data_date: string; freshness_status: string }>(
+    Q_FRESHNESS,
+  );
   if (!rows) return null;
   return (
     <p className="text-sm text-cgy-grey">
