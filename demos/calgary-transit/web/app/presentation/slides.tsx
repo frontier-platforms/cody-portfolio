@@ -184,7 +184,7 @@ export const SLIDES: Slide[] = [
               { label: "Sources", title: "Three systems", detail: "Every client's data" },
               { label: "Bronze", title: "Raw", detail: "Personal data masked" },
               { label: "Silver", title: "One definition", detail: "Across every client" },
-              { label: "Gold", title: "100+ tested models", detail: "One grain each", highlight: true },
+              { label: "Gold", title: "Tested tables", detail: "One grain each", highlight: true },
               { label: "Semantic layer", title: "Shared metrics", detail: "For people and AI", dark: true },
             ]}
           />
@@ -254,7 +254,7 @@ export const SLIDES: Slide[] = [
         <div className="flex flex-1 flex-col justify-center">
           <div className="grid grid-cols-[1fr_1fr_1fr_1.3fr] gap-4 [&>div]:h-full">
             <BigStat from="7 days" value="< 12 hrs" label="Data freshness" />
-            <BigStat value="100+" label="Tested models, replacing a database per client" />
+            <BigStat from="Per client" value="1 layer" label="Governed source of truth for every client" />
             <BigStat value="30 min" label="To flag a missed refresh, before a client notices" />
             <BigStat value={"Self\u2011serve"} label="Routine Customer Success questions" />
           </div>
