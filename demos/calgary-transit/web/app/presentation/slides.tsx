@@ -107,8 +107,8 @@ const CHANNELS = [
   },
   {
     title: "Where they work",
-    body: "Gold data and ML results pushed into the CRM, and shared with each client.",
-    tag: "No new tool to learn",
+    body: "Gold data and ML results pushed into the CRM, right where account teams already work.",
+    tag: "CS and Account Management",
     icon: ["M22 2 11 13", "M22 2 15 22l-4-9-9-4 20-7z"],
   },
 ];
