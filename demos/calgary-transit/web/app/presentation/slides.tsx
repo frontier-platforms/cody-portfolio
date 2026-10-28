@@ -95,7 +95,7 @@ function Icon({ paths }: { paths: string[] }) {
 const CHANNELS = [
   {
     title: "BI dashboards",
-    body: "Self-serve reporting on the tested gold tables, refreshed four times a day.",
+    body: "Self-serve reporting on the tested gold tables.",
     tag: "Leadership, Product, Customer Success",
     icon: ["M3 3v18h18", "M8 17v-4", "M13 17V7", "M18 17v-8"],
   },
@@ -420,7 +420,7 @@ export const SLIDES: Slide[] = [
               ["Requirements", "What each team needed to trust a number."],
               ["Strategy", "Fix the data once, not every report."],
               ["Plan", "Bronze, silver, gold. One grain per table."],
-              ["Build", "dbt models, run by Airflow four times a day."],
+              ["Build", "dbt models, orchestrated by Airflow."],
               ["Review and iterate", "Monitor, find issues, fix them once."],
             ].map(([t, b], i, all) => (
               <div key={t} className="flex flex-1 items-stretch">
