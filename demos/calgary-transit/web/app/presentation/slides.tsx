@@ -169,7 +169,7 @@ const STACK = [
   ["Orchestrated by", "Airflow on AWS"],
   ["Versioned in", "GitHub"],
   ["Documented in", "dbt docs, Confluence"],
-  ["Served through", "Semantic layer, LLMs"],
+  ["Served through", "Semantic layer, QuickSight, Claude"],
 ];
 
 /** Q3: the approach, step by step. */
