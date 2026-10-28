@@ -172,6 +172,15 @@ const STACK = [
   ["Served through", "Semantic layer, LLMs"],
 ];
 
+/** Q3: the approach, step by step. */
+const APPROACH = [
+  ["Requirements", "The questions each team couldn't answer, and the numbers they disputed."],
+  ["Strategy", "One governed layer, fixed once instead of report by report."],
+  ["Plan", "Medallion layers, a data contract, one grain per table."],
+  ["Build", "dbt models in Snowflake, orchestrated by Airflow."],
+  ["Review & iterate", "Tests and monitoring find issues; fix them once, in the layer."],
+];
+
 const QUESTIONS = [
   "What business problem was I solving?",
   "What is the data product?",
@@ -414,47 +423,67 @@ export const SLIDES: Slide[] = [
       <>
         <Title>How did I approach it?</Title>
         <Lead>Start from what people need, fix the data once, then keep improving it.</Lead>
-        <div className="flex flex-1 flex-col justify-center">
-          <div className="flex items-stretch">
-            {[
-              ["Requirements", "What each team needed to trust a number."],
-              ["Strategy", "Fix the data once, not every report."],
-              ["Plan", "Bronze, silver, gold. One grain per table."],
-              ["Build", "dbt models, orchestrated by Airflow."],
-              ["Review and iterate", "Monitor, find issues, fix them once."],
-            ].map(([t, b], i, all) => (
-              <div key={t} className="flex flex-1 items-stretch">
-                <div
-                  className={`flex-1 rounded-lg p-4 ${i === all.length - 1 ? "bg-cgy-red text-white" : "bg-cgy-paper"}`}
+        <div className="mt-8 grid grid-cols-5 gap-3">
+          {APPROACH.map(([t, b], i) => (
+            <div
+              key={t}
+              className={`rounded-lg p-4 ${i === APPROACH.length - 1 ? "bg-cgy-red text-white" : "bg-cgy-paper"}`}
+            >
+              <p className="flex items-baseline gap-2">
+                <span className={`text-[22px] font-bold ${i === APPROACH.length - 1 ? "" : "text-cgy-red"}`}>
+                  {i + 1}
+                </span>
+                <span
+                  className={`text-[20px] font-bold leading-tight ${i === APPROACH.length - 1 ? "" : "text-cgy-slate"}`}
                 >
-                  <p
-                    className={`text-[20px] font-bold leading-tight ${i === all.length - 1 ? "" : "text-cgy-slate"}`}
-                  >
-                    {t}
-                  </p>
-                  <p className="mt-2 text-[17px] leading-snug">{b}</p>
-                </div>
-                {i < all.length - 1 && (
-                  <span className="self-center px-2 text-[26px] font-bold text-cgy-red">→</span>
-                )}
-              </div>
-            ))}
-          </div>
-          <div className="mt-10 grid grid-cols-[1fr_1.35fr] gap-10">
-            <Sub letter="a" title="Sourcing and preparing the data">
-              Product analytics, customer data and client config, landed raw with personal data masked, then
-              mapped client by client into one model and tested.
-            </Sub>
-            <Sub letter="b" title="Methods and tools">
-              <div className="mt-2 grid grid-cols-3 gap-2">
-                {STACK.map(([verb, tool]) => (
-                  <div key={verb} className="rounded-lg bg-cgy-paper px-3 py-2">
-                    <p className="text-[13px] font-semibold uppercase tracking-wide text-cgy-grey">{verb}</p>
-                    <p className="text-[18px] font-bold leading-tight text-cgy-slate">{tool}</p>
+                  {t}
+                </span>
+              </p>
+              <p className="mt-2 text-[16px] leading-snug">{b}</p>
+            </div>
+          ))}
+        </div>
+        <div className="mt-6 grid min-h-0 flex-1 grid-cols-[1fr_1.25fr] gap-6">
+          <div className="flex flex-col rounded-lg border-2 border-cgy-line p-5">
+            <div className="flex items-center gap-3">
+              <Letter>a</Letter>
+              <p className="text-[22px] font-bold text-cgy-slate">Sourcing and preparing the data</p>
+            </div>
+            <p className="mt-3 text-[17px] leading-snug">
+              Product analytics, customer data and client config, for every client.
+            </p>
+            <div className="mt-auto flex items-stretch gap-2 pt-4">
+              {[
+                ["Land", "Raw, personal data masked"],
+                ["Map", "Client by client, into one model"],
+                ["Test", "On every run, before use"],
+              ].map(([t, d], i) => (
+                <div key={t} className="flex flex-1 items-stretch gap-2">
+                  <div className="flex-1 rounded-lg bg-cgy-paper px-3 py-2.5">
+                    <p className="text-[17px] font-bold text-cgy-slate">{t}</p>
+                    <p className="text-[14px] leading-snug">{d}</p>
                   </div>
-                ))}
-              </div>
-            </Sub>
+                  {i < 2 && <span className="self-center text-[20px] font-bold text-cgy-red">→</span>}
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="flex flex-col rounded-lg border-2 border-cgy-line p-5">
+            <div className="flex items-center gap-3">
+              <Letter>b</Letter>
+              <p className="text-[22px] font-bold text-cgy-slate">Methods and tools</p>
+            </div>
+            <p className="mt-3 text-[17px] leading-snug">
+              Engineered like software: every change versioned, every model tested and documented.
+            </p>
+            <div className="mt-auto grid grid-cols-3 gap-2 pt-4">
+              {STACK.map(([verb, tool]) => (
+                <div key={verb} className="rounded-lg bg-cgy-paper px-3 py-2.5">
+                  <p className="text-[12px] font-semibold uppercase tracking-wide text-cgy-grey">{verb}</p>
+                  <p className="text-[16px] font-bold leading-tight text-cgy-slate">{tool}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </>
