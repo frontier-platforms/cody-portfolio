@@ -195,12 +195,9 @@ export const SLIDES: Slide[] = [
                 </div>
               ))}
             </div>
-            <p className="mt-5 text-center text-[21px] text-cgy-red">
-              ↓ manual SQL, ad hoc analysis ↓
-            </p>
-            <p className="mt-5 text-center text-[25px] font-bold text-cgy-slate">
-              Same question, different answers
-            </p>
+            <p className="mt-5 text-center text-[21px] text-cgy-red">↓ manual SQL, ad hoc analysis ↓</p>
+            <p className="mt-5 text-center text-[18px] text-cgy-grey">Same question, different answers</p>
+            <p className="mt-1 text-center text-[27px] font-bold text-cgy-slate">No trust in the numbers</p>
           </div>
           <div className="flex flex-col gap-7">
             <p className="text-[22px] leading-snug">
