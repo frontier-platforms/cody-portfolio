@@ -105,15 +105,18 @@ export function BigStat({ value, label, from }: { value: string; label: string; 
 
 export function Flow({
   steps,
+  large,
 }: {
   steps: { label: string; title: string; detail: string; highlight?: boolean; dark?: boolean }[];
+  /** Bigger boxes and type, for a flow that is the whole slide. */
+  large?: boolean;
 }) {
   return (
     <div className="flex items-stretch">
       {steps.map((s, i) => (
         <div key={s.label} className="flex flex-1 items-stretch">
           <div
-            className={`flex-1 rounded-lg border-2 p-4 ${
+            className={`flex-1 rounded-lg border-2 ${large ? "px-5 py-7" : "p-4"} ${
               s.dark
                 ? "border-cgy-slate bg-cgy-slate text-white"
                 : s.highlight
@@ -122,16 +125,20 @@ export function Flow({
             }`}
           >
             <p
-              className={`text-[13px] font-bold uppercase tracking-wide ${s.dark ? "text-white/70" : s.highlight ? "text-cgy-red" : "text-cgy-grey"}`}
+              className={`${large ? "text-[15px]" : "text-[13px]"} font-bold uppercase tracking-wide ${s.dark ? "text-white/70" : s.highlight ? "text-cgy-red" : "text-cgy-grey"}`}
             >
               {s.label}
             </p>
             <p
-              className={`mt-1 text-[20px] font-bold leading-tight ${s.dark ? "text-white" : "text-cgy-slate"}`}
+              className={`${large ? "mt-2 text-[25px]" : "mt-1 text-[20px]"} font-bold leading-tight ${s.dark ? "text-white" : "text-cgy-slate"}`}
             >
               {s.title}
             </p>
-            <p className={`mt-1 text-[15px] leading-snug ${s.dark ? "text-white/85" : ""}`}>{s.detail}</p>
+            <p
+              className={`${large ? "mt-2 text-[18px]" : "mt-1 text-[15px]"} leading-snug ${s.dark ? "text-white/85" : ""}`}
+            >
+              {s.detail}
+            </p>
           </div>
           {i < steps.length - 1 && (
             <span className="self-center px-2 text-[26px] font-bold text-cgy-red">→</span>

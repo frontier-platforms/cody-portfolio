@@ -175,14 +175,15 @@ export const SLIDES: Slide[] = [
     body: (
       <>
         <Title>What is the data product?</Title>
-        <div className="flex flex-1 flex-col justify-center gap-12">
-          <div className="flex items-center gap-4">
-            <Letter>a</Letter>
-            <p className="text-[24px] leading-snug">
-              One governed, tested layer for every client&apos;s data, refreshed daily.
-            </p>
-          </div>
+        <div className="mt-5 flex items-center gap-4">
+          <Letter>a</Letter>
+          <p className="text-[26px] font-semibold leading-snug text-cgy-slate">
+            One governed, tested layer for every client&apos;s data, refreshed daily.
+          </p>
+        </div>
+        <div className="flex flex-1 flex-col justify-center gap-10">
           <Flow
+            large
             steps={[
               { label: "Sources", title: "Three systems", detail: "Every client's data" },
               { label: "Bronze", title: "Raw", detail: "Personal data masked" },
@@ -191,10 +192,24 @@ export const SLIDES: Slide[] = [
               { label: "Semantic layer", title: "Shared metrics", detail: "For people and AI", dark: true },
             ]}
           />
-          <div className="flex items-center gap-4">
-            <Letter>b</Letter>
-            <span className="text-[22px] font-bold text-cgy-slate">Used by</span>
-            <Chips items={["BI dashboards", "Client data sharing", "AI assistant", "ML models"]} />
+          <div>
+            <div className="flex items-center gap-4">
+              <Letter>b</Letter>
+              <span className="text-[22px] font-bold text-cgy-slate">Used by</span>
+            </div>
+            <div className="mt-4 grid grid-cols-4 gap-4">
+              {[
+                ["BI dashboards", "Internal reporting"],
+                ["Client data sharing", "Each client's own data"],
+                ["AI assistant", "Plain-English questions"],
+                ["ML models", "Trained on tested data"],
+              ].map(([t, d]) => (
+                <div key={t} className="rounded-lg bg-cgy-slate px-5 py-4 text-white">
+                  <p className="text-[22px] font-bold leading-tight">{t}</p>
+                  <p className="mt-1 text-[16px] text-white/80">{d}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </>
