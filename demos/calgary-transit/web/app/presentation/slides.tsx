@@ -106,9 +106,9 @@ const CHANNELS = [
     icon: ["M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z", "M8 9h8", "M8 13h5"],
   },
   {
-    title: "Where they work",
-    body: "Gold data and ML results pushed into the CRM, right where account teams already work.",
-    tag: "CS and Account Management",
+    title: "In the CRM",
+    body: "Customer Success and account managers see the data inside the CRM they already use.",
+    tag: "Includes ML results",
     icon: ["M22 2 11 13", "M22 2 15 22l-4-9-9-4 20-7z"],
   },
 ];
@@ -131,7 +131,7 @@ const VALUE = [
     need: "Fresh",
     from: "Weekly, by hand",
     value: "4× a day",
-    label: "Automated refreshes, on a schedule teams can rely on.",
+    label: "Refreshes run automatically, on a set schedule.",
     icon: [
       "M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8",
       "M21 3v5h-5",
@@ -143,21 +143,21 @@ const VALUE = [
     need: "Consistent",
     from: "Different answers",
     value: "One number",
-    label: "The same metric in every report, dashboard and tool.",
+    label: "Every report, dashboard and tool uses the same definitions.",
     icon: ["M22 11.08V12a10 10 0 1 1-5.93-9.14", "M22 4 12 14.01l-3-3"],
   },
   {
     need: "Observable",
     from: "Found by clients",
     value: "Monitored",
-    label: "Freshness, tests, pipeline errors and cost, watched on every run.",
+    label: "We check freshness, tests, pipeline errors and cost on every run.",
     icon: ["M22 12h-4l-3 9L9 3l-3 9H2"],
   },
   {
     need: "Self-serve",
     from: "Engineering tickets",
     value: "Self\u2011serve",
-    label: "Routine Customer Success questions, answered without engineering.",
+    label: "Customer Success answers routine questions without engineering.",
     icon: ["M13 2 3 14h9l-1 8 10-12h-9l1-8z"],
   },
 ];
@@ -175,17 +175,17 @@ const STACK = [
 /** Q3: the approach, step by step. */
 const APPROACH = [
   ["Requirements", "The questions each team couldn't answer, and the numbers they disputed."],
-  ["Strategy", "One governed layer, fixed once instead of report by report."],
+  ["Strategy", "Fix the data in one place, not in every report."],
   ["Plan", "Medallion layers, a data contract, one grain per table."],
   ["Build", "dbt models in Snowflake, orchestrated by Airflow."],
-  ["Review & iterate", "Tests and monitoring find issues; fix them once, in the layer."],
+  ["Review & iterate", "Tests and monitoring catch issues, and we fix them at the source."],
 ];
 
 /** Q6: what I'd do next. */
 const IMPROVE = [
   {
     title: "Measure from day one",
-    body: "Baseline hours and escalations before launch, so the value is a number.",
+    body: "Track hours and escalations before launch, so I could show the impact in numbers.",
     icon: [
       "M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z",
       "M12 18a6 6 0 1 0 0-12 6 6 0 0 0 0 12z",
@@ -204,7 +204,7 @@ const IMPROVE = [
   },
   {
     title: "Cover more domains",
-    body: "More semantic models, each with one grain, so the AI can answer more.",
+    body: "Add semantic models for more of the business, so the AI can answer more.",
     icon: ["m12 2 10 5-10 5L2 7l10-5z", "m2 17 10 5 10-5", "m2 12 10 5 10-5"],
   },
 ];
@@ -230,8 +230,7 @@ export const SLIDES: Slide[] = [
           One source of truth for a multi-tenant product
         </h1>
         <p className="mt-6 max-w-[900px] text-[26px] text-white/85">
-          How I turned siloed client data into one governed layer for reporting, AI and the tools teams work
-          in.
+          How I brought every client&apos;s data into one layer that reporting, AI and our CRM could trust.
         </p>
         <p className="mt-12 text-[22px] font-semibold text-white">Cody Chandler</p>
         <p className="text-[18px] text-white/60">Data and Business Analyst interview · The City of Calgary</p>
@@ -272,8 +271,8 @@ export const SLIDES: Slide[] = [
         <Title>What business problem was I solving?</Title>
         <div className="mt-5">
           <Banner>
-            The problem to solve: no single analytical source of truth, so reporting, analysis and AI
-            couldn&apos;t be consistent or reliable at scale.
+            The problem: we had no single source of truth, so reporting and analysis couldn&apos;t stay
+            consistent or reliable as we grew.
           </Banner>
         </div>
         <div className="mt-8 grid min-h-0 flex-1 grid-cols-[1fr_1.15fr] gap-14">
@@ -361,7 +360,7 @@ export const SLIDES: Slide[] = [
             ))}
           </div>
         </div>
-        <Banner>Transformed once, in one place, then reused by every team and tool.</Banner>
+        <Banner>The data is transformed once, and every team and tool uses the same tables.</Banner>
       </>
     ),
     notes: [
@@ -376,7 +375,7 @@ export const SLIDES: Slide[] = [
     body: (
       <>
         <Title>What is the data product?</Title>
-        <Lead letter="b">How people use it: one layer, three ways in.</Lead>
+        <Lead letter="b">How people use it.</Lead>
         <div className="flex flex-1 flex-col justify-center">
           <div className="grid grid-cols-3 gap-5">
             {CHANNELS.map(({ title, body, tag, icon }) => (
@@ -393,7 +392,7 @@ export const SLIDES: Slide[] = [
             ))}
           </div>
         </div>
-        <Banner>Every channel reads the same governed layer, so every number matches.</Banner>
+        <Banner>All three read the same tables, so the numbers match.</Banner>
       </>
     ),
     notes: [
@@ -432,9 +431,7 @@ export const SLIDES: Slide[] = [
             </div>
           ))}
         </div>
-        <Banner>
-          Every team, dashboard and tool now works from one consistent, reliable source of truth.
-        </Banner>
+        <Banner>Teams now work from the same numbers, and they trust them.</Banner>
       </>
     ),
     notes: [
@@ -450,7 +447,7 @@ export const SLIDES: Slide[] = [
     body: (
       <>
         <Title>How did I approach it?</Title>
-        <Lead>Start from what people need, fix the data once, then keep improving it.</Lead>
+        <Lead>I started with what people needed, then fixed the data at the source.</Lead>
         <div className="mt-8 grid grid-cols-5 gap-3">
           {APPROACH.map(([t, b], i) => (
             <div
@@ -530,7 +527,7 @@ export const SLIDES: Slide[] = [
     body: (
       <>
         <Title>What challenges came up, and how did I handle them?</Title>
-        <Lead>Three kinds of challenge, each fixed in the layer rather than in reports.</Lead>
+        <Lead>What got in the way, and what I did about it.</Lead>
         <div className="flex flex-1 flex-col justify-center">
           <table className="w-full text-left text-[22px]">
             <thead>
@@ -563,7 +560,7 @@ export const SLIDES: Slide[] = [
             </tbody>
           </table>
         </div>
-        <Banner>Every fix lived in the layer, so it fixed every report at once.</Banner>
+        <Banner>Each fix went into the shared layer, so every report picked it up.</Banner>
       </>
     ),
     notes: [
@@ -578,7 +575,7 @@ export const SLIDES: Slide[] = [
     body: (
       <>
         <Title>What am I most proud of?</Title>
-        <Lead>AI answers that match the dashboards, by design.</Lead>
+        <Lead>The AI gives the same answer as the dashboards.</Lead>
         <div className="flex flex-1 items-center gap-4">
           <div className="w-[250px] shrink-0 rounded-lg bg-cgy-paper p-5">
             <Label>Question</Label>
@@ -617,7 +614,7 @@ export const SLIDES: Slide[] = [
             <p className="mt-2 text-[16px] text-white/80">SQL shown, within the user&apos;s role</p>
           </div>
         </div>
-        <Banner>Governance stopped being overhead and became the reason people could self-serve.</Banner>
+        <Banner>The governance work is what made self-serve possible.</Banner>
       </>
     ),
     notes: [
@@ -633,7 +630,7 @@ export const SLIDES: Slide[] = [
     body: (
       <>
         <Title>What would I improve with more time?</Title>
-        <Lead>Prove the value sooner, and take the layer further.</Lead>
+        <Lead>What I&apos;d do next.</Lead>
         <div className="my-auto grid grid-cols-3 gap-5">
           {IMPROVE.map(({ title, body, icon }) => (
             <div key={title} className="rounded-lg bg-cgy-paper p-7">
@@ -646,8 +643,8 @@ export const SLIDES: Slide[] = [
           ))}
         </div>
         <Banner>
-          The same work at the City: find where numbers disagree, agree one definition with the owners, and
-          make it self-serve.
+          At the City I&apos;d do the same: find where the numbers disagree, agree on definitions with the
+          owners, and make the data easy to use.
         </Banner>
       </>
     ),
