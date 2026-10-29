@@ -27,6 +27,7 @@ type Model = {
     programOf: Record<string, string>;
   };
   context: Record<string, { recent_pace: number | null; workload_30d: number }>;
+  importance: { feature: string; share: number }[];
 };
 
 const LABELS: Record<string, string> = {
@@ -210,6 +211,13 @@ export function Predictor() {
               </li>
             ))}
           </ul>
+          {model.importance[0] && (
+            <p className="mt-3 text-xs text-cgy-grey tall:text-sm">
+              Most important feature across all requests:{" "}
+              {(LABELS[model.importance[0].feature] ?? model.importance[0].feature).toLowerCase()} (
+              {fmtPct(model.importance[0].share * 100)}).
+            </p>
+          )}
         </section>
       </div>
 

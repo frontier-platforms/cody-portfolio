@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { InfoTip } from "@/components/info-tip";
-import { fmtNumber, fmtPct } from "@/lib/format";
+import { fmtPct } from "@/lib/format";
 
 type Confusion = { slowCaught: number; fastCaught: number; falseAlarm: number; missedSlow: number };
 type Band = { band: string; predicted: number; actual: number; requests: number };
@@ -28,12 +28,15 @@ export function Performance({
 }) {
   const m = evaluation.model;
   const cards = [
-    { label: "Accuracy", value: pct(metrics.model.accuracy), plain: "Share of predictions that were right." },
-    { label: "Recall, slow requests", value: pct(m.slowRecall), plain: "Share of slow requests it flagged." },
     {
-      label: "ROC AUC",
-      value: fmtNumber(metrics.model.auc, 2),
-      plain: "Ranking quality. 0.50 is a coin flip.",
+      label: "Accuracy",
+      value: pct(metrics.model.accuracy),
+      plain: "Share of all predictions it gets right: about 7 in 10.",
+    },
+    {
+      label: "Recall, slow requests",
+      value: pct(m.slowRecall),
+      plain: "Share of the truly slow requests it catches: about 3 in 4.",
     },
   ];
 
@@ -49,7 +52,7 @@ export function Performance({
           {children && <span className="mt-2 block">{children}</span>}
         </InfoTip>
       </div>
-      <div className="mt-3 grid gap-3 lg:grid-cols-[repeat(3,1fr)_1.3fr]">
+      <div className="mt-3 grid gap-3 lg:grid-cols-[1fr_1fr_1.3fr]">
         {cards.map((k) => (
           <div key={k.label} className="rounded-lg border border-cgy-line p-4 lg:p-3 tall:p-4">
             <p className="text-xs font-semibold uppercase tracking-wide text-cgy-grey">{k.label}</p>
