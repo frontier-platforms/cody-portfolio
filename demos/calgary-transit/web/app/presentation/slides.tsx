@@ -635,26 +635,24 @@ export const SLIDES: Slide[] = [
       <>
         <Title>What would I improve with more time?</Title>
         <Lead>What I&apos;d do next.</Lead>
-        <div className="my-auto grid grid-cols-3 gap-5">
+        <div className="my-auto grid grid-cols-3 gap-6">
           {IMPROVE.map(({ title, body, icon }) => (
-            <div key={title} className="rounded-lg bg-cgy-paper p-7">
-              <span className="flex h-12 w-12 items-center justify-center rounded-full bg-cgy-red text-white">
+            <div key={title} className="rounded-lg bg-cgy-paper p-8">
+              <span className="flex h-16 w-16 items-center justify-center rounded-full bg-cgy-red text-white [&>svg]:h-8 [&>svg]:w-8">
                 <Icon paths={icon} />
               </span>
-              <p className="mt-6 text-[26px] font-bold leading-tight text-cgy-slate">{title}</p>
-              <p className="mt-2 text-[19px] leading-snug">{body}</p>
+              <p className="mt-7 whitespace-nowrap text-[26px] font-bold leading-tight text-cgy-slate">
+                {title}
+              </p>
+              <p className="mt-3 min-h-[3lh] text-[21px] leading-snug">{body}</p>
             </div>
           ))}
         </div>
-        <Banner>
-          At the City I&apos;d do the same: find where the numbers disagree, agree on definitions with the
-          owners, and make the data easy to use.
-        </Banner>
       </>
     ),
     notes: [
       "[Your story: swap in whatever you'd genuinely do differently.]",
-      "Land the City line slowly. It's the bridge to the role, and the lead-in to the demo.",
+      "Then go straight to the thank-you slide and the demo.",
     ],
   },
   {
