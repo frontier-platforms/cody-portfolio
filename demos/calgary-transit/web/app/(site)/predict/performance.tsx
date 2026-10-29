@@ -28,11 +28,15 @@ export function Performance({
 }) {
   const m = evaluation.model;
   const cards = [
-    { label: "Accuracy", value: pct(metrics.model.accuracy), plain: "Right about 7 times in 10." },
+    {
+      label: "Accuracy",
+      value: pct(metrics.model.accuracy),
+      plain: "Share of all predictions it gets right: about 7 in 10.",
+    },
     {
       label: "Recall, slow requests",
       value: pct(m.slowRecall),
-      plain: "Catches about three-quarters of the requests that take over a week.",
+      plain: "Share of the truly slow requests it catches: about 3 in 4.",
     },
   ];
 
