@@ -67,7 +67,7 @@ website     dashboard (DuckDB-WASM in the browser) and AI agent (writes SQL agai
 
 ## Website
 
-`web/` is a Next.js app with four sections: the presentation (`/presentation`, with speaker notes, a synced presenter window, and PDF/PowerPoint downloads), the approach page, the dashboard, and the AI agent. The dashboard and agent load the published gold Parquet files into DuckDB-WASM in the browser.
+`web/` is a Next.js app with four sections: the presentation (`/presentation`, with PDF/PowerPoint downloads), the approach page, the dashboard, and the AI agent. The dashboard and agent load the published gold Parquet files into DuckDB-WASM in the browser.
 
 ```bash
 cd web && npm install && npm run dev   # http://localhost:3000/data-demos/calgary-transit

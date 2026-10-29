@@ -236,9 +236,6 @@ export const SLIDES: Slide[] = [
         <p className="text-[18px] text-white/60">Data and Business Analyst interview · The City of Calgary</p>
       </div>
     ),
-    notes: [
-      "[Your story: one line on who you are.] Then: 'I'll answer your six questions in order, then show it live.'",
-    ],
   },
   {
     id: "agenda",
@@ -257,10 +254,6 @@ export const SLIDES: Slide[] = [
         </ol>
       </>
     ),
-    notes: [
-      "Fifteen seconds. Every slide title is one of their questions.",
-      "Say: 'Then five minutes live, on City of Calgary open data.'",
-    ],
   },
   {
     id: "q1",
@@ -316,11 +309,6 @@ export const SLIDES: Slide[] = [
         </div>
       </>
     ),
-    notes: [
-      "Keep it to the business pain, not the tech.",
-      "My role: Director, Product Innovation & Analytics. I owned the product from planning to general availability.",
-      "[Your story: one concrete moment when inconsistent numbers hurt.]",
-    ],
   },
   {
     id: "q2-architecture",
@@ -366,10 +354,6 @@ export const SLIDES: Slide[] = [
         </Banner>
       </>
     ),
-    notes: [
-      "Left to right, once: product analytics, customer data (ticketing, acquisition) and client config, with every metric defined once in dbt, feeding every consumer.",
-      "Governance is built in: personal data masked on landing, access by role, and a data contract.",
-    ],
   },
   {
     id: "q2-semantic",
@@ -398,12 +382,6 @@ export const SLIDES: Slide[] = [
         <Banner>All three read the same tables, so the numbers match.</Banner>
       </>
     ),
-    notes: [
-      "Three ways to use the same tables. Most people never open a new tool: the data comes to them in the CRM.",
-      "The technical point on AI: 'An AI that guesses the grain double counts. One grain per model means it can't.'",
-      "Shipped first as an internal Customer Success bot; I led discovery for the client-facing version.",
-      "The example question is illustrative. [Your story: a real question the bot answered.]",
-    ],
   },
   {
     id: "q2-value",
@@ -437,11 +415,6 @@ export const SLIDES: Slide[] = [
         <Banner>Teams now work from the same numbers, and they trust them.</Banner>
       </>
     ),
-    notes: [
-      "Ten seconds per card. The banner is the answer to question 1.",
-      "Observable: freshness checked against each domain's target, dbt tests on every run, AI-written digests of pipeline errors, and cost tracked per model.",
-      "[Your story: an adoption or time-saved number.]",
-    ],
   },
   {
     id: "q3",
@@ -518,11 +491,6 @@ export const SLIDES: Slide[] = [
         </div>
       </>
     ),
-    notes: [
-      "One breath across the strip. The why matters more than the stack.",
-      "On b, say it plainly: 'Modelled in dbt, stored in Snowflake, orchestrated in Airflow, every change versioned in GitHub and documented in dbt docs and Confluence.'",
-      "[Your story: how you ran requirements, and the real build order.]",
-    ],
   },
   {
     id: "q4",
@@ -567,10 +535,6 @@ export const SLIDES: Slide[] = [
         <Banner>Each fix went into the shared layer, so every report picked it up.</Banner>
       </>
     ),
-    notes: [
-      "Spend most of the time on the People row. It's the one the City will relate to.",
-      "[Your story: the conversation that got the data contract agreed. Who pushed back, and what changed their mind?]",
-    ],
   },
   {
     id: "q5",
@@ -621,11 +585,6 @@ export const SLIDES: Slide[] = [
         <Banner>The governance work is what made self-serve possible.</Banner>
       </>
     ),
-    notes: [
-      "Trace the route once: 'An AI that guesses the grain double counts. The semantic layer sends each question to the model with the right grain, so it matches BI.'",
-      "Then land the banner slowly. It's the line to remember.",
-      "[Your story: the first time a team trusted an answer without double-checking it.]",
-    ],
   },
   {
     id: "q6",
@@ -650,10 +609,6 @@ export const SLIDES: Slide[] = [
         </div>
       </>
     ),
-    notes: [
-      "[Your story: swap in whatever you'd genuinely do differently.]",
-      "Then go straight to the thank-you slide and the demo.",
-    ],
   },
   {
     id: "close",
@@ -672,14 +627,5 @@ export const SLIDES: Slide[] = [
         </p>
       </div>
     ),
-    notes: [
-      "Read the line on the slide, then switch to the browser.",
-      "LIVE DEMO (5 min). Have codychandler.ca/data-demos/calgary-transit open in a tab. Backup if the internet fails: the local copy (npm run dev).",
-      "1 · Approach page, lineage graph: 'Same layers as StellarAlgo: three City datasets, tested in dbt, run daily by Airflow.' (45 s)",
-      "2 · Dashboard: read the ⓘ headline. Then the 311 chart: 'My first cut said complaints per trip were up 43%. Lost Property moved into 311 in 2021. I fixed it once, in the data, so every consumer gets it right. Like for like it's 12%.' (1.25 min)",
-      "3 · Predict: Advertising and Communications (usually low), then Transit Pass Programs (usually high). 'Tested on 2025, a year it never saw, it catches more slow requests than the rule of thumb.' (1 min)",
-      "4 · Ask: 'How has ridership recovered since the pandemic?' While it works: 'it writes SQL against the same gold tables.' Read the answer, glance at the chart, open 'Show how this was answered'. Payoff: 'Same number as the dashboard. One source of truth.' (1.5 min)",
-      "Close: 'That's the work I'd bring to the City.' Then: 'Happy to take questions.'",
-    ],
   },
 ];

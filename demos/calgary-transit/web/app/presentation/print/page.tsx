@@ -15,7 +15,7 @@ export default function PrintDeck() {
         .print-slide:last-child { break-after: auto; }
       `}</style>
       {SLIDES.map((s, i) => (
-        <section key={s.id} className="print-slide" data-slide={i + 1} data-notes={JSON.stringify(s.notes)}>
+        <section key={s.id} className="print-slide" data-slide={i + 1}>
           <SlideFrame slide={s} index={i} total={SLIDES.length} />
         </section>
       ))}
