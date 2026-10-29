@@ -213,8 +213,9 @@ export function Predictor() {
           </ul>
           {model.importance[0] && (
             <p className="mt-3 text-xs text-cgy-grey tall:text-sm">
-              Overall, {(LABELS[model.importance[0].feature] ?? model.importance[0].feature).toLowerCase()}{" "}
-              drives {fmtPct(model.importance[0].share * 100)} of this model.
+              Most important feature across all requests:{" "}
+              {(LABELS[model.importance[0].feature] ?? model.importance[0].feature).toLowerCase()} (
+              {fmtPct(model.importance[0].share * 100)}).
             </p>
           )}
         </section>
