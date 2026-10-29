@@ -5,10 +5,22 @@ import type Anthropic from "@anthropic-ai/sdk";
 import { getConnection, query, type QueryResult } from "@/lib/duckdb";
 import { checkSql } from "@/lib/agent/sql-guard";
 import { fmtNumber } from "@/lib/format";
-import { ResultChart } from "./result-chart";
+import { ResultChart, chartSpec } from "./result-chart";
 import { withBase } from "@/lib/paths";
 
-type Step = { sql: string; result?: QueryResult; error?: string };
+export type ChartHint = { x: string; y: string[] };
+
+/** The agent marks the query to chart with a leading comment: `-- chart: x=year y=bus,ctrain`. */
+function parseChartHint(sql: string): ChartHint | undefined {
+  const m = sql.match(/--[ \t]*chart:[ \t]*x[ \t]*=[ \t]*(\w+)[ \t]+y[ \t]*=[ \t]*([\w, \t]+)/i);
+  if (!m) return undefined;
+  const y = m[2]
+    .split(",")
+    .map((c) => c.trim())
+    .filter(Boolean);
+  return y.length ? { x: m[1], y } : undefined;
+}
+type Step = { sql: string; chart?: ChartHint; result?: QueryResult; error?: string };
 type Turn = {
   question: string;
   steps: Step[];
@@ -88,7 +100,11 @@ export function Ask() {
         messages.push({ role: "assistant", content: content as Anthropic.Beta.BetaContentBlockParam[] });
 
         if (response.stop_reason === "refusal") {
-          update(index, (t) => ({ ...t, status: "done", error: "The model declined to answer this question." }));
+          update(index, (t) => ({
+            ...t,
+            status: "done",
+            error: "The model declined to answer this question.",
+          }));
           return;
         }
         const toolUses = content.filter((b): b is Anthropic.Beta.BetaToolUseBlock => b.type === "tool_use");
@@ -105,15 +121,23 @@ export function Ask() {
         update(index, (t) => ({ ...t, status: "querying" }));
         const results: Anthropic.Beta.BetaToolResultBlockParam[] = [];
         for (const use of toolUses) {
-          const sql = typeof (use.input as { sql?: unknown }).sql === "string" ? (use.input as { sql: string }).sql : "";
+          const sql =
+            typeof (use.input as { sql?: unknown }).sql === "string"
+              ? (use.input as { sql: string }).sql
+              : "";
           const { step, content: out, isError } = await runTool(sql);
-          update(index, (t) => ({ ...t, steps: [...t.steps, step] }));
+          const hint = parseChartHint(sql);
+          update(index, (t) => ({ ...t, steps: [...t.steps, hint ? { ...step, chart: hint } : step] }));
           results.push({ type: "tool_result", tool_use_id: use.id, content: out, is_error: isError });
         }
         messages.push({ role: "user", content: results });
         update(index, (t) => ({ ...t, status: "thinking" }));
       }
-      update(index, (t) => ({ ...t, status: "done", error: "The agent ran out of steps for this question." }));
+      update(index, (t) => ({
+        ...t,
+        status: "done",
+        error: "The agent ran out of steps for this question.",
+      }));
     } catch (e) {
       update(index, (t) => ({ ...t, status: "done", error: e instanceof Error ? e.message : String(e) }));
     }
@@ -126,7 +150,10 @@ export function Ask() {
 
   return (
     <div className="mt-8">
-      <form onSubmit={submit} className="rounded-lg border border-cgy-silver bg-white p-2 focus-within:border-cgy-blue">
+      <form
+        onSubmit={submit}
+        className="rounded-lg border border-cgy-silver bg-white p-2 focus-within:border-cgy-blue"
+      >
         <label htmlFor="question" className="sr-only">
           Your question
         </label>
@@ -182,7 +209,14 @@ export function Ask() {
 }
 
 function TurnView({ turn }: { turn: Turn }) {
-  const chartable = [...turn.steps].reverse().find((s) => s.result && s.result.rows.length > 1)?.result;
+  // Chart the richest result: follow-up queries are often small checks, the main series is usually the largest.
+  // The agent marks the query to chart; otherwise use the largest result, since follow-ups are often small checks.
+  const specs = turn.steps.map((s) => (s.result ? chartSpec(s.result, s.chart) : null));
+  const hinted = turn.steps.findLastIndex((s, i) => s.chart && specs[i]);
+  const chart =
+    hinted >= 0
+      ? specs[hinted]
+      : specs.filter((c) => c !== null).sort((a, b) => b.rows.length - a.rows.length)[0];
   return (
     <article className="rounded-lg border border-cgy-line bg-white">
       <header className="border-b border-cgy-line bg-cgy-paper px-4 py-3">
@@ -190,7 +224,7 @@ function TurnView({ turn }: { turn: Turn }) {
       </header>
       <div className="space-y-4 p-4">
         {turn.answer && <Answer text={turn.answer} />}
-        {turn.status === "done" && chartable && <ResultChart result={chartable} />}
+        {turn.status === "done" && chart && <ResultChart spec={chart} />}
         {turn.error && <p className="text-sm text-cgy-red">{turn.error}</p>}
         {turn.status !== "done" && (
           <p className="flex items-center gap-2 text-sm text-cgy-grey">
@@ -202,7 +236,8 @@ function TurnView({ turn }: { turn: Turn }) {
           <details className="group rounded border border-cgy-line">
             <summary className="cursor-pointer list-none px-3 py-2 text-sm font-semibold text-cgy-slate hover:text-cgy-red">
               <span className="mr-1 inline-block transition-transform group-open:rotate-90">›</span>
-              Show how this was answered ({turn.steps.length} SQL {turn.steps.length === 1 ? "query" : "queries"})
+              Show how this was answered ({turn.steps.length} SQL{" "}
+              {turn.steps.length === 1 ? "query" : "queries"})
             </summary>
             <div className="space-y-3 border-t border-cgy-line p-3">
               {turn.steps.map((s, i) => (
@@ -221,9 +256,13 @@ function StepView({ step }: { step: Step }) {
   const cols = step.result?.columns ?? [];
   return (
     <div className="overflow-hidden rounded border border-cgy-line">
-      <pre className="overflow-x-auto bg-cgy-slate p-3 font-mono text-xs leading-relaxed text-white">{step.sql.trim()}</pre>
+      <pre className="overflow-x-auto bg-cgy-slate p-3 font-mono text-xs leading-relaxed text-white">
+        {step.sql.trim()}
+      </pre>
       {step.error ? (
-        <p className="bg-white px-3 py-2 text-xs text-cgy-red">Error: {step.error} (the agent sees this and retries)</p>
+        <p className="bg-white px-3 py-2 text-xs text-cgy-red">
+          Error: {step.error} (the agent sees this and retries)
+        </p>
       ) : (
         <div className="max-h-48 overflow-auto">
           <table className="tabular w-full text-left text-xs">
@@ -241,14 +280,18 @@ function StepView({ step }: { step: Step }) {
                 <tr key={i} className="border-t border-cgy-line">
                   {cols.map((c) => (
                     <td key={c} className="whitespace-nowrap px-3 py-1">
-                      {typeof r[c] === "number" && !PLAIN_COLUMN.test(c) ? fmtNumber(r[c] as number, Number.isInteger(r[c]) ? 0 : 2) : String(r[c] ?? "–")}
+                      {typeof r[c] === "number" && !PLAIN_COLUMN.test(c)
+                        ? fmtNumber(r[c] as number, Number.isInteger(r[c]) ? 0 : 2)
+                        : String(r[c] ?? "–")}
                     </td>
                   ))}
                 </tr>
               ))}
             </tbody>
           </table>
-          {rows.length > 10 && <p className="px-3 py-1.5 text-xs text-cgy-grey">First 10 of {rows.length} rows.</p>}
+          {rows.length > 10 && (
+            <p className="px-3 py-1.5 text-xs text-cgy-grey">First 10 of {rows.length} rows.</p>
+          )}
         </div>
       )}
     </div>

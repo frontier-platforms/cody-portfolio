@@ -32,6 +32,7 @@ ${schema}
 - Write one SELECT (or WITH ... SELECT) per tool call. Round in SQL where it helps readability.
 - If a query errors, read the error and fix the query.
 - Prefer one or two well-chosen queries over many.
+- For the query that answers the question, return one row per year or category, name columns in plain words (bus_boardings, trips_2019), and start it with a chart comment naming the x column and one to three number columns, like: -- chart: x=year y=bus_boardings,ctrain_boardings Chart complete years only. Skip the comment on checks and single-number answers.
 
 ## How to answer
 - At most three short sentences. Lead with the answer and the key number. No preamble.
