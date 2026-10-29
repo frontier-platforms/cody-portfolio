@@ -552,7 +552,7 @@ export const SLIDES: Slide[] = [
                 [
                   "People",
                   "Nobody owned freshness or accuracy.",
-                  "A data contract I wrote: owners, targets and incident tiers.",
+                  "A data contract I wrote, with named owners and targets, created the accountability we lacked.",
                 ],
               ].map(([t, c, s]) => (
                 <tr key={t} className="border-b border-cgy-line align-top">
