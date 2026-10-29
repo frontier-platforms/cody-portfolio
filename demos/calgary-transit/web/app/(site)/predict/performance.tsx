@@ -33,19 +33,19 @@ export function Performance({
     {
       label: "Accuracy",
       value: pct(metrics.model.accuracy),
-      plain: "Right about 7 times in 10.",
+      plain: "Share of predictions that were right.",
       base: pct(metrics.baseline.accuracy),
     },
     {
-      label: "Slow requests caught",
+      label: "Recall, slow requests",
       value: pct(m.slowRecall),
-      plain: "Of those that took over a week.",
+      plain: "Share of slow requests it flagged.",
       base: pct(b.slowRecall),
     },
     {
-      label: "AUC",
+      label: "ROC AUC",
       value: fmtNumber(metrics.model.auc, 2),
-      plain: "Ranking quality. A coin flip is 0.50.",
+      plain: "How well it ranks fast vs slow. 0.50 is a coin flip.",
       base: fmtNumber(metrics.baseline.auc, 2),
     },
   ];
@@ -57,6 +57,9 @@ export function Performance({
           How well it works on {testYear}, a year it never saw
         </h2>
         <InfoTip label="Limits and model details" up>
+          <strong>Rule of thumb:</strong> each request type&apos;s historical rate of closing within a week,
+          the baseline the model has to beat.
+          <span className="mt-2 block" />
           <strong>Limits:</strong> a guide, not a promise. It only knows what the City records, more than a
           quarter of requests have no community, and closure times drift, so it retrains every day.
           {children && <span className="mt-2 block">{children}</span>}

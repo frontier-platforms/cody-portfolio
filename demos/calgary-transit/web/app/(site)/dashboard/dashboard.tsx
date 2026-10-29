@@ -75,12 +75,21 @@ export function Dashboard() {
       <div className="mt-1 flex items-center gap-3">
         <h1 className="text-3xl font-bold">{TITLE}</h1>
         <InfoTip label="About these numbers">
-          <strong>
-            {now.year} vs {BASELINE}, before the pandemic:
-          </strong>{" "}
-          riders are back to {fmtPct(pct(now.trips, base.trips))} of {BASELINE}, and rider feedback per trip
-          is up {fmtPct(pct(rate(now), rate(base)) - 100)}, like for like. Every number is a live query on the
-          same tables the AI agent reads.
+          <strong>In short:</strong> riders are nearly back ({fmtPct(pct(now.trips, base.trips))} of{" "}
+          {BASELINE}), service is back ({fmtPct(pct(now.service_hours, base.service_hours))}), and riders
+          contact 311 a little more per trip (up {fmtPct(pct(rate(now), rate(base)) - 100)}).
+          <span className="mt-2 block">
+            <strong>Trips:</strong> journeys taken; a transfer counts once.
+          </span>
+          <span className="block">
+            <strong>Service hours:</strong> the City&apos;s paid operating hours, in and out of service.
+          </span>
+          <span className="block">
+            <strong>311 requests:</strong> public requests to Calgary Transit, same request types every year.
+          </span>
+          <span className="mt-2 block text-white/70">
+            Every number is a live query on the same tables the AI agent reads.
+          </span>
         </InfoTip>
       </div>
 
@@ -88,17 +97,17 @@ export function Dashboard() {
         <Tile
           label={`Trips in ${now.year}`}
           value={fmtCompact(now.trips)}
-          note={`${fmtPct(pct(now.trips, base.trips))} of ${BASELINE}`}
+          note={`${fmtPct(pct(now.trips, base.trips))} of pre-pandemic (${BASELINE})`}
         />
         <Tile
-          label="Service hours"
+          label={`Service hours in ${now.year}`}
           value={fmtCompact(now.service_hours)}
-          note={`${fmtPct(pct(now.service_hours, base.service_hours))} of ${BASELINE}`}
+          note={`${fmtPct(pct(now.service_hours, base.service_hours))} of pre-pandemic (${BASELINE})`}
         />
         <Tile
-          label="Feedback per 100k trips"
+          label="311 requests per 100K trips"
           value={fmtNumber(rate(now), 1)}
-          note={`${fmtNumber(rate(base), 1)} in ${BASELINE}, like for like`}
+          note={`Up ${fmtPct(pct(rate(now), rate(base)) - 100)} from ${fmtNumber(rate(base), 1)} in ${BASELINE}`}
           alert
         />
       </div>
@@ -141,7 +150,7 @@ function Recovery({ baseline }: { baseline: number }) {
   const { rows, error } = useQuery<{ month: string; trips: number }>(Q_MONTHLY);
   return (
     <Panel
-      title="Riders are back"
+      title="Riders are nearly back"
       subtitle={`Monthly trips. The dashed line is the ${BASELINE} monthly average.`}
       source="transit_monthly_kpis"
       className={FILL}
@@ -189,7 +198,7 @@ limit 5`;
   return (
     <Panel
       title="What riders contact 311 about"
-      subtitle="Top five categories. Lost Property is left out: it moved into 311 in 2021, which made complaints look 43% higher."
+      subtitle="Top five request types. Lost Property is left out: it moved into 311 in 2021 and would make requests per trip look 43% higher, not 12%."
       source="service_requests_monthly"
       className={FILL}
     >
@@ -238,17 +247,21 @@ function Freshness() {
     Q_FRESHNESS,
   );
   if (!rows) return null;
+  const daily = rows.filter((r) => r.domain === "311 service requests");
+  const monthly = rows.filter((r) => r.domain !== "311 service requests");
+  const behind = monthly.some((r) => r.freshness_status !== "Meeting target");
   return (
     <p className="text-sm text-cgy-grey">
       <span className="font-semibold text-cgy-charcoal">How current: </span>
-      {rows.map((r, i) => (
-        <span key={r.domain}>
-          {i > 0 && " · "}
-          {r.domain} to {fmtDate(r.latest_data_date)}
-          {r.freshness_status !== "Meeting target" && " (behind target)"}
-        </span>
+      {daily.map((r) => (
+        <span key={r.domain}>311 requests to {fmtDate(r.latest_data_date)} (updated daily). </span>
       ))}
-      . Checked against the data contract on every daily run.
+      {monthly.length > 0 && (
+        <span>
+          Ridership and service hours to {fmtMonth(monthly[0].latest_data_date)}: the City publishes these
+          monthly, with a lag{behind ? ", so the data contract flags them as behind target" : ""}.
+        </span>
+      )}
     </p>
   );
 }
