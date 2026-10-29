@@ -131,7 +131,7 @@ const VALUE = [
     need: "Fresh",
     from: "Weekly, by hand",
     value: "4× a day",
-    label: "Refreshes run automatically, on a set schedule.",
+    label: "Automated batch refreshes, on a set schedule.",
     icon: [
       "M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8",
       "M21 3v5h-5",
