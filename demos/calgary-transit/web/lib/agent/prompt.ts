@@ -32,6 +32,7 @@ ${schema}
 - Write one SELECT (or WITH ... SELECT) per tool call. Round in SQL where it helps readability.
 - If a query errors, read the error and fix the query.
 - Prefer one or two well-chosen queries over many.
+- For the query that answers the question, return one row per year or category, name columns in plain words (bus_boardings, trips_2019), and set chart on it.
 
 ## How to answer
 - At most three short sentences. Lead with the answer and the key number. No preamble.
@@ -48,6 +49,17 @@ export const TOOLS: Anthropic.Beta.BetaToolUnion[] = [
       type: "object",
       properties: {
         sql: { type: "string", description: "A single SELECT or WITH ... SELECT statement." },
+        chart: {
+          type: "object",
+          description:
+            "Set this on the one query whose result answers the question visually. x: the year, month or category column. y: one to three number columns to plot, in plain-word names. Omit it on checks, follow-ups and single-number answers.",
+          properties: {
+            x: { type: "string" },
+            y: { type: "array", items: { type: "string" } },
+          },
+          required: ["x", "y"],
+          additionalProperties: false,
+        },
       },
       required: ["sql"],
       additionalProperties: false,
