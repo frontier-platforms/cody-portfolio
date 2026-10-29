@@ -56,7 +56,16 @@ export function chartSpec({ columns, rows }: QueryResult, hint?: { x: string; y:
     const textCols = columns.filter((c) => typeof rows[0][c] === "string");
     x = columns.find(isTime) ?? [...textCols].sort((a, b) => distinct(b) - distinct(a))[0];
     // Constant columns (a "months" count of 12 on every row) aren't worth plotting.
-    ys = columns.filter((c) => c !== x && !TIME.test(c) && isNumber(c) && varies(c));
+    // Helper counts (rows, months of data) aren't measures worth plotting.
+    const helper = /^(n|count|rows|row_count|months|n_months|months_of_data)$/i;
+    const candidates = columns.filter(
+      (c) => c !== x && !TIME.test(c) && !helper.test(c) && isNumber(c) && varies(c),
+    );
+    // The main series is the biggest measure; others join only on a similar scale, so a share or a
+    // month count never flattens it.
+    const peak = (c: string) => Math.max(...rows.map((r) => Math.abs(Number(r[c] ?? 0))));
+    const main = [...candidates].sort((a, b) => peak(b) - peak(a))[0];
+    ys = main ? candidates.filter((c) => c === main || (peak(c) >= peak(main) / 4 && peak(c) > 0)) : [];
   }
   if (!x || !ys.length) return null;
 

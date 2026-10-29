@@ -9,6 +9,17 @@ import { ResultChart, chartSpec } from "./result-chart";
 import { withBase } from "@/lib/paths";
 
 export type ChartHint = { x: string; y: string[] };
+
+/** The agent marks the query to chart with a leading comment: `-- chart: x=year y=bus,ctrain`. */
+function parseChartHint(sql: string): ChartHint | undefined {
+  const m = sql.match(/--[ \t]*chart:[ \t]*x[ \t]*=[ \t]*(\w+)[ \t]+y[ \t]*=[ \t]*([\w, \t]+)/i);
+  if (!m) return undefined;
+  const y = m[2]
+    .split(",")
+    .map((c) => c.trim())
+    .filter(Boolean);
+  return y.length ? { x: m[1], y } : undefined;
+}
 type Step = { sql: string; chart?: ChartHint; result?: QueryResult; error?: string };
 type Turn = {
   question: string;
@@ -115,7 +126,7 @@ export function Ask() {
               ? (use.input as { sql: string }).sql
               : "";
           const { step, content: out, isError } = await runTool(sql);
-          const hint = (use.input as { chart?: ChartHint }).chart;
+          const hint = parseChartHint(sql);
           update(index, (t) => ({ ...t, steps: [...t.steps, hint ? { ...step, chart: hint } : step] }));
           results.push({ type: "tool_result", tool_use_id: use.id, content: out, is_error: isError });
         }
