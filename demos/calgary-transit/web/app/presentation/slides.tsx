@@ -302,8 +302,8 @@ export const SLIDES: Slide[] = [
           <div className="flex flex-col justify-between py-3">
             <Sub letter="!" title="What was happening" muted>
               Each client&apos;s data lived in its own database. Reports were up to{" "}
-              <b className="whitespace-nowrap text-cgy-red">7 days old</b>, complex analyses were hard to replicate, and nobody
-              owned the numbers.
+              <b className="whitespace-nowrap text-cgy-red">7 days old</b>, complex analyses were hard to
+              replicate, and nobody owned the numbers.
             </Sub>
             <Sub letter="a" title="Why it mattered">
               Every cross-client question meant manual SQL and ad hoc analysis, and teams still ended up with
@@ -361,11 +361,13 @@ export const SLIDES: Slide[] = [
             ))}
           </div>
         </div>
-        <Banner>The data is transformed once, and every team and tool uses the same tables.</Banner>
+        <Banner>
+          Every metric is defined once, in dbt, and every team and tool reads from the same tables.
+        </Banner>
       </>
     ),
     notes: [
-      "Left to right, once: product analytics, customer data (ticketing, acquisition) and client config, transformed once, one set of shared metrics, every consumer.",
+      "Left to right, once: product analytics, customer data (ticketing, acquisition) and client config, with every metric defined once in dbt, feeding every consumer.",
       "Governance is built in: personal data masked on landing, access by role, and a data contract.",
     ],
   },
