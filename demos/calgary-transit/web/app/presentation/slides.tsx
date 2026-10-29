@@ -478,14 +478,14 @@ export const SLIDES: Slide[] = [
               <p className="text-[22px] font-bold text-cgy-slate">Sourcing and preparing the data</p>
             </div>
             <p className="mt-3 text-[17px] leading-snug">
-              Product analytics, customer data and client config.
+              Sources: product analytics, customer data, client config.
             </p>
             <div className="my-auto grid grid-cols-[1fr_auto_1fr_auto_1fr] items-stretch gap-2 pt-4">
               {[
-                ["Land", "Raw, personal data masked"],
-                ["Map", "Client by client, into one model"],
-                ["Test", "On every run, before use"],
-              ].flatMap(([t, d], i) => [
+                ["Bronze", "Land", "Raw, personal data masked"],
+                ["Silver", "Map", "Every client into one model"],
+                ["Gold", "Test", "On every run, before use"],
+              ].flatMap(([layer, t, d], i) => [
                 ...(i > 0
                   ? [
                       <span key={`arrow-${t}`} className="self-center text-[20px] font-bold text-cgy-red">
@@ -493,8 +493,9 @@ export const SLIDES: Slide[] = [
                       </span>,
                     ]
                   : []),
-                <div key={t} className="rounded-lg bg-cgy-paper px-3 py-3 text-center">
-                  <p className="text-[17px] font-bold text-cgy-slate">{t}</p>
+                <div key={t} className="rounded-lg bg-cgy-paper px-3 py-2.5">
+                  <p className="text-[12px] font-semibold uppercase tracking-wide text-cgy-grey">{layer}</p>
+                  <p className="text-[17px] font-bold leading-tight text-cgy-slate">{t}</p>
                   <p className="mt-0.5 text-[14px] leading-snug">{d}</p>
                 </div>,
               ])}
