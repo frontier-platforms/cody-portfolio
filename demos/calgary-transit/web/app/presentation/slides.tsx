@@ -275,7 +275,7 @@ export const SLIDES: Slide[] = [
             consistent or reliable as we grew.
           </Banner>
         </div>
-        <div className="mt-8 grid min-h-0 flex-1 grid-cols-[1fr_1.15fr] gap-14">
+        <div className="mt-8 grid min-h-0 flex-1 grid-cols-[0.9fr_1.3fr] gap-12">
           <div className="flex flex-col justify-center rounded-lg bg-cgy-paper px-7 py-6">
             <Label>Before</Label>
             <div className="mt-3 grid grid-cols-3 gap-3">
@@ -302,14 +302,15 @@ export const SLIDES: Slide[] = [
           <div className="flex flex-col justify-between py-3">
             <Sub letter="!" title="What was happening" muted>
               Each client&apos;s data lived in its own database. Reports were up to{" "}
-              <b className="text-cgy-red">7 days old</b>, and nobody owned the numbers.
+              <b className="whitespace-nowrap text-cgy-red">7 days old</b>, complex analyses were hard to replicate, and nobody
+              owned the numbers.
             </Sub>
             <Sub letter="a" title="Why it mattered">
               Every cross-client question meant manual SQL and ad hoc analysis, and teams still ended up with
               different numbers.
             </Sub>
             <Sub letter="b" title="Users and interested parties">
-              <Chips items={["Customer Success", "Product", "Clients", "Analysts"]} />
+              <Chips items={["Executives and board", "Customer Success", "Product", "Analysts"]} />
             </Sub>
           </div>
         </div>
