@@ -7,7 +7,6 @@ export type Slide = {
   minutes: number;
   dark?: boolean;
   body: ReactNode;
-  notes: string[];
 };
 
 export function SlideFrame({ slide, index, total }: { slide: Slide; index: number; total: number }) {

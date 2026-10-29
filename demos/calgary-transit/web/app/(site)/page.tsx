@@ -4,37 +4,37 @@ const STEPS = [
   {
     href: "/presentation",
     step: "1",
-    title: "The story",
+    title: "The case study",
     label: "Presentation",
-    body: "The problem I solved at StellarAlgo, what people needed, and how it was planned, built and improved.",
+    body: "The data product I led at StellarAlgo: the problem, the product, how I built it and what it delivered.",
   },
   {
     href: "/approach",
     step: "2",
     title: "The approach",
     label: "Approach",
-    body: "The same process on City of Calgary data: requirements, plan, pipeline, and what testing caught.",
+    body: "The same five steps on City of Calgary data, and the pipeline behind them.",
   },
   {
     href: "/dashboard",
     step: "3",
     title: "The result",
     label: "Dashboard",
-    body: "Calgary Transit's recovery, productivity and rider feedback, queried live from the governed layer.",
+    body: "Calgary Transit's recovery and rider feedback, queried live from the same tables.",
   },
   {
     href: "/predict",
     step: "4",
     title: "The prediction",
     label: "Predict",
-    body: "A live XGBoost model on the same tables: will a 311 request close within a week?",
+    body: "A machine learning model on the same tables: will a 311 request close within a week?",
   },
   {
     href: "/ask",
     step: "5",
     title: "Self-serve",
     label: "Ask the data",
-    body: "Ask in plain English. The agent writes SQL against the same tables and shows its work.",
+    body: "Ask in plain English. Answers come from the same tables, with the SQL shown.",
   },
 ];
 
@@ -48,12 +48,12 @@ export default function Home() {
             Data product case study
           </p>
           <h1 className="mt-2 max-w-3xl text-3xl font-bold leading-tight text-white sm:text-4xl [@media(min-height:820px)]:sm:text-5xl">
-            One governed data layer, so every number matches.
+            One source of truth, so every number matches.
           </h1>
           <p className="mt-3 max-w-2xl text-base text-white/85 sm:text-lg">
-            At StellarAlgo I led a data product that consolidated client data trapped in a multi-tenant
-            architecture into one tested, documented layer. This site rebuilds the same pattern on City of
-            Calgary open data, so you can see how it works.
+            At StellarAlgo I brought every client&apos;s data into one layer that reporting, AI and our CRM
+            could trust. This site applies the same approach to City of Calgary open data, so you can see it
+            working.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <Link

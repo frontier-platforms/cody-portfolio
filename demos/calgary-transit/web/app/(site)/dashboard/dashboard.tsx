@@ -80,7 +80,7 @@ export function Dashboard() {
           </strong>{" "}
           riders are back to {fmtPct(pct(now.trips, base.trips))} of {BASELINE}, and rider feedback per trip
           is up {fmtPct(pct(rate(now), rate(base)) - 100)}, like for like. Every number is a live query on the
-          governed tables the AI agent also uses.
+          same tables the AI agent reads.
         </InfoTip>
       </div>
 

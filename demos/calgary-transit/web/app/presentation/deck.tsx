@@ -18,7 +18,6 @@ import { withBase } from "@/lib/paths";
 const W = 1280;
 const H = 720;
 const TOTAL = SLIDES.length;
-const CHANNEL = "calgary-deck";
 
 function clamp(i: number) {
   return Math.max(0, Math.min(TOTAL - 1, i));
@@ -79,23 +78,9 @@ function subscribeHash(listener: () => void) {
   };
 }
 
-const noopSubscribe = () => () => {};
-
 function useDeckState() {
   const index = useSyncExternalStore(subscribeHash, readHash, () => 0);
-  const channel = useRef<BroadcastChannel | null>(null);
-
-  useEffect(() => {
-    channel.current = new BroadcastChannel(CHANNEL);
-    channel.current.onmessage = (e: MessageEvent<{ index: number }>) => setHash(e.data.index);
-    return () => channel.current?.close();
-  }, []);
-
-  const go = useCallback((next: number) => {
-    const i = clamp(next);
-    setHash(i);
-    channel.current?.postMessage({ index: i });
-  }, []);
+  const go = useCallback((next: number) => setHash(clamp(next)), []);
 
   return { index, go };
 }
@@ -115,33 +100,6 @@ function useKeys(index: number, go: (i: number) => void, extra: (e: KeyboardEven
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [index, go, extra]);
-}
-
-function Notes({ index }: { index: number }) {
-  const s = SLIDES[index];
-  return (
-    <div className="text-[15px] leading-relaxed text-white/90">
-      <p className="text-xs font-semibold uppercase tracking-wide text-white/50">
-        Slide {index + 1} · about {s.minutes < 1 ? `${Math.round(s.minutes * 60)} sec` : `${s.minutes} min`}
-      </p>
-      <ul className="mt-2 list-disc space-y-1.5 pl-5">
-        {s.notes.map((n, i) => (
-          <li
-            key={i}
-            className={
-              n.includes("[Your story")
-                ? "text-cgy-gold"
-                : n.startsWith("LIVE DEMO")
-                  ? "font-semibold text-white"
-                  : ""
-            }
-          >
-            {n}
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
 }
 
 function ToolbarButton({
@@ -196,19 +154,9 @@ function DownloadMenu() {
 export function Deck() {
   const { index, go } = useDeckState();
   const router = useRouter();
-  const [showNotes, setShowNotes] = useState(false);
-  const presenter = useSyncExternalStore(
-    noopSubscribe,
-    () => new URLSearchParams(window.location.search).get("view") === "presenter",
-    () => false,
-  );
 
   const extra = useCallback(
     (e: KeyboardEvent) => {
-      if (e.key === "n") {
-        setShowNotes((v) => !v);
-        return true;
-      }
       if (e.key === "f") {
         if (document.fullscreenElement) document.exitFullscreen();
         else document.documentElement.requestFullscreen().catch(() => {});
@@ -224,8 +172,6 @@ export function Deck() {
     [router],
   );
   useKeys(index, go, extra);
-
-  if (presenter) return <PresenterView index={index} go={go} />;
 
   const elapsed = SLIDES.slice(0, index).reduce((m, s) => m + s.minutes, 0);
   return (
@@ -245,11 +191,6 @@ export function Deck() {
           className="absolute inset-y-0 right-0 w-1/5 cursor-e-resize"
         />
       </div>
-      {showNotes && (
-        <div className="max-h-[30vh] shrink-0 overflow-y-auto border-t border-white/10 px-6 py-3">
-          <Notes index={index} />
-        </div>
-      )}
       <div className="flex shrink-0 items-center gap-1 border-t border-white/10 px-3 py-1.5">
         <Link
           href="/"
@@ -274,21 +215,6 @@ export function Deck() {
         <ToolbarButton onClick={() => go(index + 1)} label="Next (→)">
           →
         </ToolbarButton>
-        <ToolbarButton onClick={() => setShowNotes((v) => !v)} label="Speaker notes (N)">
-          Notes
-        </ToolbarButton>
-        <ToolbarButton
-          onClick={() =>
-            window.open(
-              withBase(`/presentation?view=presenter#${index + 1}`),
-              "presenter",
-              "width=1100,height=760",
-            )
-          }
-          label="Open presenter view in a new window"
-        >
-          Presenter
-        </ToolbarButton>
         <ToolbarButton
           onClick={() =>
             document.fullscreenElement
@@ -300,77 +226,6 @@ export function Deck() {
           Fullscreen
         </ToolbarButton>
         <DownloadMenu />
-      </div>
-    </div>
-  );
-}
-
-function PresenterView({ index, go }: { index: number; go: (i: number) => void }) {
-  // Only rendered in the browser (the presenter flag is false on the server), so Date.now() is safe here.
-  const [start, setStart] = useState(() => Date.now());
-  const [now, setNow] = useState(() => Date.now());
-  useEffect(() => {
-    const t = setInterval(() => setNow(Date.now()), 1000);
-    return () => clearInterval(t);
-  }, []);
-  const secs = Math.max(0, Math.floor((now - start) / 1000));
-  const planned = SLIDES.slice(0, index).reduce((m, s) => m + s.minutes, 0);
-  const over = secs / 60 > planned + 1;
-
-  return (
-    <div className="fixed inset-0 z-50 grid grid-cols-[1.4fr_1fr] grid-rows-[auto_1fr] gap-4 bg-[#2a2d31] p-4 text-white">
-      <div className="col-span-2 flex items-center gap-4 text-sm">
-        <span className="font-bold">Presenter view</span>
-        <span className="text-white/60">Keys here move the main window too.</span>
-        <span className={`ml-auto tabular text-lg font-bold ${over ? "text-cgy-gold" : ""}`}>
-          {Math.floor(secs / 60)}:{String(secs % 60).padStart(2, "0")}
-        </span>
-        <span className="tabular text-white/60">plan: ~{Math.round(planned)} min in by this slide</span>
-        <button
-          type="button"
-          onClick={() => {
-            setStart(Date.now());
-            setNow(Date.now());
-          }}
-          className="rounded bg-white/10 px-2 py-1 text-xs font-semibold hover:bg-white/20"
-        >
-          Reset timer
-        </button>
-      </div>
-      <div className="flex min-h-0 flex-col gap-3">
-        <Scaled index={index} className="min-h-0 flex-1" />
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={() => go(index - 1)}
-            className="rounded bg-white/10 px-3 py-1.5 text-sm font-semibold hover:bg-white/20"
-          >
-            ← Previous
-          </button>
-          <span className="tabular text-sm text-white/70">
-            {index + 1} / {TOTAL}
-          </span>
-          <button
-            type="button"
-            onClick={() => go(index + 1)}
-            className="rounded bg-cgy-red px-3 py-1.5 text-sm font-semibold hover:bg-cgy-red-dark"
-          >
-            Next →
-          </button>
-        </div>
-      </div>
-      <div className="flex min-h-0 flex-col gap-4">
-        <div>
-          <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-white/50">Next</p>
-          {index < TOTAL - 1 ? (
-            <Scaled index={index + 1} className="h-48" />
-          ) : (
-            <p className="text-white/60">Last slide</p>
-          )}
-        </div>
-        <div className="min-h-0 flex-1 overflow-y-auto rounded bg-white/5 p-4">
-          <Notes index={index} />
-        </div>
       </div>
     </div>
   );

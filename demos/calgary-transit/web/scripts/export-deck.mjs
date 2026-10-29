@@ -29,7 +29,6 @@ pres.author = "Cody Chandler";
 for (let i = 0; i < count; i++) {
   const el = slides.nth(i);
   const png = await el.screenshot({ type: "png" });
-  const notes = JSON.parse((await el.getAttribute("data-notes")) ?? "[]");
   const slide = pres.addSlide();
   slide.addImage({
     data: `image/png;base64,${png.toString("base64")}`,
@@ -39,7 +38,6 @@ for (let i = 0; i < count; i++) {
     h: 5.625,
     altText: `Slide ${i + 1}`,
   });
-  if (notes.length) slide.addNotes(notes.map((n) => `• ${n}`).join("\n\n"));
 }
 
 await pres.writeFile({ fileName: path.join(outDir, `${name}.pptx`) });

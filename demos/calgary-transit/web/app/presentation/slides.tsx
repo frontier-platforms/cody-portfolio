@@ -131,7 +131,7 @@ const VALUE = [
     need: "Fresh",
     from: "Weekly, by hand",
     value: "4× a day",
-    label: "Refreshes run automatically, on a set schedule.",
+    label: "Automated batch refreshes, on a set schedule.",
     icon: [
       "M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8",
       "M21 3v5h-5",
@@ -143,7 +143,7 @@ const VALUE = [
     need: "Consistent",
     from: "Different answers",
     value: "One number",
-    label: "Every report, dashboard and tool uses the same definitions.",
+    label: "Every report, dashboard and tool reads from the same tables.",
     icon: ["M22 11.08V12a10 10 0 1 1-5.93-9.14", "M22 4 12 14.01l-3-3"],
   },
   {
@@ -178,7 +178,7 @@ const APPROACH = [
   ["Strategy", "Fix the data in one place, not in every report."],
   ["Plan", "Medallion layers, a data contract, one grain per table."],
   ["Build", "dbt models in Snowflake, orchestrated by Airflow."],
-  ["Review & iterate", "Tests and monitoring catch issues, and we fix them at the source."],
+  ["Review & iterate", "Stakeholder feedback, tests and monitoring shape each iteration."],
 ];
 
 /** Q6: what I'd do next. */
@@ -236,9 +236,6 @@ export const SLIDES: Slide[] = [
         <p className="text-[18px] text-white/60">Data and Business Analyst interview · The City of Calgary</p>
       </div>
     ),
-    notes: [
-      "[Your story: one line on who you are.] Then: 'I'll answer your six questions in order, then show it live.'",
-    ],
   },
   {
     id: "agenda",
@@ -257,10 +254,6 @@ export const SLIDES: Slide[] = [
         </ol>
       </>
     ),
-    notes: [
-      "Fifteen seconds. Every slide title is one of their questions.",
-      "Say: 'Then five minutes live, on City of Calgary open data.'",
-    ],
   },
   {
     id: "q1",
@@ -275,7 +268,7 @@ export const SLIDES: Slide[] = [
             consistent or reliable as we grew.
           </Banner>
         </div>
-        <div className="mt-8 grid min-h-0 flex-1 grid-cols-[1fr_1.15fr] gap-14">
+        <div className="mt-8 grid min-h-0 flex-1 grid-cols-[0.9fr_1.3fr] gap-12">
           <div className="flex flex-col justify-center rounded-lg bg-cgy-paper px-7 py-6">
             <Label>Before</Label>
             <div className="mt-3 grid grid-cols-3 gap-3">
@@ -302,24 +295,20 @@ export const SLIDES: Slide[] = [
           <div className="flex flex-col justify-between py-3">
             <Sub letter="!" title="What was happening" muted>
               Each client&apos;s data lived in its own database. Reports were up to{" "}
-              <b className="text-cgy-red">7 days old</b>, and nobody owned the numbers.
+              <b className="whitespace-nowrap text-cgy-red">7 days old</b>, complex analyses were hard to
+              replicate, and nobody owned the numbers.
             </Sub>
             <Sub letter="a" title="Why it mattered">
               Every cross-client question meant manual SQL and ad hoc analysis, and teams still ended up with
               different numbers.
             </Sub>
             <Sub letter="b" title="Users and interested parties">
-              <Chips items={["Customer Success", "Product", "Clients", "Analysts"]} />
+              <Chips items={["Executives and board", "Customer Success", "Product", "Analysts"]} />
             </Sub>
           </div>
         </div>
       </>
     ),
-    notes: [
-      "Keep it to the business pain, not the tech.",
-      "My role: Director, Product Innovation & Analytics. I owned the product from planning to general availability.",
-      "[Your story: one concrete moment when inconsistent numbers hurt.]",
-    ],
   },
   {
     id: "q2-architecture",
@@ -360,13 +349,11 @@ export const SLIDES: Slide[] = [
             ))}
           </div>
         </div>
-        <Banner>The data is transformed once, and every team and tool uses the same tables.</Banner>
+        <Banner>
+          Every metric is defined once, in dbt, and every team and tool reads from the same tables.
+        </Banner>
       </>
     ),
-    notes: [
-      "Left to right, once: product analytics, customer data (ticketing, acquisition) and client config, transformed once, one set of shared metrics, every consumer.",
-      "Governance is built in: personal data masked on landing, access by role, and a data contract.",
-    ],
   },
   {
     id: "q2-semantic",
@@ -395,12 +382,6 @@ export const SLIDES: Slide[] = [
         <Banner>All three read the same tables, so the numbers match.</Banner>
       </>
     ),
-    notes: [
-      "Three ways to use the same tables. Most people never open a new tool: the data comes to them in the CRM.",
-      "The technical point on AI: 'An AI that guesses the grain double counts. One grain per model means it can't.'",
-      "Shipped first as an internal Customer Success bot; I led discovery for the client-facing version.",
-      "The example question is illustrative. [Your story: a real question the bot answered.]",
-    ],
   },
   {
     id: "q2-value",
@@ -434,11 +415,6 @@ export const SLIDES: Slide[] = [
         <Banner>Teams now work from the same numbers, and they trust them.</Banner>
       </>
     ),
-    notes: [
-      "Ten seconds per card. The banner is the answer to question 1.",
-      "Observable: freshness checked against each domain's target, dbt tests on every run, AI-written digests of pipeline errors, and cost tracked per model.",
-      "[Your story: an adoption or time-saved number.]",
-    ],
   },
   {
     id: "q3",
@@ -475,14 +451,14 @@ export const SLIDES: Slide[] = [
               <p className="text-[22px] font-bold text-cgy-slate">Sourcing and preparing the data</p>
             </div>
             <p className="mt-3 text-[17px] leading-snug">
-              Product analytics, customer data and client config.
+              Sources: product analytics, customer data, client config.
             </p>
             <div className="my-auto grid grid-cols-[1fr_auto_1fr_auto_1fr] items-stretch gap-2 pt-4">
               {[
-                ["Land", "Raw, personal data masked"],
-                ["Map", "Client by client, into one model"],
-                ["Test", "On every run, before use"],
-              ].flatMap(([t, d], i) => [
+                ["Bronze", "Land", "Raw, personal data masked"],
+                ["Silver", "Map", "Every client into one model"],
+                ["Gold", "Test", "On every run, before use"],
+              ].flatMap(([layer, t, d], i) => [
                 ...(i > 0
                   ? [
                       <span key={`arrow-${t}`} className="self-center text-[20px] font-bold text-cgy-red">
@@ -490,8 +466,9 @@ export const SLIDES: Slide[] = [
                       </span>,
                     ]
                   : []),
-                <div key={t} className="rounded-lg bg-cgy-paper px-3 py-3 text-center">
-                  <p className="text-[17px] font-bold text-cgy-slate">{t}</p>
+                <div key={t} className="rounded-lg bg-cgy-paper px-3 py-2.5">
+                  <p className="text-[12px] font-semibold uppercase tracking-wide text-cgy-grey">{layer}</p>
+                  <p className="text-[17px] font-bold leading-tight text-cgy-slate">{t}</p>
                   <p className="mt-0.5 text-[14px] leading-snug">{d}</p>
                 </div>,
               ])}
@@ -514,11 +491,6 @@ export const SLIDES: Slide[] = [
         </div>
       </>
     ),
-    notes: [
-      "One breath across the strip. The why matters more than the stack.",
-      "On b, say it plainly: 'Modelled in dbt, stored in Snowflake, orchestrated in Airflow, every change versioned in GitHub and documented in dbt docs and Confluence.'",
-      "[Your story: how you ran requirements, and the real build order.]",
-    ],
   },
   {
     id: "q4",
@@ -548,7 +520,7 @@ export const SLIDES: Slide[] = [
                 [
                   "People",
                   "Nobody owned freshness or accuracy.",
-                  "A data contract I wrote: owners, targets and incident tiers.",
+                  "A data contract I wrote, with named owners and targets, created the accountability we lacked.",
                 ],
               ].map(([t, c, s]) => (
                 <tr key={t} className="border-b border-cgy-line align-top">
@@ -563,10 +535,6 @@ export const SLIDES: Slide[] = [
         <Banner>Each fix went into the shared layer, so every report picked it up.</Banner>
       </>
     ),
-    notes: [
-      "Spend most of the time on the People row. It's the one the City will relate to.",
-      "[Your story: the conversation that got the data contract agreed. Who pushed back, and what changed their mind?]",
-    ],
   },
   {
     id: "q5",
@@ -617,11 +585,6 @@ export const SLIDES: Slide[] = [
         <Banner>The governance work is what made self-serve possible.</Banner>
       </>
     ),
-    notes: [
-      "Trace the route once: 'An AI that guesses the grain double counts. The semantic layer sends each question to the model with the right grain, so it matches BI.'",
-      "Then land the banner slowly. It's the line to remember.",
-      "[Your story: the first time a team trusted an answer without double-checking it.]",
-    ],
   },
   {
     id: "q6",
@@ -631,27 +594,21 @@ export const SLIDES: Slide[] = [
       <>
         <Title>What would I improve with more time?</Title>
         <Lead>What I&apos;d do next.</Lead>
-        <div className="my-auto grid grid-cols-3 gap-5">
+        <div className="my-auto grid grid-cols-3 gap-6">
           {IMPROVE.map(({ title, body, icon }) => (
-            <div key={title} className="rounded-lg bg-cgy-paper p-7">
-              <span className="flex h-12 w-12 items-center justify-center rounded-full bg-cgy-red text-white">
+            <div key={title} className="rounded-lg bg-cgy-paper p-8">
+              <span className="flex h-16 w-16 items-center justify-center rounded-full bg-cgy-red text-white [&>svg]:h-8 [&>svg]:w-8">
                 <Icon paths={icon} />
               </span>
-              <p className="mt-6 text-[26px] font-bold leading-tight text-cgy-slate">{title}</p>
-              <p className="mt-2 text-[19px] leading-snug">{body}</p>
+              <p className="mt-7 whitespace-nowrap text-[26px] font-bold leading-tight text-cgy-slate">
+                {title}
+              </p>
+              <p className="mt-3 min-h-[3lh] text-[21px] leading-snug">{body}</p>
             </div>
           ))}
         </div>
-        <Banner>
-          At the City I&apos;d do the same: find where the numbers disagree, agree on definitions with the
-          owners, and make the data easy to use.
-        </Banner>
       </>
     ),
-    notes: [
-      "[Your story: swap in whatever you'd genuinely do differently.]",
-      "Land the City line slowly. It's the bridge to the role, and the lead-in to the demo.",
-    ],
   },
   {
     id: "close",
@@ -670,14 +627,5 @@ export const SLIDES: Slide[] = [
         </p>
       </div>
     ),
-    notes: [
-      "Read the line on the slide, then switch to the browser.",
-      "LIVE DEMO (5 min). Have codychandler.ca/data-demos/calgary-transit open in a tab. Backup if the internet fails: the local copy (npm run dev).",
-      "1 · Approach page, lineage graph: 'Same layers as StellarAlgo: three City datasets, tested in dbt, run daily by Airflow.' (45 s)",
-      "2 · Dashboard: read the ⓘ headline. Then the 311 chart: 'My first cut said complaints per trip were up 43%. Lost Property moved into 311 in 2021. I fixed it once, in the data, so every consumer gets it right. Like for like it's 12%.' (1.25 min)",
-      "3 · Predict: Advertising and Communications (usually low), then Transit Pass Programs (usually high). 'Tested on 2025, a year it never saw, it catches more slow requests than the rule of thumb.' (1 min)",
-      "4 · Ask: 'How has ridership recovered since the pandemic?' While it works: 'it writes SQL against the same gold tables.' Read the answer, glance at the chart, open 'Show how this was answered'. Payoff: 'Same number as the dashboard. One source of truth.' (1.5 min)",
-      "Close: 'That's the work I'd bring to the City.' Then: 'Happy to take questions.'",
-    ],
   },
 ];
