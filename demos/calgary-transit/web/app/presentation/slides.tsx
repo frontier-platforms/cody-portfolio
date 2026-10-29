@@ -143,7 +143,7 @@ const VALUE = [
     need: "Consistent",
     from: "Different answers",
     value: "One number",
-    label: "Every report, dashboard and tool uses the same definitions.",
+    label: "Every report, dashboard and tool reads from the same tables.",
     icon: ["M22 11.08V12a10 10 0 1 1-5.93-9.14", "M22 4 12 14.01l-3-3"],
   },
   {
