@@ -178,7 +178,7 @@ const APPROACH = [
   ["Strategy", "Fix the data in one place, not in every report."],
   ["Plan", "Medallion layers, a data contract, one grain per table."],
   ["Build", "dbt models in Snowflake, orchestrated by Airflow."],
-  ["Review & iterate", "Tests and monitoring catch issues, and we fix them at the source."],
+  ["Review & iterate", "Stakeholder feedback, tests and monitoring shape each iteration."],
 ];
 
 /** Q6: what I'd do next. */
