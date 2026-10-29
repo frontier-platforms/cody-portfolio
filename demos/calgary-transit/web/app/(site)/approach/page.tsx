@@ -5,15 +5,12 @@ import { CODE_URL, DBT_DOCS_URL } from "@/lib/paths";
 export const metadata: Metadata = { title: "Approach" };
 
 const STEPS = [
-  [
-    "The problem",
-    "Ridership, service hours and 311 are published separately, with no shared view of freshness.",
-  ],
-  ["Who needs it", "Planners, 311 leads and leadership: one trusted, current number."],
-  ["Strategy", "Fix the data once, not every report. Only tested gold is used."],
-  ["Plan", "Three datasets, five gold tables, one per question."],
-  ["Build", "Airflow, dbt and DuckDB, daily: 10 models, 27 tests, an XGBoost model."],
-  ["Review and iterate", "Tests caught a misleading trend, a failed first run and a weak first model."],
+  ["The problem", "Data published as separate datasets, with no single source of truth for reporting."],
+  ["Requirements", "What planners, 311 leads and leadership need to trust a number."],
+  ["Strategy", "Fix the data in one place, not in every report."],
+  ["Plan", "Medallion layers, a data contract, one grain per table."],
+  ["Build", "dbt models in DuckDB, orchestrated by Airflow, tested on every run."],
+  ["Review & iterate", "Review caught a misleading trend, and the fix went in at the source."],
 ];
 
 export default function ApproachPage() {
@@ -24,18 +21,37 @@ export default function ApproachPage() {
       <h1 className="mt-1 text-3xl font-bold">The same approach, applied to Calgary Transit</h1>
 
       <ol className="mt-6 grid gap-3 sm:grid-cols-2 lg:mt-4 lg:grid-cols-6">
-        {STEPS.map(([title, body], i) => (
-          <li
-            key={title}
-            className={`rounded-lg p-5 lg:p-4 tall:p-5 ${i === STEPS.length - 1 ? "border-2 border-cgy-red bg-white" : "bg-cgy-paper"}`}
-          >
-            <p className="flex items-baseline gap-3 lg:gap-2">
-              <span className="text-2xl font-bold leading-none text-cgy-red lg:text-xl tall:text-2xl">{i + 1}</span>
-              <span className="text-lg font-bold leading-tight text-cgy-slate lg:text-base tall:text-lg">{title}</span>
-            </p>
-            <p className="mt-2 text-sm leading-relaxed lg:leading-snug tall:text-base">{body}</p>
-          </li>
-        ))}
+        {STEPS.map(([title, body], i) => {
+          // The problem sits first and unnumbered; the five steps match the presentation's numbering.
+          const problem = i === 0;
+          const last = i === STEPS.length - 1;
+          return (
+            <li
+              key={title}
+              className={`rounded-lg p-5 lg:p-4 tall:p-5 ${
+                problem ? "bg-cgy-slate text-white" : last ? "bg-cgy-red text-white" : "bg-cgy-paper"
+              }`}
+            >
+              <p className="flex items-baseline gap-3 lg:gap-2">
+                {!problem && (
+                  <span
+                    className={`text-2xl font-bold leading-none lg:text-xl tall:text-2xl ${last ? "" : "text-cgy-red"}`}
+                  >
+                    {i}
+                  </span>
+                )}
+                <span
+                  className={`text-lg font-bold leading-tight lg:text-base tall:text-lg ${
+                    problem || last ? "" : "text-cgy-slate"
+                  }`}
+                >
+                  {title}
+                </span>
+              </p>
+              <p className="mt-2 text-sm leading-relaxed lg:leading-snug tall:text-base">{body}</p>
+            </li>
+          );
+        })}
       </ol>
 
       <section className="mt-12 lg:mt-6 lg:flex lg:min-h-0 lg:flex-1 lg:flex-col" aria-labelledby="lineage">
