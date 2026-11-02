@@ -145,17 +145,6 @@
   ],
   "models": [
     {
-      "name": "stg_games",
-      "layer": "silver",
-      "description": "Finished regular-season games, re-expressed from the Flames' side of the ice.",
-      "sql": "-- Finished regular-season games, re-expressed from the Flames' side of the ice.\nselect\n    game_id,\n    substr(season, 1, 4) || '-' || substr(season, 7, 2)                    as season,\n    cast(game_date as date)                                                 as game_date,\n    home_id = 20                                                    as home,\n    case when home_id = 20 then away_abbrev else home_abbrev end    as opponent,\n    case when home_id = 20 then home_score else away_score end      as goals_for,\n    case when home_id = 20 then away_score else home_score end      as goals_against,\n    coalesce(last_period_type, 'REG')                                       as decided_in\nfrom {{ ref('raw_games') }}\nwhere game_type = 2\n  and game_state in ('OFF', 'FINAL')\nqualify row_number() over (partition by game_id) = 1",
-      "dependsOn": [
-        "raw_games"
-      ],
-      "contract": false,
-      "path": "dbt/models/flames/stg_games.sql"
-    },
-    {
       "name": "stg_shots",
       "layer": "silver",
       "description": "Shot attempts with strength derived from the situation code and coordinates flipped so every shooter attacks the right-hand net.",
@@ -166,6 +155,17 @@
       ],
       "contract": false,
       "path": "dbt/models/flames/stg_shots.sql"
+    },
+    {
+      "name": "stg_games",
+      "layer": "silver",
+      "description": "Finished regular-season games, re-expressed from the Flames' side of the ice.",
+      "sql": "-- Finished regular-season games, re-expressed from the Flames' side of the ice.\nselect\n    game_id,\n    substr(season, 1, 4) || '-' || substr(season, 7, 2)                    as season,\n    cast(game_date as date)                                                 as game_date,\n    home_id = 20                                                    as home,\n    case when home_id = 20 then away_abbrev else home_abbrev end    as opponent,\n    case when home_id = 20 then home_score else away_score end      as goals_for,\n    case when home_id = 20 then away_score else home_score end      as goals_against,\n    coalesce(last_period_type, 'REG')                                       as decided_in\nfrom {{ ref('raw_games') }}\nwhere game_type = 2\n  and game_state in ('OFF', 'FINAL')\nqualify row_number() over (partition by game_id) = 1",
+      "dependsOn": [
+        "raw_games"
+      ],
+      "contract": false,
+      "path": "dbt/models/flames/stg_games.sql"
     },
     {
       "name": "flames_games",
