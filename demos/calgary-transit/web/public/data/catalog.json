@@ -1,9 +1,9 @@
 {
-  "generated_at": "2026-11-02T20:42:10+00:00",
+  "generated_at": "2026-11-03T18:17:53+00:00",
   "last_loaded": {
-    "ridership_monthly": "2026-11-02T20:39:32Z",
-    "service_hours_monthly": "2026-11-02T20:39:32Z",
-    "service_requests_311": "2026-11-02T20:39:35Z"
+    "ridership_monthly": "2026-11-03T18:15:26Z",
+    "service_hours_monthly": "2026-11-03T18:15:27Z",
+    "service_requests_311": "2026-11-03T18:15:29Z"
   },
   "tables": [
     {
@@ -126,7 +126,7 @@
       "name": "service_requests_by_community",
       "file": "service_requests_by_community.parquet",
       "description": "Grain: one row per year x community x service category. Calgary Transit public requests that have a community recorded (about 27% of requests have no community and are excluded). Use for questions about where requests come from. Latitude and longitude are the community centre point.",
-      "row_count": 21231,
+      "row_count": 21232,
       "columns": [
         {
           "name": "year",
@@ -169,7 +169,7 @@
       "name": "service_requests_monthly",
       "file": "service_requests_monthly.parquet",
       "description": "Grain: one row per month x department x program x service category, from 2010. Public 311 requests only. Use for questions about request volumes, categories of complaints, or how fast requests are closed. Do not sum median or percentage columns across rows; re-aggregate requests instead.",
-      "row_count": 2181,
+      "row_count": 2183,
       "columns": [
         {
           "name": "month",
