@@ -168,21 +168,6 @@
       "path": "dbt/models/flames/stg_games.sql"
     },
     {
-      "name": "flames_games",
-      "layer": "gold",
-      "description": "One row per game with result and standings points.",
-      "sql": "select\n    game_id, season, game_date, home, opponent, goals_for, goals_against,\n    case when goals_for > goals_against then 'W' when decided_in = 'REG' then 'L' else 'OTL' end as result,\n    decided_in,\n    case when goals_for > goals_against then 2 when decided_in = 'REG' then 0 else 1 end         as points\nfrom {{ ref('stg_games') }}\norder by game_date",
-      "dependsOn": [
-        "stg_games"
-      ],
-      "served": {
-        "file": "flames-games.parquet"
-      },
-      "mergeKey": "game_id",
-      "contract": true,
-      "path": "dbt/models/flames/flames_games.sql"
-    },
-    {
       "name": "flames_shots",
       "layer": "gold",
       "description": "Every shot attempt in those games, for and against.",
@@ -197,6 +182,21 @@
       "mergeKey": "game_id",
       "contract": true,
       "path": "dbt/models/flames/flames_shots.sql"
+    },
+    {
+      "name": "flames_games",
+      "layer": "gold",
+      "description": "One row per game with result and standings points.",
+      "sql": "select\n    game_id, season, game_date, home, opponent, goals_for, goals_against,\n    case when goals_for > goals_against then 'W' when decided_in = 'REG' then 'L' else 'OTL' end as result,\n    decided_in,\n    case when goals_for > goals_against then 2 when decided_in = 'REG' then 0 else 1 end         as points\nfrom {{ ref('stg_games') }}\norder by game_date",
+      "dependsOn": [
+        "stg_games"
+      ],
+      "served": {
+        "file": "flames-games.parquet"
+      },
+      "mergeKey": "game_id",
+      "contract": true,
+      "path": "dbt/models/flames/flames_games.sql"
     }
   ],
   "tests": [
@@ -281,8 +281,8 @@
     "cadence": "Weekly, Mondays at 10:00 UTC, via Airflow on GitHub Actions",
     "freshnessSlaDays": 8,
     "primaryKeys": {
-      "flames_games": "game_id",
-      "flames_shots": "game_id"
+      "flames_shots": "game_id",
+      "flames_games": "game_id"
     },
     "consumers": [
       "Lab dashboards",

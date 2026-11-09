@@ -3,28 +3,28 @@
   "pipelines": {
     "permits": {
       "pipeline": "permits",
-      "runAt": "2026-11-02T19:54:40.880215+00:00",
-      "durationMs": 2586,
+      "runAt": "2026-11-09T20:15:50.936261+00:00",
+      "durationMs": 2409,
       "trigger": "github-actions",
-      "commit": "4391f5ec4ca8c2ecfe98698a41f19a7cad04d488",
+      "commit": "3ce1164d9f0630453baaae7a182f3816ad245716",
       "orchestrator": "Airflow",
       "extract": {
         "requests": 0,
-        "rows": 237426,
+        "rows": 237836,
         "ms": 0
       },
       "models": [
         {
           "name": "raw_permits",
           "layer": "bronze",
-          "rows": 237426,
+          "rows": 237836,
           "ms": 0
         },
         {
           "name": "stg_permits",
           "layer": "silver",
-          "rows": 237426,
-          "ms": 1140.8,
+          "rows": 237836,
+          "ms": 1061.9,
           "columns": [
             {
               "name": "permit_id",
@@ -39,12 +39,12 @@
             {
               "name": "issued_date",
               "type": "DATE",
-              "nullPct": 6.05
+              "nullPct": 6.01
             },
             {
               "name": "completed_date",
               "type": "DATE",
-              "nullPct": 8.33
+              "nullPct": 8.27
             },
             {
               "name": "status",
@@ -79,7 +79,7 @@
             {
               "name": "est_cost",
               "type": "DOUBLE",
-              "nullPct": 10.31
+              "nullPct": 10.32
             },
             {
               "name": "sqft",
@@ -111,8 +111,8 @@
         {
           "name": "permits",
           "layer": "gold",
-          "rows": 237426,
-          "ms": 576.8,
+          "rows": 237836,
+          "ms": 560.9,
           "columns": [
             {
               "name": "permit_id",
@@ -127,12 +127,12 @@
             {
               "name": "issued_date",
               "type": "DATE",
-              "nullPct": 6.05
+              "nullPct": 6.01
             },
             {
               "name": "completed_date",
               "type": "DATE",
-              "nullPct": 8.33
+              "nullPct": 8.27
             },
             {
               "name": "status",
@@ -167,7 +167,7 @@
             {
               "name": "est_cost",
               "type": "DOUBLE",
-              "nullPct": 10.31
+              "nullPct": 10.32
             },
             {
               "name": "sqft",
@@ -205,7 +205,7 @@
           "severity": "error",
           "status": "pass",
           "failures": 0,
-          "ms": 88.6,
+          "ms": 94.8,
           "sql": "select count(*) as failures from (\nwith all_values as (\n\n    select\n        permit_class as value_field,\n        count(*) as n_records\n\n    from {{ ref('permits') }}\n    group by permit_class\n\n)\n\nselect *\nfrom all_values\nwhere value_field not in (\n    'Residential','Non-Residential','Unspecified'\n)\n) dbt_test"
         },
         {
@@ -215,7 +215,7 @@
           "severity": "error",
           "status": "pass",
           "failures": 0,
-          "ms": 86.1,
+          "ms": 73.9,
           "sql": "select count(*) as failures from (\nwith all_values as (\n\n    select\n        work_group as value_field,\n        count(*) as n_records\n\n    from {{ ref('permits') }}\n    group by work_group\n\n)\n\nselect *\nfrom all_values\nwhere value_field not in (\n    'New','Improvement','Demolition','Unspecified'\n)\n) dbt_test"
         },
         {
@@ -225,7 +225,7 @@
           "severity": "warn",
           "status": "warn",
           "failures": 28,
-          "ms": 66.0,
+          "ms": 61.0,
           "sql": "select count(*) as failures from (\nselect * from {{ ref('permits') }} where not (completed_date is null or issued_date is null or completed_date >= issued_date)\n) dbt_test"
         },
         {
@@ -235,7 +235,7 @@
           "severity": "error",
           "status": "pass",
           "failures": 0,
-          "ms": 51.1,
+          "ms": 54.7,
           "sql": "select count(*) as failures from (\nselect * from {{ ref('permits') }} where not (housing_units between 0 and 2000)\n) dbt_test"
         },
         {
@@ -245,7 +245,7 @@
           "severity": "warn",
           "status": "warn",
           "failures": 1,
-          "ms": 75.7,
+          "ms": 54.1,
           "sql": "select count(*) as failures from (\nselect * from {{ ref('permits') }} where not (issued_date is null or issued_date >= applied_date)\n) dbt_test"
         },
         {
@@ -255,7 +255,7 @@
           "severity": "error",
           "status": "pass",
           "failures": 0,
-          "ms": 71.8,
+          "ms": 62.2,
           "sql": "select count(*) as failures from (\nselect * from {{ ref('permits') }} where not (lat is null or (lat between 50.80 and 51.25 and lon between -114.35 and -113.80))\n) dbt_test"
         },
         {
@@ -265,7 +265,7 @@
           "severity": "error",
           "status": "pass",
           "failures": 0,
-          "ms": 68.0,
+          "ms": 55.8,
           "sql": "select count(*) as failures from (\nselect applied_date\nfrom {{ ref('permits') }}\nwhere applied_date is null\n) dbt_test"
         },
         {
@@ -274,8 +274,8 @@
           "kind": "not_null",
           "severity": "warn",
           "status": "warn",
-          "failures": 162,
-          "ms": 50.6,
+          "failures": 160,
+          "ms": 66.6,
           "sql": "select count(*) as failures from (\nselect lat\nfrom {{ ref('permits') }}\nwhere lat is null\n) dbt_test"
         },
         {
@@ -285,7 +285,7 @@
           "severity": "error",
           "status": "pass",
           "failures": 0,
-          "ms": 70.5,
+          "ms": 56.9,
           "sql": "select count(*) as failures from (\nselect permit_id\nfrom {{ ref('permits') }}\nwhere permit_id is null\n) dbt_test"
         },
         {
@@ -295,7 +295,7 @@
           "severity": "error",
           "status": "pass",
           "failures": 0,
-          "ms": 67.6,
+          "ms": 54.2,
           "sql": "select count(*) as failures from (\nselect max(updated_at) as latest from {{ ref('permits') }}\nhaving max(updated_at) < current_date - interval 8 day\n) dbt_test"
         },
         {
@@ -305,7 +305,7 @@
           "severity": "error",
           "status": "pass",
           "failures": 0,
-          "ms": 63.5,
+          "ms": 51.5,
           "sql": "select count(*) as failures from (\nselect count(*) as row_count from {{ ref('permits') }} having count(*) < 200000\n) dbt_test"
         },
         {
@@ -315,7 +315,7 @@
           "severity": "error",
           "status": "pass",
           "failures": 0,
-          "ms": 69.3,
+          "ms": 71.7,
           "sql": "select count(*) as failures from (\nselect\n    permit_id as unique_field,\n    count(*) as n_records\n\nfrom {{ ref('permits') }}\nwhere permit_id is not null\ngroup by permit_id\nhaving count(*) > 1\n) dbt_test"
         }
       ],
@@ -323,15 +323,15 @@
         {
           "model": "permits",
           "file": "permits.parquet",
-          "rows": 237426,
-          "bytes": 3211111,
-          "sha256": "b31104be1f12135e351054e7754c94edc0a60e0e697fd4f8783b79a680e6faca"
+          "rows": 237836,
+          "bytes": 3217381,
+          "sha256": "863208159668e0de33df39147cca5d14237634dce84758a171c5d192b041f03f"
         }
       ],
       "highlights": [
         {
           "label": "New homes permitted",
-          "value": "22,486",
+          "value": "22,488",
           "detail": "in 2025"
         },
         {
@@ -348,14 +348,14 @@
     },
     "flames": {
       "pipeline": "flames",
-      "runAt": "2026-11-02T19:54:40.880215+00:00",
-      "durationMs": 1793,
+      "runAt": "2026-11-09T20:15:50.936261+00:00",
+      "durationMs": 1605,
       "trigger": "github-actions",
-      "commit": "4391f5ec4ca8c2ecfe98698a41f19a7cad04d488",
+      "commit": "3ce1164d9f0630453baaae7a182f3816ad245716",
       "orchestrator": "Airflow",
       "extract": {
         "requests": 0,
-        "rows": 68803,
+        "rows": 69443,
         "ms": 0
       },
       "models": [
@@ -368,20 +368,20 @@
         {
           "name": "raw_plays",
           "layer": "bronze",
-          "rows": 51294,
+          "rows": 51774,
           "ms": 0
         },
         {
           "name": "raw_roster",
           "layer": "bronze",
-          "rows": 16959,
+          "rows": 17119,
           "ms": 0
         },
         {
           "name": "stg_shots",
           "layer": "silver",
-          "rows": 51078,
-          "ms": 393.9,
+          "rows": 51558,
+          "ms": 349.8,
           "columns": [
             {
               "name": "game_id",
@@ -416,7 +416,7 @@
             {
               "name": "shot_type",
               "type": "VARCHAR",
-              "nullPct": 26.9
+              "nullPct": 26.92
             },
             {
               "name": "strength",
@@ -443,8 +443,8 @@
         {
           "name": "stg_games",
           "layer": "silver",
-          "rows": 424,
-          "ms": 209.9,
+          "rows": 428,
+          "ms": 175.7,
           "columns": [
             {
               "name": "game_id",
@@ -489,10 +489,73 @@
           ]
         },
         {
+          "name": "flames_shots",
+          "layer": "gold",
+          "rows": 51558,
+          "ms": 205.7,
+          "columns": [
+            {
+              "name": "game_id",
+              "type": "BIGINT",
+              "nullPct": 0.0
+            },
+            {
+              "name": "period",
+              "type": "INTEGER",
+              "nullPct": 0.0
+            },
+            {
+              "name": "period_seconds",
+              "type": "INTEGER",
+              "nullPct": 0.0
+            },
+            {
+              "name": "team",
+              "type": "VARCHAR",
+              "nullPct": 0.0
+            },
+            {
+              "name": "event",
+              "type": "VARCHAR",
+              "nullPct": 0.0
+            },
+            {
+              "name": "is_goal",
+              "type": "BOOLEAN",
+              "nullPct": 0.0
+            },
+            {
+              "name": "shot_type",
+              "type": "VARCHAR",
+              "nullPct": 26.92
+            },
+            {
+              "name": "strength",
+              "type": "VARCHAR",
+              "nullPct": 0.0
+            },
+            {
+              "name": "x",
+              "type": "INTEGER",
+              "nullPct": 0.0
+            },
+            {
+              "name": "y",
+              "type": "INTEGER",
+              "nullPct": 0.0
+            },
+            {
+              "name": "shooter",
+              "type": "VARCHAR",
+              "nullPct": 0.0
+            }
+          ]
+        },
+        {
           "name": "flames_games",
           "layer": "gold",
-          "rows": 424,
-          "ms": 225.6,
+          "rows": 428,
+          "ms": 192.1,
           "columns": [
             {
               "name": "game_id",
@@ -545,69 +608,6 @@
               "nullPct": 0.0
             }
           ]
-        },
-        {
-          "name": "flames_shots",
-          "layer": "gold",
-          "rows": 51078,
-          "ms": 237.3,
-          "columns": [
-            {
-              "name": "game_id",
-              "type": "BIGINT",
-              "nullPct": 0.0
-            },
-            {
-              "name": "period",
-              "type": "INTEGER",
-              "nullPct": 0.0
-            },
-            {
-              "name": "period_seconds",
-              "type": "INTEGER",
-              "nullPct": 0.0
-            },
-            {
-              "name": "team",
-              "type": "VARCHAR",
-              "nullPct": 0.0
-            },
-            {
-              "name": "event",
-              "type": "VARCHAR",
-              "nullPct": 0.0
-            },
-            {
-              "name": "is_goal",
-              "type": "BOOLEAN",
-              "nullPct": 0.0
-            },
-            {
-              "name": "shot_type",
-              "type": "VARCHAR",
-              "nullPct": 26.9
-            },
-            {
-              "name": "strength",
-              "type": "VARCHAR",
-              "nullPct": 0.0
-            },
-            {
-              "name": "x",
-              "type": "INTEGER",
-              "nullPct": 0.0
-            },
-            {
-              "name": "y",
-              "type": "INTEGER",
-              "nullPct": 0.0
-            },
-            {
-              "name": "shooter",
-              "type": "VARCHAR",
-              "nullPct": 0.0
-            }
-          ]
         }
       ],
       "tests": [
@@ -618,7 +618,7 @@
           "severity": "error",
           "status": "pass",
           "failures": 0,
-          "ms": 170.5,
+          "ms": 87.5,
           "sql": "select count(*) as failures from (\nwith all_values as (\n\n    select\n        result as value_field,\n        count(*) as n_records\n\n    from {{ ref('flames_games') }}\n    group by result\n\n)\n\nselect *\nfrom all_values\nwhere value_field not in (\n    'W','L','OTL'\n)\n) dbt_test"
         },
         {
@@ -628,7 +628,7 @@
           "severity": "warn",
           "status": "pass",
           "failures": 0,
-          "ms": 37.2,
+          "ms": 53.8,
           "sql": "select count(*) as failures from (\nselect avg((x > 0)::integer) as share_in_attacking_half\nfrom {{ ref('flames_shots') }}\nwhere event <> 'blocked-shot'\nhaving avg((x > 0)::integer) < 0.95\n) dbt_test"
         },
         {
@@ -638,7 +638,7 @@
           "severity": "error",
           "status": "pass",
           "failures": 0,
-          "ms": 164.6,
+          "ms": 80.7,
           "sql": "select count(*) as failures from (\nselect * from {{ ref('flames_games') }} where not (points = case result when 'W' then 2 when 'OTL' then 1 else 0 end)\n) dbt_test"
         },
         {
@@ -648,7 +648,7 @@
           "severity": "error",
           "status": "pass",
           "failures": 0,
-          "ms": 30.6,
+          "ms": 49.7,
           "sql": "select count(*) as failures from (\nselect * from {{ ref('flames_shots') }} where not (x between -100 and 100 and y between -43 and 43)\n) dbt_test"
         },
         {
@@ -658,7 +658,7 @@
           "severity": "error",
           "status": "pass",
           "failures": 0,
-          "ms": 45.4,
+          "ms": 65.1,
           "sql": "select count(*) as failures from (\n-- Returns games whose shot-level goals don't match the official score.\nwith shot_goals as (\n    select game_id,\n           count(*) filter (where is_goal and team = 'CGY') as gf,\n           count(*) filter (where is_goal and team = 'OPP') as ga\n    from {{ ref('flames_shots') }}\n    group by 1\n)\n\nselect g.game_id\nfrom {{ ref('flames_games') }} g\nleft join shot_goals s using (game_id)\nwhere g.goals_for - (g.decided_in = 'SO' and g.result = 'W')::integer <> coalesce(s.gf, 0)\n   or g.goals_against - (g.decided_in = 'SO' and g.result <> 'W')::integer <> coalesce(s.ga, 0)\n) dbt_test"
         },
         {
@@ -668,7 +668,7 @@
           "severity": "warn",
           "status": "pass",
           "failures": 0,
-          "ms": 38.1,
+          "ms": 68.2,
           "sql": "select count(*) as failures from (\nselect shooter\nfrom {{ ref('flames_shots') }}\nwhere shooter is null\n) dbt_test"
         },
         {
@@ -678,7 +678,7 @@
           "severity": "error",
           "status": "pass",
           "failures": 0,
-          "ms": 25.3,
+          "ms": 59.2,
           "sql": "select count(*) as failures from (\nwith child as (\n    select game_id as from_field\n    from {{ ref('flames_shots') }}\n    where game_id is not null\n),\n\nparent as (\n    select game_id as to_field\n    from {{ ref('flames_games') }}\n)\n\nselect\n    from_field\n\nfrom child\nleft join parent\n    on child.from_field = parent.to_field\n\nwhere parent.to_field is null\n) dbt_test"
         },
         {
@@ -688,7 +688,7 @@
           "severity": "error",
           "status": "pass",
           "failures": 0,
-          "ms": 73.9,
+          "ms": 43.7,
           "sql": "select count(*) as failures from (\nselect count(*) as row_count from {{ ref('flames_games') }} having count(*) < 82\n) dbt_test"
         },
         {
@@ -698,24 +698,24 @@
           "severity": "error",
           "status": "pass",
           "failures": 0,
-          "ms": 96.1,
+          "ms": 48.7,
           "sql": "select count(*) as failures from (\nselect\n    game_id as unique_field,\n    count(*) as n_records\n\nfrom {{ ref('flames_games') }}\nwhere game_id is not null\ngroup by game_id\nhaving count(*) > 1\n) dbt_test"
         }
       ],
       "outputs": [
         {
-          "model": "flames_games",
-          "file": "flames-games.parquet",
-          "rows": 424,
-          "bytes": 4812,
-          "sha256": "c4f319c9a35415bfd2feef3d6c0c6362f07263928d59791551f604ea304d959c"
-        },
-        {
           "model": "flames_shots",
           "file": "flames-shots.parquet",
-          "rows": 51078,
-          "bytes": 294232,
-          "sha256": "9bd9cd8bb41e5fdda9467e804cb8c72c9e281d04a782ddd05deb62cad9d401d1"
+          "rows": 51558,
+          "bytes": 297056,
+          "sha256": "5471f019059dcb1834ea185232359746e6aa311989b9fb3ecf03745a01b458c1"
+        },
+        {
+          "model": "flames_games",
+          "file": "flames-games.parquet",
+          "rows": 428,
+          "bytes": 4843,
+          "sha256": "56f64f5c8d92580d24260c63eb363941721fe9d616a3487f2fb01ef80358407f"
         }
       ],
       "highlights": [
@@ -731,28 +731,28 @@
         },
         {
           "label": "Games reconciled to the official score",
-          "value": "424",
+          "value": "428",
           "detail": "every game, every season"
         }
       ]
     },
     "housing": {
       "pipeline": "housing",
-      "runAt": "2026-11-02T19:54:40.880215+00:00",
-      "durationMs": 2252,
+      "runAt": "2026-11-09T20:15:50.936261+00:00",
+      "durationMs": 2128,
       "trigger": "github-actions",
-      "commit": "4391f5ec4ca8c2ecfe98698a41f19a7cad04d488",
+      "commit": "3ce1164d9f0630453baaae7a182f3816ad245716",
       "orchestrator": "Airflow",
       "extract": {
         "requests": 0,
-        "rows": 490152,
+        "rows": 490540,
         "ms": 0
       },
       "models": [
         {
           "name": "raw_assessments",
           "layer": "bronze",
-          "rows": 489907,
+          "rows": 490295,
           "ms": 0
         },
         {
@@ -764,8 +764,8 @@
         {
           "name": "stg_homes",
           "layer": "silver",
-          "rows": 487506,
-          "ms": 1150.4,
+          "rows": 487894,
+          "ms": 1072.9,
           "columns": [
             {
               "name": "roll_number",
@@ -805,7 +805,7 @@
             {
               "name": "year_built",
               "type": "INTEGER",
-              "nullPct": 0.22
+              "nullPct": 0.27
             },
             {
               "name": "lot_sqft",
@@ -827,8 +827,8 @@
         {
           "name": "housing_homes",
           "layer": "gold",
-          "rows": 487326,
-          "ms": 419.9,
+          "rows": 487421,
+          "ms": 431.1,
           "columns": [
             {
               "name": "roll_number",
@@ -863,7 +863,7 @@
             {
               "name": "year_built",
               "type": "INTEGER",
-              "nullPct": 0.2
+              "nullPct": 0.21
             },
             {
               "name": "lot_sqft",
@@ -891,7 +891,7 @@
           "severity": "error",
           "status": "pass",
           "failures": 0,
-          "ms": 79.1,
+          "ms": 66.5,
           "sql": "select count(*) as failures from (\nwith all_values as (\n\n    select\n        property_group as value_field,\n        count(*) as n_records\n\n    from {{ ref('housing_homes') }}\n    group by property_group\n\n)\n\nselect *\nfrom all_values\nwhere value_field not in (\n    'Detached','Duplex','Townhouse','Condo apartment'\n)\n) dbt_test"
         },
         {
@@ -901,7 +901,7 @@
           "severity": "error",
           "status": "pass",
           "failures": 0,
-          "ms": 59.5,
+          "ms": 64.4,
           "sql": "select count(*) as failures from (\nwith all_values as (\n\n    select\n        roll_year as value_field,\n        count(*) as n_records\n\n    from {{ ref('housing_homes') }}\n    group by roll_year\n\n)\n\nselect *\nfrom all_values\nwhere value_field not in (\n    2026\n)\n) dbt_test"
         },
         {
@@ -911,7 +911,7 @@
           "severity": "warn",
           "status": "warn",
           "failures": 8,
-          "ms": 59.1,
+          "ms": 46.1,
           "sql": "select count(*) as failures from (\nselect * from {{ ref('housing_homes') }} where not (assessed_value between 50000 and 20000000)\n) dbt_test"
         },
         {
@@ -921,7 +921,7 @@
           "severity": "warn",
           "status": "pass",
           "failures": 0,
-          "ms": 67.0,
+          "ms": 68.7,
           "sql": "select count(*) as failures from (\nselect * from {{ ref('housing_homes') }} where not (year_built is null or year_built between 1875 and year(current_date) + 1)\n) dbt_test"
         },
         {
@@ -931,7 +931,7 @@
           "severity": "error",
           "status": "pass",
           "failures": 0,
-          "ms": 58.0,
+          "ms": 52.4,
           "sql": "select count(*) as failures from (\nselect roll_number\nfrom {{ ref('housing_homes') }}\nwhere roll_number is null\n) dbt_test"
         },
         {
@@ -941,7 +941,7 @@
           "severity": "error",
           "status": "pass",
           "failures": 0,
-          "ms": 52.1,
+          "ms": 56.7,
           "sql": "select count(*) as failures from (\nselect use\nfrom {{ ref('housing_homes') }}\nwhere use is null\n) dbt_test"
         },
         {
@@ -950,8 +950,8 @@
           "kind": "not_null",
           "severity": "warn",
           "status": "warn",
-          "failures": 991,
-          "ms": 84.9,
+          "failures": 1009,
+          "ms": 71.1,
           "sql": "select count(*) as failures from (\nselect year_built\nfrom {{ ref('housing_homes') }}\nwhere year_built is null\n) dbt_test"
         },
         {
@@ -961,7 +961,7 @@
           "severity": "error",
           "status": "pass",
           "failures": 0,
-          "ms": 54.5,
+          "ms": 54.0,
           "sql": "select count(*) as failures from (\nselect count(*) as row_count from {{ ref('housing_homes') }} having count(*) < 400000\n) dbt_test"
         },
         {
@@ -971,7 +971,7 @@
           "severity": "error",
           "status": "pass",
           "failures": 0,
-          "ms": 96.1,
+          "ms": 86.2,
           "sql": "select count(*) as failures from (\nselect\n    roll_number as unique_field,\n    count(*) as n_records\n\nfrom {{ ref('housing_homes') }}\nwhere roll_number is not null\ngroup by roll_number\nhaving count(*) > 1\n) dbt_test"
         }
       ],
@@ -979,9 +979,9 @@
         {
           "model": "housing_homes",
           "file": "housing-homes.parquet",
-          "rows": 487326,
-          "bytes": 2548756,
-          "sha256": "032006e638c61f7222a61dca028c2daebbb41b5028cb31f247a10c49865ea391"
+          "rows": 487421,
+          "bytes": 2558759,
+          "sha256": "4b044c8392e1ea323ce88d17bef53b3c399a6d40793d5235d94c6141c9b628b7"
         }
       ],
       "highlights": [
@@ -1003,46 +1003,46 @@
       ],
       "model": {
         "file": "housing-model.json",
-        "bytes": 1172827,
-        "trainMs": 8934,
+        "bytes": 1175988,
+        "trainMs": 8574,
         "rows": {
-          "train": 390145,
-          "test": 97173
+          "train": 390229,
+          "test": 97184
         },
         "metrics": {
           "model": {
-            "mae": 73008.1213114205,
-            "mdape": 0.07233064909695175,
-            "within10": 0.6318627602317516,
-            "r2": 0.8256227390152877
+            "mae": 72128.62835014844,
+            "mdape": 0.07055198336899884,
+            "within10": 0.6397966743496872,
+            "r2": 0.830129628942468
           },
           "baseline": {
-            "mae": 108732.57231947145,
-            "mdape": 0.09798994974874371,
-            "within10": 0.5073014108857399,
-            "r2": 0.5780947588057106
+            "mae": 108743.32451843924,
+            "mdape": 0.09803921568627451,
+            "within10": 0.5072439907803754,
+            "r2": 0.5780224665270406
           }
         },
         "importance": [
           {
             "feature": "use",
-            "share": 0.5753908022028736
+            "share": 0.5747064175835412
           },
           {
             "feature": "community",
-            "share": 0.17633584085306167
+            "share": 0.17234673033291026
           },
           {
             "feature": "year_built",
-            "share": 0.11424051100005111
+            "share": 0.11506473517941097
           },
           {
             "feature": "lot_sqft",
-            "share": 0.09556939916512756
+            "share": 0.09789427954912346
           },
           {
             "feature": "zoning",
-            "share": 0.03846344677888599
+            "share": 0.039987837355013954
           }
         ],
         "library": "XGBoost 2.1.4"
@@ -1051,6 +1051,15 @@
   },
   "history": {
     "permits": [
+      {
+        "runAt": "2026-11-09T20:15:50.936261+00:00",
+        "trigger": "github-actions",
+        "durationMs": 2409,
+        "rows": 237836,
+        "passed": 9,
+        "warned": 3,
+        "failed": 0
+      },
       {
         "runAt": "2026-11-02T19:54:40.880215+00:00",
         "trigger": "github-actions",
@@ -1108,6 +1117,15 @@
     ],
     "housing": [
       {
+        "runAt": "2026-11-09T20:15:50.936261+00:00",
+        "trigger": "github-actions",
+        "durationMs": 2128,
+        "rows": 490540,
+        "passed": 7,
+        "warned": 2,
+        "failed": 0
+      },
+      {
         "runAt": "2026-11-02T19:54:40.880215+00:00",
         "trigger": "github-actions",
         "durationMs": 2252,
@@ -1163,6 +1181,15 @@
       }
     ],
     "flames": [
+      {
+        "runAt": "2026-11-09T20:15:50.936261+00:00",
+        "trigger": "github-actions",
+        "durationMs": 1605,
+        "rows": 69443,
+        "passed": 9,
+        "warned": 0,
+        "failed": 0
+      },
       {
         "runAt": "2026-11-02T19:54:40.880215+00:00",
         "trigger": "github-actions",
