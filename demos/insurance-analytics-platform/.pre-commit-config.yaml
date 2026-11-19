@@ -1,0 +1,45 @@
+# Pre-commit hooks scoped to this project only (the portfolio repo root has its own
+# lint/format tooling in package.json, which already excludes demos/).
+#
+# This repo has one git hooks directory, so `pre-commit install` at the repo root won't pick
+# this file up automatically. Run checks explicitly with `make lint` (see Makefile), or install
+# this config's hook yourself with:
+#   pre-commit install -c demos/insurance-analytics-platform/.pre-commit-config.yaml
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: trailing-whitespace
+        files: ^demos/insurance-analytics-platform/
+      - id: end-of-file-fixer
+        files: ^demos/insurance-analytics-platform/
+      - id: check-yaml
+        files: ^demos/insurance-analytics-platform/
+      - id: check-added-large-files
+        files: ^demos/insurance-analytics-platform/
+        args: ["--maxkb=1000"]
+
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.5.0
+    hooks:
+      - id: detect-secrets
+        files: ^demos/insurance-analytics-platform/
+        exclude: \.lock$|package-lock\.json$
+
+  - repo: https://github.com/adrienverge/yamllint
+    rev: v1.35.1
+    hooks:
+      - id: yamllint
+        files: ^demos/insurance-analytics-platform/.*\.ya?ml$
+
+  - repo: https://github.com/antonbabenko/pre-commit-terraform
+    rev: v1.96.1
+    hooks:
+      - id: terraform_fmt
+        files: ^demos/insurance-analytics-platform/infra/
+
+  - repo: https://github.com/sqlfluff/sqlfluff
+    rev: 3.1.1
+    hooks:
+      - id: sqlfluff-lint
+        files: ^demos/insurance-analytics-platform/(dbt|snowflake|legacy)/.*\.sql$
