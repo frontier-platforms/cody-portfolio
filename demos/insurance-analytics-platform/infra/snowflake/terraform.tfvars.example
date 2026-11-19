@@ -1,0 +1,6 @@
+# Copy to terraform.tfvars (gitignored) and fill in real values.
+organization_name   = "ZPUGLNG"
+account_name         = "JT87381"
+username             = "CODYPCHANDLER"
+private_key_path     = "~/.snowflake/keys/snowflake_key.p8"
+monitor_credit_quota = 20

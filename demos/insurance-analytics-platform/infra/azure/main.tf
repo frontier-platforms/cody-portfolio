@@ -48,3 +48,60 @@ resource "azurerm_consumption_budget_resource_group" "main" {
     ignore_changes = [time_period]
   }
 }
+
+resource "azurerm_postgresql_flexible_server" "main" {
+  name                = var.postgres_server_name
+  resource_group_name = azurerm_resource_group.main.name
+  location            = azurerm_resource_group.main.location
+
+  version  = "16"
+  sku_name = "B_Standard_B1ms" # smallest Burstable tier that's comfortable running CDC's extra WAL overhead
+
+  storage_mb        = 32768 # 32 GiB: the minimum/default. Storage can only be scaled up later, never down.
+  auto_grow_enabled = false # cost guardrail: no silent storage growth
+
+  administrator_login    = var.postgres_admin_login
+  administrator_password = var.postgres_admin_password
+
+  # No private networking set up for this practice project, so this stays true; the
+  # firewall rule below is what actually restricts who can reach it.
+  public_network_access_enabled = true
+
+  tags = {
+    project = "insurance-analytics-platform"
+    purpose = "practice"
+  }
+
+  # Azure auto-assigns a zone at creation time since we don't pin one. Without this,
+  # Terraform tries to "correct" it back toward unset on the next plan/apply, which
+  # Azure's API rejects (zone changes have special pairing rules with HA standby).
+  lifecycle {
+    ignore_changes = [zone]
+  }
+}
+
+# Airbyte's CDC (logical replication) needs this above Postgres's default. Changing a
+# "static" parameter like this makes Azure restart the server automatically.
+resource "azurerm_postgresql_flexible_server_configuration" "wal_level" {
+  name      = "wal_level"
+  server_id = azurerm_postgresql_flexible_server.main.id
+  value     = "logical"
+}
+
+resource "azurerm_postgresql_flexible_server_firewall_rule" "my_ip" {
+  name             = "allow-my-ip"
+  server_id        = azurerm_postgresql_flexible_server.main.id
+  start_ip_address = var.my_ip_address
+  end_ip_address   = var.my_ip_address
+}
+
+# The app's own database, separate from the default "postgres" maintenance database
+# that comes with every server. Deliberately no `prevent_destroy` here - this project
+# tears everything down with `terraform destroy` in the wrap-up phase, and that flag
+# would block exactly that.
+resource "azurerm_postgresql_flexible_server_database" "insurance" {
+  name      = "insurance"
+  server_id = azurerm_postgresql_flexible_server.main.id
+  charset   = "UTF8"
+  collation = "en_US.utf8"
+}

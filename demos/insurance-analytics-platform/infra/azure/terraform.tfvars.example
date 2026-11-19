@@ -1,3 +1,9 @@
 # Copy to terraform.tfvars (gitignored) and fill in real values.
 subscription_id    = "00000000-0000-0000-0000-000000000000"
 budget_alert_email = "you@example.com"
+
+# Postgres: pick your own admin password (16+ chars, mixed case/digits/symbols is fine -
+# this never gets typed by hand day-to-day). Get my_ip_address from:
+#   curl -s https://ifconfig.me
+postgres_admin_password = "change-me"
+my_ip_address            = "0.0.0.0"
