@@ -23,3 +23,8 @@ variable "monitor_credit_quota" {
   type        = number
   default     = 20
 }
+
+variable "airbyte_svc_public_key" {
+  description = "RSA public key body (no PEM header/footer, no newlines) for the airbyte_svc service user's key-pair auth. Not secret - this is the half that's designed to be shared - but kept out of .tf code since it's a real deployed value, not an example."
+  type        = string
+}
