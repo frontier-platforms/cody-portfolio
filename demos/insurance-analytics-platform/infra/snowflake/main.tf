@@ -27,3 +27,54 @@ resource "snowflake_execute" "attach_monitor_to_account" {
   execute = "ALTER ACCOUNT SET RESOURCE_MONITOR = ${snowflake_resource_monitor.main.name}"
   revert  = "ALTER ACCOUNT UNSET RESOURCE_MONITOR"
 }
+
+# --- RAW landing zone for Airbyte ---
+
+resource "snowflake_database" "raw" {
+  name    = "RAW"
+  comment = "Airbyte CDC lands raw, unmodified Postgres data here."
+}
+
+resource "snowflake_warehouse" "load_wh" {
+  name           = "LOAD_WH"
+  warehouse_size = "XSMALL"
+  auto_suspend   = 60
+}
+
+resource "snowflake_account_role" "loader" {
+  name    = "LOADER"
+  comment = "Writes RAW. Used by Airbyte's service user."
+}
+
+# A machine identity, not a person - snowflake_service_user (not snowflake_user) has no
+# password or MFA fields at all, matching the "service users use key-pair auth only" rule.
+resource "snowflake_service_user" "airbyte_svc" {
+  name              = "AIRBYTE_SVC"
+  rsa_public_key    = var.airbyte_svc_public_key
+  default_role      = snowflake_account_role.loader.name
+  default_warehouse = snowflake_warehouse.load_wh.name
+  comment           = "Airbyte's Postgres-to-Snowflake CDC connection."
+}
+
+resource "snowflake_grant_account_role" "loader_to_airbyte_svc" {
+  role_name = snowflake_account_role.loader.name
+  user_name = snowflake_service_user.airbyte_svc.name
+}
+
+resource "snowflake_grant_privileges_to_account_role" "loader_on_raw" {
+  account_role_name = snowflake_account_role.loader.name
+  privileges        = ["USAGE", "CREATE SCHEMA"]
+  on_account_object {
+    object_type = "DATABASE"
+    object_name = snowflake_database.raw.name
+  }
+}
+
+resource "snowflake_grant_privileges_to_account_role" "loader_on_load_wh" {
+  account_role_name = snowflake_account_role.loader.name
+  privileges        = ["USAGE"]
+  on_account_object {
+    object_type = "WAREHOUSE"
+    object_name = snowflake_warehouse.load_wh.name
+  }
+}
