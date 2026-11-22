@@ -78,3 +78,54 @@ resource "snowflake_grant_privileges_to_account_role" "loader_on_load_wh" {
     object_name = snowflake_warehouse.load_wh.name
   }
 }
+
+# --- ACCOUNTADMIN read access to what Airbyte lands ---
+#
+# ACCOUNTADMIN is an administrative role (manage users, warehouses, billing, grants
+# themselves) - it does NOT get automatic SELECT on data it doesn't own, same as any
+# other role. That's the error fixed by hand in Snowsight after the first sync; this
+# codifies it so a fresh apply doesn't need that manual step repeated.
+#
+# AIRBYTE is LOADER's schema, not Terraform's: Airbyte creates it itself on first sync
+# (CREATE SCHEMA IF NOT EXISTS, via the CREATE SCHEMA grant on RAW). So it's referenced
+# here as a plain qualified-name string, not a snowflake_schema resource. One real
+# consequence: on a from-scratch apply (schema doesn't exist yet), these three grants
+# will fail with "does not exist or not authorized" until after Airbyte's first sync has
+# run at least once. Harmless re-run after that first sync fixes it; not worth solving
+# with an artificial dependency for a practice project.
+locals {
+  airbyte_schema_fqn = "\"${snowflake_database.raw.name}\".\"AIRBYTE\""
+}
+
+resource "snowflake_grant_privileges_to_account_role" "accountadmin_usage_on_airbyte_schema" {
+  account_role_name = "ACCOUNTADMIN"
+  privileges        = ["USAGE"]
+  on_schema {
+    schema_name = local.airbyte_schema_fqn
+  }
+}
+
+resource "snowflake_grant_privileges_to_account_role" "accountadmin_select_on_airbyte_tables" {
+  account_role_name = "ACCOUNTADMIN"
+  privileges        = ["SELECT"]
+  on_schema_object {
+    all {
+      object_type_plural = "TABLES"
+      in_schema          = local.airbyte_schema_fqn
+    }
+  }
+}
+
+# Covers tables Airbyte adds later (new streams, new source tables) without a repeat
+# manual grant - mirrors the ALTER DEFAULT PRIVILEGES pattern already used on the
+# Postgres side for the same reason.
+resource "snowflake_grant_privileges_to_account_role" "accountadmin_select_on_future_airbyte_tables" {
+  account_role_name = "ACCOUNTADMIN"
+  privileges        = ["SELECT"]
+  on_schema_object {
+    future {
+      object_type_plural = "TABLES"
+      in_schema          = local.airbyte_schema_fqn
+    }
+  }
+}
