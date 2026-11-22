@@ -1,0 +1,29 @@
+version: 2
+
+sources:
+  - name: airbyte
+    description: >
+      Raw, untouched landing zone. Airbyte's CDC connector writes here directly -
+      nothing in this schema is ever edited by dbt, only read.
+    database: RAW
+    schema: AIRBYTE
+    # Airbyte stamps every row with this on write, regardless of source table -
+    # that's what makes one freshness config here cover all 11 tables instead of
+    # needing a per-table loaded_at_field. 24h/48h assumes a roughly daily sync
+    # cadence (matching generator/daily.py's own rhythm), not real-time CDC.
+    loaded_at_field: _AIRBYTE_EXTRACTED_AT
+    freshness:
+      warn_after: { count: 24, period: hour }
+      error_after: { count: 48, period: hour }
+    tables:
+      - name: TENANTS
+      - name: CARRIERS
+      - name: PROGRAMS
+      - name: PROGRAMCARRIERSHARES
+      - name: BROKERS
+      - name: INSUREDS
+      - name: POLICIES
+      - name: POLICYCOVERAGES
+      - name: POLICYTRANSACTIONS
+      - name: CLAIMS
+      - name: CLAIMTRANSACTIONS

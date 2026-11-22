@@ -1,0 +1,18 @@
+version: 2
+
+models:
+  - name: bdx_premium
+    description: >
+      Transaction-level carrier bordereau, one row per policy transaction per carrier.
+      dbt's rebuild of LEGACY.PUBLIC.PREMIUM_BORDEREAU (see docs/adr/0002).
+    columns:
+      - name: policy_transaction_id
+        tests: [not_null]
+      - name: carrier_premium_share
+        tests: [not_null]
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - policy_transaction_id
+              - carrier_id

@@ -1,0 +1,77 @@
+version: 2
+
+models:
+  - name: stg_tenants
+    columns:
+      - name: tenant_id
+        tests: [unique, not_null]
+
+  - name: stg_carriers
+    columns:
+      - name: carrier_id
+        tests: [unique, not_null]
+      - name: tenant_id
+        tests: [not_null]
+
+  - name: stg_programs
+    columns:
+      - name: program_id
+        tests: [unique, not_null]
+      - name: tenant_id
+        tests: [not_null]
+
+  - name: stg_program_carrier_shares
+    columns:
+      - name: program_carrier_share_id
+        tests: [unique, not_null]
+      - name: tenant_id
+        tests: [not_null]
+
+  - name: stg_brokers
+    columns:
+      - name: broker_id
+        tests: [unique, not_null]
+      - name: tenant_id
+        tests: [not_null]
+
+  - name: stg_insureds
+    columns:
+      - name: insured_id
+        tests: [unique, not_null]
+      - name: tenant_id
+        tests: [not_null]
+
+  - name: stg_policies
+    columns:
+      - name: policy_id
+        tests: [unique, not_null]
+      - name: tenant_id
+        tests: [not_null]
+
+  - name: stg_policy_coverages
+    columns:
+      - name: policy_coverage_id
+        tests: [unique, not_null]
+      - name: tenant_id
+        tests: [not_null]
+
+  - name: stg_policy_transactions
+    columns:
+      - name: policy_transaction_id
+        tests: [unique, not_null]
+      - name: tenant_id
+        tests: [not_null]
+
+  - name: stg_claims
+    columns:
+      - name: claim_id
+        tests: [unique, not_null]
+      - name: tenant_id
+        tests: [not_null]
+
+  - name: stg_claim_transactions
+    columns:
+      - name: claim_transaction_id
+        tests: [unique, not_null]
+      - name: tenant_id
+        tests: [not_null]

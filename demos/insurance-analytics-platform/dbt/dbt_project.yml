@@ -1,0 +1,35 @@
+name: "insurance_analytics"
+version: "1.0.0"
+# Pinned to one of the four dbt Core versions Snowflake's native "dbt Projects on
+# Snowflake" feature currently supports (checked against SYSTEM$SUPPORTED_DBT_VERSIONS()
+# docs) - local dev and the deployed project need to behave identically, and a version
+# drift between them is exactly the kind of thing that only shows up after `snow dbt
+# deploy`, not during local `dbt build`.
+require-dbt-version: ">=1.10.0,<1.11.0"
+
+profile: "insurance_analytics"
+
+model-paths: ["models"]
+seed-paths: ["seeds"]
+snapshot-paths: ["snapshots"]
+test-paths: ["tests"]
+macro-paths: ["macros"]
+
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+models:
+  insurance_analytics:
+    +persist_docs:
+      relation: true
+      columns: true
+    staging:
+      +materialized: view
+      +schema: staging
+    intermediate:
+      +materialized: view
+      +schema: intermediate
+    marts:
+      +materialized: table
+      +schema: marts

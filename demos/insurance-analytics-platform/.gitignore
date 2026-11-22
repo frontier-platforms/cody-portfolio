@@ -15,6 +15,7 @@ dbt/target/
 dbt/dbt_packages/
 dbt/logs/
 dbt/.user.yml
+dbt/profiles.yml
 
 # Terraform
 # .terraform.lock.hcl is NOT ignored on purpose: it pins exact provider versions

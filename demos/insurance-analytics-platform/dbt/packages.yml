@@ -1,0 +1,10 @@
+# dbt_utils: generic helpers (surrogate keys, date spines, equality tests).
+# dbt_expectations: range/statistical checks (CLAUDE.md's "dbt-expectations range
+# checks" test category). Both install from the dbt Hub, which the deployed Snowflake
+# DBT PROJECT reaches via an external access integration (Phase 4 deploy step) - local
+# `dbt deps` just needs normal internet access.
+packages:
+  - package: dbt-labs/dbt_utils
+    version: [">=1.3.0", "<2.0.0"]
+  - package: calogica/dbt_expectations
+    version: [">=0.10.0", "<0.11.0"]

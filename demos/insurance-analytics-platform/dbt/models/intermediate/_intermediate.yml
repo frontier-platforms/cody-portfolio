@@ -1,0 +1,23 @@
+version: 2
+
+models:
+  - name: int_policy_coverage_terms
+    columns:
+      - name: policy_coverage_id
+        tests: [unique, not_null]
+
+  - name: int_earned_premium_monthly
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - policy_coverage_id
+              - period_month
+
+  - name: int_written_premium_monthly
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - policy_coverage_id
+              - period_month
