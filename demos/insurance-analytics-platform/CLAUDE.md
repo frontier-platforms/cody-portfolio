@@ -260,13 +260,17 @@ Write the results up in `docs/frontend-evaluation.md` with screenshots, and add 
 4. **dbt on Snowflake.** Staging, snapshots, marts, tests, deployed and scheduled by tasks. *Done when* prod
    builds on a schedule, all tests pass, and parity tests match the legacy outputs.
 5. **Governance and bordereaux.** Masking, row access, secure views, bordereau export to Blob and SFTP gated
-   on tests. *Done when* tenant tests pass and a file downloads over SFTP.
+   on tests. *Done when* tenant tests pass and a file downloads over SFTP. **Partially done:** roles, row
+   access policy, PII masking and secure views are built and verified. The Azure Blob + SFTP export itself
+   is deferred to Phase 8 (see docs/adr/0003) so Phase 8's CI/CD pipeline can deploy it once, rather than
+   building it now and re-wiring it for CI later.
 6. **Semantic layer and AI chat.** Semantic view, Cortex Agent, evaluation set. *Done when* accuracy is
    scored and the residency check is recorded.
 7. **Front-end bake-off.** Options A, B and C. *Done when* the evaluation doc and decision record are
    written.
 8. **CI/CD and data contracts.** Full GitHub Actions pipeline. Simulate an EF column rename and show where
-   it's caught. *Done when* a pull request with a breaking change fails CI.
+   it's caught. *Done when* a pull request with a breaking change fails CI. Also where Phase 5's deferred
+   Azure Blob + SFTP bordereau export gets built (see docs/adr/0003).
 9. **Wrap-up.** Architecture diagram, README with screenshots, runbook, cost summary, teardown. *Done when*
    nothing is still billing.
 

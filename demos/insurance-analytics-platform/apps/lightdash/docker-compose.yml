@@ -1,0 +1,83 @@
+# Adapted from Lightdash's own reference compose file (lightdash/lightdash repo root),
+# trimmed down: the upstream file also wires up Slack, GitHub, email SMTP and several
+# AI-copilot providers, none of which this project uses. Four services, matching
+# Lightdash's own architecture:
+#   - db: Lightdash's OWN metadata Postgres (users, saved charts/dashboards config) -
+#     NOT the insurance data. That stays in Snowflake, reached over the lightdash_svc
+#     connection configured in the app itself, not here.
+#   - minio: an S3-compatible store Lightdash uses for query-result caching and
+#     exported chart images. Local-only credentials are fine - nothing here is exposed
+#     outside this machine.
+#   - headless-browser: a dedicated Chromium instance Lightdash uses to render chart
+#     images (e.g. for Slack/email unfurls, scheduled PDF exports) - not optional, the
+#     app container depends on it.
+#   - lightdash: the app itself.
+services:
+  db:
+    image: pgvector/pgvector:pg15
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: ${PGPASSWORD}
+      POSTGRES_USER: ${PGUSER:-postgres}
+      POSTGRES_DB: ${PGDATABASE:-postgres}
+    volumes:
+      - lightdash-db-data:/var/lib/postgresql/data
+
+  minio:
+    image: coollabsio/minio:latest
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - ./docker/init-minio.sh:/init-minio.sh
+    entrypoint: /init-minio.sh
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+      MINIO_DEFAULT_BUCKETS: default
+
+  headless-browser:
+    build:
+      context: https://github.com/lightdash/lightdash.git
+      dockerfile: docker/Dockerfile.headless-browser
+    restart: always
+
+  lightdash:
+    platform: linux/amd64
+    image: lightdash/lightdash:latest
+    depends_on:
+      - db
+      - minio
+    ports:
+      - "${PORT:-8080}:${PORT:-8080}"
+    environment:
+      # Lightdash's own metadata DB (the `db` service above)
+      PGHOST: db
+      PGPORT: 5432
+      PGUSER: ${PGUSER:-postgres}
+      PGPASSWORD: ${PGPASSWORD}
+      PGDATABASE: ${PGDATABASE:-postgres}
+
+      # Encrypts stored warehouse credentials (the Snowflake connection) at rest -
+      # changing this after setup locks you out of anything already saved, so it's
+      # generated once and kept fixed in .env, never regenerated casually.
+      LIGHTDASH_SECRET: ${LIGHTDASH_SECRET}
+      PORT: ${PORT:-8080}
+      SITE_URL: ${SITE_URL:-http://localhost:8080}
+      SECURE_COOKIES: "false"
+      LIGHTDASH_INSTALL_TYPE: docker_image
+      SCHEDULER_ENABLED: "true"
+
+      # minio, as an S3-compatible endpoint
+      S3_ENDPOINT: http://minio:9000
+      S3_REGION: us-east-1
+      S3_BUCKET: default
+      S3_ACCESS_KEY: minioadmin
+      S3_SECRET_KEY: minioadmin
+      S3_FORCE_PATH_STYLE: "true"
+
+      HEADLESS_BROWSER_HOST: headless-browser
+      HEADLESS_BROWSER_PORT: 3000
+
+volumes:
+  lightdash-db-data:
