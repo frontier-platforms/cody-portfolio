@@ -72,8 +72,8 @@
       "description": "Typed and labelled. Use codes joined to the City's own descriptions, zoning reduced to its primary district, and the 1800 placeholder for an unknown build year turned into NULL.",
       "sql": "-- Homes only: no parking stalls, storage units, vacant land or whole rental buildings.\nselect\n    try_cast(a.roll_number as bigint)                               as roll_number,\n    try_cast(a.roll_year as integer)                                as roll_year,\n    a.comm_name                                                     as community,\n    a.sub_property_use                                              as use_code,\n    u.description                                                   as use,\n    case a.sub_property_use\n        when 'R110' then 'Detached' when 'R111' then 'Detached'\n        when 'R120' then 'Duplex'\n        when 'R401' then 'Townhouse' when 'R402' then 'Townhouse'\n        when 'R201' then 'Condo apartment' when 'R301' then 'Condo apartment'\n    end                                                             as property_group,\n    nullif(trim(split_part(a.land_use_designation, ',', 1)), '')    as zoning,\n    -- The City records 1800 when the build year is unknown.\n    nullif(try_cast(try_cast(a.year_of_construction as double) as integer), 1800) as year_built,\n    try_cast(try_cast(a.land_size_sf as double) as integer)         as lot_sqft,\n    try_cast(try_cast(a.assessed_value as double) as integer)       as assessed_value,\n    cast(try_cast(a.mod_date as timestamp) as date)                 as mod_date\nfrom {{ ref('raw_assessments') }} a\nleft join {{ ref('raw_use_codes') }} u on u.code = a.sub_property_use\nqualify row_number() over (partition by a.roll_number order by a.mod_date desc) = 1",
       "dependsOn": [
-        "raw_assessments",
-        "raw_use_codes"
+        "raw_use_codes",
+        "raw_assessments"
       ],
       "contract": false,
       "path": "dbt/models/housing/stg_homes.sql"
