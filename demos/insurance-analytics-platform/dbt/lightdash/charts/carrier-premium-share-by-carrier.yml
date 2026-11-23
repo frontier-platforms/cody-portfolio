@@ -1,0 +1,60 @@
+chartConfig:
+  config:
+    conditionalFormattings: []
+    eChartsConfig:
+      series:
+        - encode:
+            xRef:
+              field: rpt_premium_bordereau_carrier_id
+            yRef:
+              field: rpt_premium_bordereau_total_carrier_premium_share
+          isFilteredOut: false
+          type: bar
+          yAxisIndex: 0
+      showAxisTicks: false
+    layout:
+      flipAxes: false
+      showIncompletePeriod: true
+      stack: none
+      xField: rpt_premium_bordereau_carrier_id
+      yField:
+        - rpt_premium_bordereau_total_carrier_premium_share
+  type: cartesian
+contentType: chart
+description: ""
+metricQuery:
+  additionalMetrics: []
+  customDimensions: []
+  dimensions:
+    - rpt_premium_bordereau_carrier_id
+  exploreName: rpt_premium_bordereau
+  filters:
+    dimensions:
+      and:
+        - id: 4c5d6e7f-8a9b-4c0d-1e2f-3a4b5c6d7e8f
+          operator: equals
+          required: false
+          target:
+            fieldId: rpt_premium_bordereau_tenant_id
+          values:
+            - "1"
+      id: 5d6e7f8a-9b0c-4d1e-2f3a-4b5c6d7e8f9a
+  limit: 500
+  metricOverrides: {}
+  metrics:
+    - rpt_premium_bordereau_total_carrier_premium_share
+  sorts:
+    - descending: true
+      fieldId: rpt_premium_bordereau_total_carrier_premium_share
+  tableCalculations: []
+  timezone: project_timezone
+name: Carrier Premium Share by Carrier
+slug: carrier-premium-share-by-carrier
+spaceSlug: shared
+tableConfig:
+  columnOrder:
+    - rpt_premium_bordereau_carrier_id
+    - rpt_premium_bordereau_total_carrier_premium_share
+tableName: rpt_premium_bordereau
+verification: null
+version: 1

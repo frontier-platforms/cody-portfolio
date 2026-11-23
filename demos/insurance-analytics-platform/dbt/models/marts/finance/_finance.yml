@@ -6,6 +6,16 @@ models:
       Periodic snapshot, cumulative as of each month-end: one row per policy coverage
       per month. dbt's rebuild of LEGACY.PUBLIC.EARNED_PREMIUM_MONTHLY (see
       docs/adr/0002).
+    config:
+      # Reattached every run - CREATE OR REPLACE TABLE (this model's materialization)
+      # doesn't reliably preserve an ALTER-attached row access policy.
+      post_hook: "{{ apply_tenant_row_access_policy() }}"
+      # Hidden from Lightdash: rpt_earned_premium_monthly (below) is the one
+      # client-facing path to this data, matching "secure views for anything
+      # client-facing" - the raw mart showing up as a second, near-identical explore
+      # object would just confuse anyone browsing Lightdash.
+      meta:
+        hidden: true
     columns:
       - name: written_premium
         tests: [not_null]
@@ -26,3 +36,99 @@ models:
       # correctness check is the parity test against LEGACY.PUBLIC.EARNED_PREMIUM_MONTHLY
       # in tests/parity/, not a self-consistency check stricter than the baseline
       # being reproduced.
+
+  - name: rpt_earned_premium_monthly
+    description: >
+      Client-facing secure view over fct_earned_premium_monthly - this is the actual
+      "BI as code" artifact Lightdash reads: dimensions/metrics live right here in the
+      same git-versioned schema.yml as the model itself, not in a separate BI tool.
+    columns:
+      - name: tenant_id
+        config:
+          meta:
+            dimension:
+              type: number
+      - name: period_month
+        config:
+          meta:
+            dimension:
+              type: date
+              time_intervals: [MONTH, QUARTER, YEAR]
+      - name: earned_premium
+        config:
+          meta:
+            metrics:
+              total_earned_premium:
+                type: sum
+      - name: written_premium
+        config:
+          meta:
+            metrics:
+              total_written_premium:
+                type: sum
+      - name: unearned_premium
+        config:
+          meta:
+            metrics:
+              total_unearned_premium:
+                type: sum
+
+  - name: rpt_loss_ratio_monthly
+    description: Client-facing secure view over fct_loss_ratio_monthly.
+    columns:
+      - name: tenant_id
+        config:
+          meta:
+            dimension:
+              type: number
+      - name: program_id
+        config:
+          meta:
+            dimension:
+              type: number
+      - name: period_month
+        config:
+          meta:
+            dimension:
+              type: date
+              time_intervals: [MONTH, QUARTER, YEAR]
+      - name: earned_premium
+        config:
+          meta:
+            metrics:
+              total_earned_premium:
+                type: sum
+      - name: incurred_losses
+        config:
+          meta:
+            metrics:
+              total_incurred_losses:
+                type: sum
+      - name: loss_ratio
+        config:
+          meta:
+            metrics:
+              avg_loss_ratio:
+                type: average
+
+  - name: fct_loss_ratio_monthly
+    description: >
+      Loss ratio by program and month, cumulative as of month-end: incurred losses
+      (paid + reserve change - recoveries) over earned premium.
+    config:
+      post_hook: "{{ apply_tenant_row_access_policy() }}"
+      meta:
+        hidden: true
+    columns:
+      - name: program_id
+        tests: [not_null]
+      - name: earned_premium
+        tests: [not_null]
+      - name: incurred_losses
+        tests: [not_null]
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - program_id
+              - period_month

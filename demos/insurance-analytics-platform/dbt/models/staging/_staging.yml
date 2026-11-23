@@ -35,11 +35,34 @@ models:
         tests: [not_null]
 
   - name: stg_insureds
+    config:
+      # Reapplies the PII tag to every column below that declares meta.pii, every run -
+      # cheap and idempotent (just a tag reassignment), unlike the row access policy's
+      # post-hook. See dbt/macros/governance.sql for why these need different handling.
+      post_hook: "{{ apply_pii_tags() }}"
     columns:
       - name: insured_id
         tests: [unique, not_null]
       - name: tenant_id
         tests: [not_null]
+      - name: first_name
+        meta: { pii: name }
+      - name: last_name
+        meta: { pii: name }
+      - name: email
+        meta: { pii: email }
+      - name: date_of_birth
+        meta: { pii: date_of_birth }
+      - name: address_line_1
+        meta: { pii: address }
+      - name: address_line_2
+        meta: { pii: address }
+      - name: city
+        meta: { pii: address }
+      - name: province
+        meta: { pii: address }
+      - name: postal_code
+        meta: { pii: address }
 
   - name: stg_policies
     columns:

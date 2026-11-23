@@ -1,0 +1,60 @@
+chartConfig:
+  config:
+    conditionalFormattings: []
+    eChartsConfig:
+      series:
+        - encode:
+            xRef:
+              field: rpt_earned_premium_monthly_period_month_month
+            yRef:
+              field: rpt_earned_premium_monthly_total_earned_premium
+          isFilteredOut: false
+          type: line
+          yAxisIndex: 0
+      showAxisTicks: false
+    layout:
+      flipAxes: false
+      showIncompletePeriod: true
+      stack: none
+      xField: rpt_earned_premium_monthly_period_month_month
+      yField:
+        - rpt_earned_premium_monthly_total_earned_premium
+  type: cartesian
+contentType: chart
+description: ""
+metricQuery:
+  additionalMetrics: []
+  customDimensions: []
+  dimensions:
+    - rpt_earned_premium_monthly_period_month_month
+  exploreName: rpt_earned_premium_monthly
+  filters:
+    dimensions:
+      and:
+        - id: 2e145910-7e9c-449a-8cba-2b5000e15be3
+          operator: equals
+          required: false
+          target:
+            fieldId: rpt_earned_premium_monthly_tenant_id
+          values:
+            - "1"
+      id: def7b3c1-dee3-4780-8e10-325597f3e72f
+  limit: 500
+  metricOverrides: {}
+  metrics:
+    - rpt_earned_premium_monthly_total_earned_premium
+  sorts:
+    - descending: true
+      fieldId: rpt_earned_premium_monthly_period_month_month
+  tableCalculations: []
+  timezone: project_timezone
+name: Total earned premium by Period month month
+slug: total-earned-premium-by-period-month-month
+spaceSlug: shared
+tableConfig:
+  columnOrder:
+    - rpt_earned_premium_monthly_period_month_month
+    - rpt_earned_premium_monthly_total_earned_premium
+tableName: rpt_earned_premium_monthly
+verification: null
+version: 1

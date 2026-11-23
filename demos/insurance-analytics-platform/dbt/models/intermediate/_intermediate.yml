@@ -1,12 +1,31 @@
 version: 2
 
 models:
+  # All four hidden from Lightdash's explorer - these are internal plumbing the marts
+  # are built from, never meant to be queried directly through the BI tool. `hidden`
+  # alone isn't enough for the other three, though: Lightdash's deploy validation
+  # requires every model it considers to have at least one dimension, checked BEFORE
+  # hidden-ness is applied - so each needs one trivial column-level dimension (they all
+  # happen to have period_month) just to pass that gate, even though nobody will ever
+  # see it once deployed.
   - name: int_policy_coverage_terms
+    config:
+      meta:
+        hidden: true
     columns:
       - name: policy_coverage_id
         tests: [unique, not_null]
 
   - name: int_earned_premium_monthly
+    config:
+      meta:
+        hidden: true
+    columns:
+      - name: period_month
+        config:
+          meta:
+            dimension:
+              type: date
     tests:
       - dbt_utils.unique_combination_of_columns:
           arguments:
@@ -15,9 +34,35 @@ models:
               - period_month
 
   - name: int_written_premium_monthly
+    config:
+      meta:
+        hidden: true
+    columns:
+      - name: period_month
+        config:
+          meta:
+            dimension:
+              type: date
     tests:
       - dbt_utils.unique_combination_of_columns:
           arguments:
             combination_of_columns:
               - policy_coverage_id
+              - period_month
+
+  - name: int_claim_incurred_monthly
+    config:
+      meta:
+        hidden: true
+    columns:
+      - name: period_month
+        config:
+          meta:
+            dimension:
+              type: date
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - program_id
               - period_month

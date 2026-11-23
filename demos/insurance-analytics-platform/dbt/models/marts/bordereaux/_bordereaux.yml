@@ -5,6 +5,10 @@ models:
     description: >
       Transaction-level carrier bordereau, one row per policy transaction per carrier.
       dbt's rebuild of LEGACY.PUBLIC.PREMIUM_BORDEREAU (see docs/adr/0002).
+    config:
+      post_hook: "{{ apply_tenant_row_access_policy() }}"
+      meta:
+        hidden: true
     columns:
       - name: policy_transaction_id
         tests: [not_null]
@@ -16,3 +20,34 @@ models:
             combination_of_columns:
               - policy_transaction_id
               - carrier_id
+
+  - name: rpt_premium_bordereau
+    description: Client-facing secure view over bdx_premium.
+    columns:
+      - name: tenant_id
+        config:
+          meta:
+            dimension:
+              type: number
+      - name: carrier_id
+        config:
+          meta:
+            dimension:
+              type: number
+      - name: processed_date
+        config:
+          meta:
+            dimension:
+              type: date
+              time_intervals: [MONTH, QUARTER, YEAR]
+      - name: transaction_type
+        config:
+          meta:
+            dimension:
+              type: number
+      - name: carrier_premium_share
+        config:
+          meta:
+            metrics:
+              total_carrier_premium_share:
+                type: sum
