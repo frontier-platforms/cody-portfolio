@@ -1,0 +1,42 @@
+filters:
+  dimensions: []
+  metrics: []
+  tableCalculations: []
+name: Insurance Analytics Overview
+slug: insurance-analytics-overview
+spaceSlug: shared
+tabs: []
+tiles:
+  - type: saved_chart
+    properties:
+      chartSlug: total-earned-premium-by-period-month-month
+      title: Earned Premium Trend
+    x: 0
+    y: 0
+    w: 12
+    h: 6
+  - type: saved_chart
+    properties:
+      chartSlug: loss-ratio-by-program
+      title: Loss Ratio by Program
+    x: 12
+    y: 0
+    w: 12
+    h: 6
+  - type: saved_chart
+    properties:
+      chartSlug: policies-in-force-by-program
+      title: Policies in Force by Program
+    x: 0
+    y: 6
+    w: 12
+    h: 6
+  - type: saved_chart
+    properties:
+      chartSlug: carrier-premium-share-by-carrier
+      title: Carrier Premium Share by Carrier
+    x: 12
+    y: 6
+    w: 12
+    h: 6
+version: 1

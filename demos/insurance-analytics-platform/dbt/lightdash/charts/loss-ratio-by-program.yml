@@ -1,0 +1,60 @@
+chartConfig:
+  config:
+    conditionalFormattings: []
+    eChartsConfig:
+      series:
+        - encode:
+            xRef:
+              field: rpt_loss_ratio_monthly_program_id
+            yRef:
+              field: rpt_loss_ratio_monthly_avg_loss_ratio
+          isFilteredOut: false
+          type: bar
+          yAxisIndex: 0
+      showAxisTicks: false
+    layout:
+      flipAxes: false
+      showIncompletePeriod: true
+      stack: none
+      xField: rpt_loss_ratio_monthly_program_id
+      yField:
+        - rpt_loss_ratio_monthly_avg_loss_ratio
+  type: cartesian
+contentType: chart
+description: ""
+metricQuery:
+  additionalMetrics: []
+  customDimensions: []
+  dimensions:
+    - rpt_loss_ratio_monthly_program_id
+  exploreName: rpt_loss_ratio_monthly
+  filters:
+    dimensions:
+      and:
+        - id: 7c1a2b3d-4e5f-4a6b-8c7d-9e0f1a2b3c4d
+          operator: equals
+          required: false
+          target:
+            fieldId: rpt_loss_ratio_monthly_tenant_id
+          values:
+            - "1"
+      id: 1f2e3d4c-5b6a-4978-8f6e-5d4c3b2a1f0e
+  limit: 500
+  metricOverrides: {}
+  metrics:
+    - rpt_loss_ratio_monthly_avg_loss_ratio
+  sorts:
+    - descending: true
+      fieldId: rpt_loss_ratio_monthly_avg_loss_ratio
+  tableCalculations: []
+  timezone: project_timezone
+name: Loss Ratio by Program
+slug: loss-ratio-by-program
+spaceSlug: shared
+tableConfig:
+  columnOrder:
+    - rpt_loss_ratio_monthly_program_id
+    - rpt_loss_ratio_monthly_avg_loss_ratio
+tableName: rpt_loss_ratio_monthly
+verification: null
+version: 1

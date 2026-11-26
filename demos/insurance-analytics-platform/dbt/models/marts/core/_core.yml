@@ -1,0 +1,36 @@
+version: 2
+
+models:
+  - name: fct_policies_in_force
+    description: >
+      Lean current-state snapshot of active policies, by tenant and program - not a
+      full type-2 history (see the model's own comment for why).
+    config:
+      post_hook: "{{ apply_tenant_row_access_policy() }}"
+      meta:
+        hidden: true
+    columns:
+      - name: policy_id
+        tests: [unique, not_null]
+      - name: tenant_id
+        tests: [not_null]
+
+  - name: rpt_policies_in_force
+    description: Client-facing secure view over fct_policies_in_force.
+    columns:
+      - name: tenant_id
+        config:
+          meta:
+            dimension:
+              type: number
+      - name: program_id
+        config:
+          meta:
+            dimension:
+              type: number
+      - name: policy_id
+        config:
+          meta:
+            metrics:
+              count_policies_in_force:
+                type: count_distinct

@@ -1,0 +1,18 @@
+# This file - not profiles.yml - is what the DEPLOYED Snowflake DBT PROJECT object
+# actually uses when it runs (EXECUTE DBT PROJECT ... ARGS = '--target prod'):
+# Snowflake's own docs say dbt_projects_profiles.yml takes priority over profiles.yml
+# for the deployed version. It travels with the project server-side, so account/user
+# are harmless placeholders - there's no external connection to make, the dbt engine
+# runs natively inside Snowflake using whatever role/warehouse/database/schema are
+# named below. Safe to commit: nothing here is a secret.
+insurance_analytics:
+  target: prod
+  outputs:
+    prod:
+      type: snowflake
+      account: PLACEHOLDER
+      user: PLACEHOLDER
+      role: TRANSFORMER
+      warehouse: TRANSFORM_WH
+      database: ANALYTICS_PROD
+      schema: PROD

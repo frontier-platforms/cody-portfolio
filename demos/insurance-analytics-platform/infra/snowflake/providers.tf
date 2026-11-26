@@ -11,8 +11,8 @@ terraform {
 
 provider "snowflake" {
   organization_name = var.organization_name
-  account_name       = var.account_name
-  user               = var.username
+  account_name      = var.account_name
+  user              = var.username
 
   # Key-pair auth, never a password: `authenticator = "SNOWFLAKE_JWT"` tells the
   # provider to sign a JWT with this private key instead. `pathexpand` resolves a

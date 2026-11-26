@@ -4,3 +4,5 @@ account_name         = "JT87381"
 username             = "CODYPCHANDLER"
 private_key_path     = "~/.snowflake/keys/snowflake_key.p8"
 monitor_credit_quota = 20
+airbyte_svc_public_key = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA..."
+lightdash_svc_public_key = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA..."

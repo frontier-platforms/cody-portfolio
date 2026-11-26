@@ -1,0 +1,25 @@
+# Copy to dbt/profiles.yml and it'll pick up real values from .env (gitignored).
+# dbt doesn't load .env itself the way python-dotenv does for the generator - the
+# Makefile's dbt targets source .env into the shell before invoking dbt, which is why
+# this can reference env vars with env_var() and still work.
+#
+# Why this file isn't just ~/.dbt/profiles.yml (dbt's usual default location): keeping
+# it inside the project, pointed at with --profiles-dir, keeps every credential path
+# for this demo self-contained under demos/insurance-analytics-platform/, matching how
+# .env and the Terraform tfvars already work.
+insurance_analytics:
+  target: dev
+  outputs:
+    dev:
+      type: snowflake
+      # Modern account identifier format: "<org>-<account>", not the account locator.
+      account: "{{ env_var('SNOWFLAKE_ORG') }}-{{ env_var('SNOWFLAKE_ACCOUNT') }}"
+      user: "{{ env_var('SNOWFLAKE_USER') }}"
+      private_key_path: "{{ env_var('SNOWFLAKE_PRIVATE_KEY_PATH') }}"
+      role: "{{ env_var('SNOWFLAKE_ROLE', 'TRANSFORMER') }}"
+      warehouse: "{{ env_var('SNOWFLAKE_WAREHOUSE', 'TRANSFORM_WH') }}"
+      database: "{{ env_var('SNOWFLAKE_DATABASE', 'ANALYTICS_DEV') }}"
+      # Personal dev schema - CLAUDE.md's "dev (personal schema in ANALYTICS_DEV)".
+      # dbt creates it on first run; it doesn't need to exist beforehand.
+      schema: "{{ env_var('SNOWFLAKE_SCHEMA', 'DBT_CODY') }}"
+      threads: 4

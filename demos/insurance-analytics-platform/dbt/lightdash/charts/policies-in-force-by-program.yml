@@ -1,0 +1,60 @@
+chartConfig:
+  config:
+    conditionalFormattings: []
+    eChartsConfig:
+      series:
+        - encode:
+            xRef:
+              field: rpt_policies_in_force_program_id
+            yRef:
+              field: rpt_policies_in_force_count_policies_in_force
+          isFilteredOut: false
+          type: bar
+          yAxisIndex: 0
+      showAxisTicks: false
+    layout:
+      flipAxes: false
+      showIncompletePeriod: true
+      stack: none
+      xField: rpt_policies_in_force_program_id
+      yField:
+        - rpt_policies_in_force_count_policies_in_force
+  type: cartesian
+contentType: chart
+description: ""
+metricQuery:
+  additionalMetrics: []
+  customDimensions: []
+  dimensions:
+    - rpt_policies_in_force_program_id
+  exploreName: rpt_policies_in_force
+  filters:
+    dimensions:
+      and:
+        - id: 2a3b4c5d-6e7f-4a8b-9c0d-1e2f3a4b5c6d
+          operator: equals
+          required: false
+          target:
+            fieldId: rpt_policies_in_force_tenant_id
+          values:
+            - "1"
+      id: 3b4c5d6e-7f8a-4b9c-0d1e-2f3a4b5c6d7e
+  limit: 500
+  metricOverrides: {}
+  metrics:
+    - rpt_policies_in_force_count_policies_in_force
+  sorts:
+    - descending: true
+      fieldId: rpt_policies_in_force_count_policies_in_force
+  tableCalculations: []
+  timezone: project_timezone
+name: Policies in Force by Program
+slug: policies-in-force-by-program
+spaceSlug: shared
+tableConfig:
+  columnOrder:
+    - rpt_policies_in_force_program_id
+    - rpt_policies_in_force_count_policies_in_force
+tableName: rpt_policies_in_force
+verification: null
+version: 1
